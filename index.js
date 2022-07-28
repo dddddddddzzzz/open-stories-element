@@ -53,6 +53,7 @@ const style = `
     width: 100%;
     position: absolute;
     border-radius: 10px;
+    background: #000;
   }
 
   dialog img {
@@ -181,7 +182,7 @@ class StoryViewElement extends HTMLElement {
     })
 
     forward.addEventListener('click', () => {
-      if (this.currentIndex === this.images.length - 1) {
+      if (this.currentIndex === this.count - 1) {
         this.dialog.close()
       } else {
         this.rotate(1)
@@ -216,6 +217,8 @@ class StoryViewElement extends HTMLElement {
     this.count = items.length
     this.images = []
     this.bars = []
+    this.promises = []
+
     const bars = this.root.querySelector('#bars')
     const images = this.root.querySelector('#images')
     for (const item of items) {
@@ -227,14 +230,16 @@ class StoryViewElement extends HTMLElement {
       bars.append(bar)
       this.bars.push(bar)
       const img = document.createElement('img')
+      this.promises.push(new Promise(resolve => img.addEventListener('load', resolve)))
       img.src = item.image
-      img.alt = item.summray
+      img.alt = item.summary
       images.append(img)
       this.images.push(img)
     }
   }
   
-  startTimer() {
+  async startTimer() {
+    await Promise.all(this.promises)
     this.currentIndex ||= -1
     this.rotate()
   }
@@ -253,7 +258,7 @@ class StoryViewElement extends HTMLElement {
 
     this.currentIndex += delta
 
-    if (this.currentIndex === this.images.length) {
+    if (this.currentIndex === this.count) {
       this.dialog.close()
       return
     }
@@ -262,7 +267,7 @@ class StoryViewElement extends HTMLElement {
     this.currentImage = this.images[this.currentIndex]
     this.currentBar.classList.add('progressing')
     this.currentImage.classList.add('shown')
-    if (this.currentIndex > this.images.length - 1) this.currentIndex = 0
+    if (this.currentIndex > this.count - 1) this.currentIndex = 0
 
     this.timer = setTimeout(this.rotate.bind(this), s * 1000)
   }

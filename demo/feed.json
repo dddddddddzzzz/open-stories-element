@@ -8,31 +8,31 @@
     {
       "id": "P41ED1C98-C07A-462F-BEF4-60CF9B1052A4",
       "summary": "Postcard from Alex and Elissa.",
-      "image": "http://localhost:8000/demo/stories/5.JPG",
+      "image": "https://muan.github.io/story-view-element/demo/stories/5.JPG",
       "date_published": "2022-07-24T00:51:06.000Z"
     },
     {
       "id": "PAD87ABB0-B87D-4E3D-BE6A-FB9351C3E089",
       "summary": "Screenshot of Stray, the game.",
-      "image": "http://localhost:8000/demo/stories/4.JPG",
+      "image": "https://muan.github.io/story-view-element/demo/stories/4.JPG",
       "date_published": "2022-07-16T07:45:09.000Z"
     },
     {
       "id": "PCA97AF8A-AF36-4BDC-A3E9-E96B8053F237",
       "summary": "Received bread from a friend.",
-      "image": "http://localhost:8000/demo/stories/3.JPG",
+      "image": "https://muan.github.io/story-view-element/demo/stories/3.JPG",
       "date_published": "2022-07-12T23:19:29.000Z"
     },
     {
       "id": "PEDDC90B0-12BD-41A0-9F5A-D11C90473767",
       "summary": "Postcard from Denmark",
-      "image": "http://localhost:8000/demo/stories/2.JPG",
+      "image": "https://muan.github.io/story-view-element/demo/stories/2.JPG",
       "date_published": "2022-07-10T10:11:13.000Z"
     },
     {
       "id": "P1878C0C3-1F69-43C6-A601-8EF1B5ED1544",
       "summary": "A very healthy new monstera leaf.",
-      "image": "http://localhost:8000/demo/stories/1.JPG",
+      "image": "https://muan.github.io/story-view-element/demo/stories/1.JPG",
       "date_published": "2022-07-10T09:55:08.000Z"
     }
   ]
