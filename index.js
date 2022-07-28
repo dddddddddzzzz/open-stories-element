@@ -133,6 +133,10 @@ const style = `
     text-align: right;
   }
 
+  .loading #bars,
+  .loading button {
+    opacity: 0;
+  }
 `
 
 class StoryViewElement extends HTMLElement {
@@ -145,7 +149,7 @@ class StoryViewElement extends HTMLElement {
     this.root.innerHTML = `
       <style>${style}</style>
       <button type="dialog"><slot></slot></button>
-      <dialog>
+      <dialog class="loading">
         <div id="bars"></div>
         <button id="back" class="paginate">←</button>
         <button id="forward" class="paginate">→</button>
@@ -154,24 +158,22 @@ class StoryViewElement extends HTMLElement {
     `
 
     this.dialog = this.root.querySelector('dialog')
+    this.root.querySelector('button').addEventListener('click', () => {
+      this.dialog.open ? this.dialog.close() : this.dialog.showModal()
+      if (this.dialog.open) this.startTimer()
+    })
 
-    this.bindEvents()
     if (this.hasAttribute('src')) {
       this.fetchData(this.getAttribute('src'))
     }
   }
 
   bindEvents() {
-    const button = this.root.querySelector('button')
     const images = this.root.querySelector('#images')
     const back = this.root.querySelector('#back')
     const forward = this.root.querySelector('#forward')
     this._rotate = this.rotate.bind(this, 1)
 
-    button.addEventListener('click', () => {
-      this.dialog.open ? this.dialog.close() : this.dialog.showModal()
-      if (this.dialog.open) this.startTimer()
-    })
 
     back.addEventListener('click', () => {
       if (this.currentIndex === 0) {
@@ -240,6 +242,11 @@ class StoryViewElement extends HTMLElement {
   
   async startTimer() {
     await Promise.all(this.promises)
+    if (this.dialog.classList.contains('loading')) {
+      this.dialog.classList.remove('loading')
+      this.bindEvents()
+    }
+
     this.currentIndex ||= -1
     this.rotate()
   }
