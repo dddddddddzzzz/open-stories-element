@@ -2,6 +2,7 @@ const s = 5
 const style = `
   :host {
     display: inline-block;
+    font-family: system-ui, sans-serif;
   }
 
   :focus {
@@ -137,6 +138,30 @@ const style = `
   .loading button {
     opacity: 0;
   }
+
+  .loading .loading-visual {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2vh;
+    aspect-ratio: 1;
+    text-align: center;
+    background: #fff;
+    z-index: 1;
+    margin-left: -1vh;
+    animation: rotate 2s linear infinite;
+    font-size: 14px;
+  }
+
+  @keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .loading-visual {
+    display: none;
+  }
 `
 
 class StoryViewElement extends HTMLElement {
@@ -150,6 +175,7 @@ class StoryViewElement extends HTMLElement {
       <style>${style}</style>
       <button type="dialog"><slot></slot></button>
       <dialog class="loading">
+        <div class="loading-visual"></div>
         <div id="bars"></div>
         <button id="back" class="paginate">←</button>
         <button id="forward" class="paginate">→</button>
