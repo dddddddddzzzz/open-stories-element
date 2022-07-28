@@ -67,27 +67,44 @@ const style = `
     opacity: 1;
   }
 
-  #bar {
+  .bar {
     border-radius: 3px;
     overflow: hidden;
-    position: absolute;
-    margin: 10px;
-    height: 3px;
+    height: 100%;
+    background: rgba(255, 255, 255, .2);
+    z-index: 1;
+    flex: auto;
+  }
+
+  #bars {
     left: 0; 
     right: 0;
     top: 0;
-    background: rgba(0, 0, 0, .4);
-    z-index: 1;
+    height: 2px;
+    position: absolute;
+    margin: 10px;
+    display: flex;
+    gap: 5px;
   }
 
-  #progress {
-    height: 3px;
-    background-color: #08c;
-    animation: progress ${s}s linear;
+  .progress {
+    height: 100%;
+    animation: none;
+    background-color: #fff;
+  }
+  
+  .progressing ~ .bar .progress {
+    background-color: transparent;
+    width: auto;
+  }
+
+  .progressing.paused .progress {
     animation-play-state: paused;
   }
 
-  #progress.running {
+  .progressing .progress {
+    width: 0;
+    animation: progress ${s}s linear;
     animation-play-state: running;
   }
 
@@ -114,6 +131,7 @@ const style = `
     right: -40px;
     text-align: right;
   }
+
 `
 
 class StoryViewElement extends HTMLElement {
@@ -127,14 +145,12 @@ class StoryViewElement extends HTMLElement {
       <style>${style}</style>
       <button type="dialog"><slot></slot></button>
       <dialog>
-        <div id="bar"><div id="progress"></div></div>
+        <div id="bars"></div>
         <button id="back" class="paginate">←</button>
         <button id="forward" class="paginate">→</button>
         <div id="images"></div>
       </dialog>
     `
-
-    this.progress = this.root.querySelector('#progress')
 
     this.bindEvents()
     if (this.hasAttribute('src')) {
@@ -148,7 +164,7 @@ class StoryViewElement extends HTMLElement {
     const images = this.root.querySelector('#images')
     const back = this.root.querySelector('#back')
     const forward = this.root.querySelector('#forward')
-    this._rotate = this.rotate.bind(this)
+    this._rotate = this.rotate.bind(this, 1)
 
     button.addEventListener('click', () => {
       dialog.open ? dialog.close() : dialog.showModal()
@@ -156,17 +172,18 @@ class StoryViewElement extends HTMLElement {
     })
 
     back.addEventListener('click', () => {
-      this.currentIndex -= 1
-      if (this.currentIndex < 0) this.currentIndex = 0
-      this.rotate()
+      if (this.currentIndex === 0) {
+        dialog.close()
+      } else {
+        this.rotate(-1)
+      }
     })
 
     forward.addEventListener('click', () => {
-      this.currentIndex += 1
-      if (this.currentIndex > this.images.length - 1) {
+      if (this.currentIndex === this.images.length - 1) {
         dialog.close()
       } else {
-        this.rotate()
+        this.rotate(1)
       }
     })
 
@@ -176,13 +193,13 @@ class StoryViewElement extends HTMLElement {
     })
 
     images.addEventListener('mousedown', () => {
-      this.progress.classList.remove('running')
+      this.currentBar.classList.add('paused')
       clearTimeout(this.timer)
     })
 
     images.addEventListener('mouseup', () => {
-      this.progress.classList.add('running')
-      this.progress.addEventListener('animationend', this._rotate, {once: true})
+      this.currentBar.classList.remove('paused')
+      this.currentBar.querySelector('.progress').addEventListener('animationend', this._rotate, {once: true})
     })
   }
 
@@ -197,33 +214,47 @@ class StoryViewElement extends HTMLElement {
   appendImages(items) {
     this.count = items.length
     this.images = []
-    const container = this.root.querySelector('#images')
+    this.bars = []
+    const bars = this.root.querySelector('#bars')
+    const images = this.root.querySelector('#images')
     for (const item of items) {
+      const bar = document.createElement('div')
+      bar.classList.add('bar')
+      const progress = document.createElement('div')
+      progress.classList.add('progress')
+      bar.append(progress)
+      bars.append(bar)
+      this.bars.push(bar)
       const img = document.createElement('img')
       img.src = item.image
       img.alt = item.summray
-      container.append(img)
+      images.append(img)
       this.images.push(img)
     }
   }
   
   startTimer() {
-    this.currentIndex ||= 0
+    this.currentIndex ||= -1
     this.rotate()
   }
   
-  rotate() {
+  rotate(delta) {
+    delta ||= 1
     // Reset animation
-    this.progress.style.animation = 'none'
-    this.progress.offsetHeight
-    this.progress.style.animation = null
-    this.progress.classList.add('running')
+    if (this.currentBar) {
+      this.currentBar.style.animation = 'none'
+      this.currentBar.offsetHeight
+      this.currentBar.style.animation = null
+      this.currentBar.classList.remove('progressing')
+    } 
     clearTimeout(this.timer)
-    
     if (this.currentImage) this.currentImage.classList.remove('shown')
+
+    this.currentIndex += delta
+    this.currentBar = this.bars[this.currentIndex]
     this.currentImage = this.images[this.currentIndex]
+    this.currentBar.classList.add('progressing')
     this.currentImage.classList.add('shown')
-    this.currentIndex += 1
     if (this.currentIndex > this.images.length - 1) this.currentIndex = 0
 
     this.timer = setTimeout(this.rotate.bind(this), s * 1000)
