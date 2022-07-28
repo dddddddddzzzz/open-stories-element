@@ -34,6 +34,7 @@ const style = `
 
   .avatar {
     width: 100%;
+    aspect-ratio: 1;
     border-radius: 50%;
   }
 
