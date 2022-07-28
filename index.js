@@ -28,9 +28,13 @@ const style = `
     border-radius: 50%;
     aspect-ratio: 1;
     width: 50px;
-    border: 2px solid #08c;
     padding: 2px;
     overflow: hidden;
+    border: 1px solid #ccc;
+  }
+
+  button:not(:disabled) .ring {
+    border: 2px solid #08c;
   }
 
   .avatar {
@@ -184,7 +188,8 @@ class StoryViewElement extends HTMLElement {
     `
 
     this.dialog = this.root.querySelector('dialog')
-    this.root.querySelector('button').addEventListener('click', () => {
+    this.button = this.root.querySelector('button')
+    this.button.addEventListener('click', () => {
       this.dialog.open ? this.dialog.close() : this.dialog.showModal()
       if (this.dialog.open) this.startTimer()
     })
@@ -238,7 +243,15 @@ class StoryViewElement extends HTMLElement {
     this.root.querySelector('slot').innerHTML = `
       <div class="ring"><img src="${json.icon}" alt="${json.title}" class="avatar"></div>
     `
-    this.appendImages(json.items)
+    const twentyfourhoursago = new Date()
+    twentyfourhoursago.setTime(new Date().getTime() - 24 * 60 * 60 * 1000)
+
+    const items = json.items.filter(item => new Date(item.date_published) >= twentyfourhoursago)
+    if (items.length === 0) {
+      this.button.disabled = true
+    } else {
+      this.appendImages(items)
+    }
   }
 
   appendImages(items) {
