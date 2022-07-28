@@ -152,6 +152,8 @@ class StoryViewElement extends HTMLElement {
       </dialog>
     `
 
+    this.dialog = this.root.querySelector('dialog')
+
     this.bindEvents()
     if (this.hasAttribute('src')) {
       this.fetchData(this.getAttribute('src'))
@@ -160,20 +162,19 @@ class StoryViewElement extends HTMLElement {
 
   bindEvents() {
     const button = this.root.querySelector('button')
-    const dialog = this.root.querySelector('dialog')
     const images = this.root.querySelector('#images')
     const back = this.root.querySelector('#back')
     const forward = this.root.querySelector('#forward')
     this._rotate = this.rotate.bind(this, 1)
 
     button.addEventListener('click', () => {
-      dialog.open ? dialog.close() : dialog.showModal()
-      if (dialog.open) this.startTimer()
+      this.dialog.open ? this.dialog.close() : this.dialog.showModal()
+      if (this.dialog.open) this.startTimer()
     })
 
     back.addEventListener('click', () => {
       if (this.currentIndex === 0) {
-        dialog.close()
+        this.dialog.close()
       } else {
         this.rotate(-1)
       }
@@ -181,13 +182,13 @@ class StoryViewElement extends HTMLElement {
 
     forward.addEventListener('click', () => {
       if (this.currentIndex === this.images.length - 1) {
-        dialog.close()
+        this.dialog.close()
       } else {
         this.rotate(1)
       }
     })
 
-    dialog.addEventListener('close', () => {
+    this.dialog.addEventListener('close', () => {
       if (this.timer) clearTimeout(this.timer)
       this.currentIndex = 0
     })
@@ -251,6 +252,12 @@ class StoryViewElement extends HTMLElement {
     if (this.currentImage) this.currentImage.classList.remove('shown')
 
     this.currentIndex += delta
+
+    if (this.currentIndex === this.images.length) {
+      this.dialog.close()
+      return
+    }
+
     this.currentBar = this.bars[this.currentIndex]
     this.currentImage = this.images[this.currentIndex]
     this.currentBar.classList.add('progressing')
