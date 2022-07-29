@@ -169,11 +169,20 @@ const style = `
 `
 
 class StoryViewElement extends HTMLElement {
+  root: ShadowRoot
+  dialog: HTMLDialogElement
+  button: HTMLButtonElement
+  currentIndex: number = -1
+  count = 0
+  timer: number | null = null
+  currentBar: HTMLElement | null = null
+  currentImage: HTMLElement | null = null
+  images: HTMLElement[] = []
+  bars: HTMLElement[] = []
+  promises: Promise<unknown>[] = []
+
   constructor() {
     super()
-  }
-
-  connectedCallback() {
     this.root = this.attachShadow({mode: 'open'})
     this.root.innerHTML = `
       <style>${style}</style>
@@ -187,23 +196,25 @@ class StoryViewElement extends HTMLElement {
       </dialog>
     `
 
-    this.dialog = this.root.querySelector('dialog')
-    this.button = this.root.querySelector('button')
+    this.dialog = this.root.querySelector('dialog')!
+    this.button = this.root.querySelector('button')!
+  }
+
+  connectedCallback() {
     this.button.addEventListener('click', () => {
       this.dialog.open ? this.dialog.close() : this.dialog.showModal()
       if (this.dialog.open) this.startTimer()
     })
 
-    if (this.hasAttribute('src')) {
-      this.fetchData(this.getAttribute('src'))
-    }
+    const src = this.getAttribute('src')
+    if (src) this.fetchData(src)
   }
 
   bindEvents() {
-    const images = this.root.querySelector('#images')
-    const back = this.root.querySelector('#back')
-    const forward = this.root.querySelector('#forward')
-    this._rotate = this.rotate.bind(this, 1)
+    const images = this.root.querySelector('#images')!
+    const back = this.root.querySelector('#back')!
+    const forward = this.root.querySelector('#forward')!
+    const rotateBinding = this.rotate.bind(this, 1)
 
 
     back.addEventListener('click', () => {
@@ -228,27 +239,27 @@ class StoryViewElement extends HTMLElement {
     })
 
     images.addEventListener('mousedown', () => {
-      this.currentBar.classList.add('paused')
-      clearTimeout(this.timer)
+      this.currentBar?.classList.add('paused')
+      if (this.timer) clearTimeout(this.timer)
     })
 
     images.addEventListener('mouseup', () => {
-      this.currentBar.classList.remove('paused')
-      this.currentBar.querySelector('.progress').addEventListener('animationend', this._rotate, {once: true})
+      this.currentBar?.classList.remove('paused')
+      this.currentBar?.querySelector('.progress')?.addEventListener('animationend', rotateBinding, {once: true})
     })
   }
 
-  async fetchData(url) {
+  async fetchData(url: string) {
     const json = await (await fetch(url)).json()
-    this.root.querySelector('slot').innerHTML = `
+    const slot = this.root.querySelector('slot')!
+    slot.innerHTML = `
       <div class="ring"><img src="${json.icon}" alt="${json.title}" class="avatar"></div>
     `
-    
     const ttl = this.hasAttribute('ttl') ? Number(this.getAttribute('ttl')) : 86400
     const createdAfter = new Date()
     createdAfter.setTime(new Date().getTime() - ttl * 1000)
+    const items = json.items.filter((item: {[key: string]: string}) => new Date(item.date_published) >= createdAfter)
 
-    const items = json.items.filter(item => new Date(item.date_published) >= createdAfter)
     if (items.length === 0) {
       this.button.disabled = true
     } else {
@@ -256,14 +267,14 @@ class StoryViewElement extends HTMLElement {
     }
   }
 
-  appendImages(items) {
+  appendImages(items: [{[key: string]: string}]) {
     this.count = items.length
     this.images = []
     this.bars = []
     this.promises = []
 
-    const bars = this.root.querySelector('#bars')
-    const images = this.root.querySelector('#images')
+    const bars = this.root.querySelector('#bars')!
+    const images = this.root.querySelector('#images')!
     for (const item of items) {
       const bar = document.createElement('div')
       bar.classList.add('bar')
@@ -292,16 +303,16 @@ class StoryViewElement extends HTMLElement {
     this.rotate()
   }
   
-  rotate(delta) {
+  rotate(delta: number | null = null) {
     delta ||= 1
     // Reset animation
     if (this.currentBar) {
       this.currentBar.style.animation = 'none'
       this.currentBar.offsetHeight
-      this.currentBar.style.animation = null
+      this.currentBar.style.removeProperty('animation')
       this.currentBar.classList.remove('progressing')
     } 
-    clearTimeout(this.timer)
+    if (this.timer) clearTimeout(this.timer)
     if (this.currentImage) this.currentImage.classList.remove('shown')
 
     this.currentIndex += delta
@@ -321,5 +332,18 @@ class StoryViewElement extends HTMLElement {
   }
 }
 
-window.StoryViewElement = StoryViewElement
-window.customElements.define('story-view', StoryViewElement)
+if (!window.customElements.get('story-view')) {
+  window.StoryViewElement = StoryViewElement
+  window.customElements.define('story-view', StoryViewElement)
+}
+
+export default StoryViewElement
+
+declare global {
+  interface Window {
+    StoryViewElement: typeof StoryViewElement
+  }
+  interface HTMLElementTagNameMap {
+    'story-view': StoryViewElement
+  }
+}

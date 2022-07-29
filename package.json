@@ -1,7 +1,11 @@
 {
   "name": "story-view-element",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "type": "module",
   "author": "Mu-An Chiou <me@muanchiou.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^4.7.4"
+  }
 }
