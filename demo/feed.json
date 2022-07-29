@@ -1,8 +1,8 @@
 {
   "version": "http://jsonfeed.org/version/1",
-  "title": "@muan's photos",
+  "title": "@muan's stories",
   "icon": "http://github.com/muan.png",
-  "home_page_url": "http://muan.co/photos.xml",
+  "home_page_url": "https://muan.github.io/story-view-element/demo/feed.json",
   "description": "Photos.",
   "items": [
     {
