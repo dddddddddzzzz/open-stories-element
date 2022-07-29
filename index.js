@@ -246,7 +246,7 @@ class StoryViewElement extends HTMLElement {
     
     const ttl = this.hasAttribute('ttl') ? Number(this.getAttribute('ttl')) : 86400
     const createdAfter = new Date()
-    createdAfter.setTime(new Date().getTime() - ttl)
+    createdAfter.setTime(new Date().getTime() - ttl * 1000)
 
     const items = json.items.filter(item => new Date(item.date_published) >= createdAfter)
     if (items.length === 0) {
