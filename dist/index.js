@@ -178,6 +178,7 @@ class StoryViewElement extends HTMLElement {
         this.images = [];
         this.bars = [];
         this.promises = [];
+        this.paused = false;
         this.root = this.attachShadow({ mode: 'open' });
         this.root.innerHTML = `
       <style>${style}</style>
@@ -192,6 +193,7 @@ class StoryViewElement extends HTMLElement {
     `;
         this.dialog = this.root.querySelector('dialog');
         this.button = this.root.querySelector('button');
+        this.goToBinding = this.goTo.bind(this, 1);
     }
     connectedCallback() {
         this.button.addEventListener('click', () => {
@@ -207,13 +209,12 @@ class StoryViewElement extends HTMLElement {
         const images = this.root.querySelector('#images');
         const back = this.root.querySelector('#back');
         const forward = this.root.querySelector('#forward');
-        const rotateBinding = this.rotate.bind(this, 1);
         back.addEventListener('click', () => {
             if (this.currentIndex === 0) {
                 this.dialog.close();
             }
             else {
-                this.rotate(-1);
+                this.goTo(-1);
             }
         });
         forward.addEventListener('click', () => {
@@ -221,7 +222,7 @@ class StoryViewElement extends HTMLElement {
                 this.dialog.close();
             }
             else {
-                this.rotate(1);
+                this.goTo(1);
             }
         });
         this.dialog.addEventListener('close', () => {
@@ -229,14 +230,8 @@ class StoryViewElement extends HTMLElement {
                 clearTimeout(this.timer);
             this.currentIndex = 0;
         });
-        images.addEventListener('mousedown', () => {
-            this.currentBar?.classList.add('paused');
-            if (this.timer)
-                clearTimeout(this.timer);
-        });
-        images.addEventListener('mouseup', () => {
-            this.currentBar?.classList.remove('paused');
-            this.currentBar?.querySelector('.progress')?.addEventListener('animationend', rotateBinding, { once: true });
+        images.addEventListener('click', () => {
+            this.paused ? this.resume() : this.pause();
         });
     }
     async fetchData(url) {
@@ -255,6 +250,17 @@ class StoryViewElement extends HTMLElement {
         else {
             this.appendImages(items);
         }
+    }
+    pause() {
+        this.paused = true;
+        this.currentBar?.classList.add('paused');
+        if (this.timer)
+            clearTimeout(this.timer);
+    }
+    resume() {
+        this.paused = false;
+        this.currentBar?.classList.remove('paused');
+        this.currentBar?.querySelector('.progress')?.addEventListener('animationend', this.goToBinding, { once: true });
     }
     appendImages(items) {
         this.count = items.length;
@@ -286,9 +292,9 @@ class StoryViewElement extends HTMLElement {
             this.bindEvents();
         }
         this.currentIndex || (this.currentIndex = -1);
-        this.rotate();
+        this.goTo();
     }
-    rotate(delta = null) {
+    goTo(delta = null) {
         delta || (delta = 1);
         // Reset animation
         if (this.currentBar) {
@@ -312,7 +318,7 @@ class StoryViewElement extends HTMLElement {
         this.currentImage.classList.add('shown');
         if (this.currentIndex > this.count - 1)
             this.currentIndex = 0;
-        this.timer = setTimeout(this.rotate.bind(this), s * 1000);
+        this.timer = setTimeout(this.goTo.bind(this), s * 1000);
     }
 }
 if (!window.customElements.get('story-view')) {

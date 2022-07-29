@@ -180,6 +180,8 @@ class StoryViewElement extends HTMLElement {
   images: HTMLElement[] = []
   bars: HTMLElement[] = []
   promises: Promise<unknown>[] = []
+  paused: boolean = false
+  goToBinding: () => void
 
   constructor() {
     super()
@@ -198,6 +200,7 @@ class StoryViewElement extends HTMLElement {
 
     this.dialog = this.root.querySelector('dialog')!
     this.button = this.root.querySelector('button')!
+    this.goToBinding = this.goTo.bind(this, 1)
   }
 
   connectedCallback() {
@@ -214,14 +217,12 @@ class StoryViewElement extends HTMLElement {
     const images = this.root.querySelector('#images')!
     const back = this.root.querySelector('#back')!
     const forward = this.root.querySelector('#forward')!
-    const rotateBinding = this.rotate.bind(this, 1)
-
 
     back.addEventListener('click', () => {
       if (this.currentIndex === 0) {
         this.dialog.close()
       } else {
-        this.rotate(-1)
+        this.goTo(-1)
       }
     })
 
@@ -229,7 +230,7 @@ class StoryViewElement extends HTMLElement {
       if (this.currentIndex === this.count - 1) {
         this.dialog.close()
       } else {
-        this.rotate(1)
+        this.goTo(1)
       }
     })
 
@@ -238,14 +239,8 @@ class StoryViewElement extends HTMLElement {
       this.currentIndex = 0
     })
 
-    images.addEventListener('mousedown', () => {
-      this.currentBar?.classList.add('paused')
-      if (this.timer) clearTimeout(this.timer)
-    })
-
-    images.addEventListener('mouseup', () => {
-      this.currentBar?.classList.remove('paused')
-      this.currentBar?.querySelector('.progress')?.addEventListener('animationend', rotateBinding, {once: true})
+    images.addEventListener('click', () => {
+      this.paused ? this.resume() : this.pause()
     })
   }
 
@@ -265,6 +260,18 @@ class StoryViewElement extends HTMLElement {
     } else {
       this.appendImages(items)
     }
+  }
+
+  pause() {
+    this.paused = true
+    this.currentBar?.classList.add('paused')
+    if (this.timer) clearTimeout(this.timer)
+  }
+
+  resume() {
+    this.paused = false
+    this.currentBar?.classList.remove('paused')
+    this.currentBar?.querySelector('.progress')?.addEventListener('animationend', this.goToBinding, {once: true})
   }
 
   appendImages(items: [{[key: string]: string}]) {
@@ -300,10 +307,10 @@ class StoryViewElement extends HTMLElement {
     }
 
     this.currentIndex ||= -1
-    this.rotate()
+    this.goTo()
   }
   
-  rotate(delta: number | null = null) {
+  goTo(delta: number | null = null) {
     delta ||= 1
     // Reset animation
     if (this.currentBar) {
@@ -328,7 +335,7 @@ class StoryViewElement extends HTMLElement {
     this.currentImage.classList.add('shown')
     if (this.currentIndex > this.count - 1) this.currentIndex = 0
 
-    this.timer = setTimeout(this.rotate.bind(this), s * 1000)
+    this.timer = setTimeout(this.goTo.bind(this), s * 1000)
   }
 }
 
