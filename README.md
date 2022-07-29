@@ -14,8 +14,8 @@ Render `<story-view>`.
 
 ## Attributes
 
-- `ttl`
-- `src`
+- `src`: Required. A [JSONfeed](https://jsonfeed.org) URL. Required fields: `title`, `icon`, `items[].date_published`, `items[].image`, `items[].summary`.
+- `ttl`: Optional. Default to `86400` seconds.
 
 ## JSON feed
 
