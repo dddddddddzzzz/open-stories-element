@@ -166,6 +166,40 @@ const style = `
   .loading-visual {
     display: none;
   }
+
+  details {
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0.1));
+    color: #fff;
+    padding: 3vh;
+  }
+
+  summary {
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    list-style: none;
+  }
+
+  summary::before { display: none; }
+  summary::-webkit-details-marker { display: none; }
+
+  details[open] summary {
+    transform: scaleY(-1);
+  }
+
+  #metadata {
+    font-size: 0.8em;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  #metadata a {
+    color: #fff;
+  }
 `;
 class StoryViewElement extends HTMLElement {
     constructor() {
@@ -179,6 +213,7 @@ class StoryViewElement extends HTMLElement {
         this.bars = [];
         this.promises = [];
         this.paused = false;
+        this.items = [];
         this.root = this.attachShadow({ mode: 'open' });
         this.root.innerHTML = `
       <style>${style}</style>
@@ -189,10 +224,12 @@ class StoryViewElement extends HTMLElement {
         <button id="back" class="paginate">←</button>
         <button id="forward" class="paginate">→</button>
         <div id="images"></div>
+        <details><summary>⌃</summary><div id="metadata"></div></details>
       </dialog>
     `;
         this.dialog = this.root.querySelector('dialog');
         this.button = this.root.querySelector('button');
+        this.meta = this.root.querySelector('#metadata');
         this.goToBinding = this.goTo.bind(this, 1);
     }
     connectedCallback() {
@@ -204,6 +241,9 @@ class StoryViewElement extends HTMLElement {
         const src = this.getAttribute('src');
         if (src)
             this.fetchData(src);
+    }
+    get src() {
+        return this.hasAttribute('src') ? new URL(this.getAttribute('src') || '', location.href) : '';
     }
     bindEvents() {
         const images = this.root.querySelector('#images');
@@ -243,12 +283,12 @@ class StoryViewElement extends HTMLElement {
         const ttl = this.hasAttribute('ttl') ? Number(this.getAttribute('ttl')) : 86400;
         const createdAfter = new Date();
         createdAfter.setTime(new Date().getTime() - ttl * 1000);
-        const items = json.items.filter((item) => new Date(item.date_published) >= createdAfter);
-        if (items.length === 0) {
+        this.items = json.items.filter((item) => new Date(item.date_published) >= createdAfter);
+        if (this.items.length === 0) {
             this.button.disabled = true;
         }
         else {
-            this.appendImages(items);
+            this.appendImages();
         }
     }
     pause() {
@@ -262,14 +302,14 @@ class StoryViewElement extends HTMLElement {
         this.currentBar?.classList.remove('paused');
         this.currentBar?.querySelector('.progress')?.addEventListener('animationend', this.goToBinding, { once: true });
     }
-    appendImages(items) {
-        this.count = items.length;
+    appendImages() {
+        this.count = this.items.length;
         this.images = [];
         this.bars = [];
         this.promises = [];
         const bars = this.root.querySelector('#bars');
         const images = this.root.querySelector('#images');
-        for (const item of items) {
+        for (const item of this.items) {
             const bar = document.createElement('div');
             bar.classList.add('bar');
             const progress = document.createElement('div');
@@ -316,6 +356,10 @@ class StoryViewElement extends HTMLElement {
         this.currentImage = this.images[this.currentIndex];
         this.currentBar.classList.add('progressing');
         this.currentImage.classList.add('shown');
+        this.meta.innerHTML = `
+      <p>${this.items[this.currentIndex].summary}</p>
+      <a href="${this.src}">(Feed URL)</a>
+    `;
         if (this.currentIndex > this.count - 1)
             this.currentIndex = 0;
         this.timer = setTimeout(this.goTo.bind(this), s * 1000);
