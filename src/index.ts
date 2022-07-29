@@ -384,6 +384,7 @@ class StoryViewElement extends HTMLElement {
     if (this.currentIndex > this.count - 1) this.currentIndex = 0
 
     this.timer = setTimeout(this.goTo.bind(this), s * 1000)
+    if (this.paused) this.pause()
   }
 }
 
