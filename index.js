@@ -244,11 +244,11 @@ class StoryViewElement extends HTMLElement {
       <div class="ring"><img src="${json.icon}" alt="${json.title}" class="avatar"></div>
     `
     
-    const hours = this.hasAttribute('ttl') ? this.getAttribute('ttl') : 86400
-    const ttl = new Date()
-    ttl.setTime(new Date().getTime() - hours)
+    const ttl = this.hasAttribute('ttl') ? Number(this.getAttribute('ttl')) : 86400
+    const createdAfter = new Date()
+    createdAfter.setTime(new Date().getTime() - hours)
 
-    const items = json.items //.filter(item => new Date(item.date_published) >= twentyfourhoursago)
+    const items = json.items.filter(item => new Date(item.date_published) >= createdAfter)
     if (items.length === 0) {
       this.button.disabled = true
     } else {
