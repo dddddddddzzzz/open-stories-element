@@ -243,10 +243,12 @@ class StoryViewElement extends HTMLElement {
     this.root.querySelector('slot').innerHTML = `
       <div class="ring"><img src="${json.icon}" alt="${json.title}" class="avatar"></div>
     `
-    const twentyfourhoursago = new Date()
-    twentyfourhoursago.setTime(new Date().getTime() - 24 * 60 * 60 * 1000)
+    
+    const hours = this.hasAttribute('ttl') ? this.getAttribute('ttl') : 86400
+    const ttl = new Date()
+    ttl.setTime(new Date().getTime() - hours)
 
-    const items = json.items.filter(item => new Date(item.date_published) >= twentyfourhoursago)
+    const items = json.items //.filter(item => new Date(item.date_published) >= twentyfourhoursago)
     if (items.length === 0) {
       this.button.disabled = true
     } else {
