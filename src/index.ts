@@ -1,5 +1,5 @@
-const s = 5
-const style = `
+function css(duration: number) {
+  return `
   :host {
     display: inline-block;
     font-family: system-ui, sans-serif;
@@ -110,7 +110,7 @@ const style = `
 
   .progressing .progress {
     width: 0;
-    animation: progress ${s}s linear;
+    animation: progress ${duration}s linear;
     animation-play-state: running;
   }
 
@@ -201,6 +201,7 @@ const style = `
     color: #fff;
   }
 `
+}
 
 class StoryViewElement extends HTMLElement {
   root: ShadowRoot
@@ -223,7 +224,6 @@ class StoryViewElement extends HTMLElement {
     super()
     this.root = this.attachShadow({mode: 'open'})
     this.root.innerHTML = `
-      <style>${style}</style>
       <button type="dialog"><slot></slot></button>
       <dialog class="loading">
         <div class="loading-visual"></div>
@@ -249,10 +249,18 @@ class StoryViewElement extends HTMLElement {
 
     const src = this.getAttribute('src')
     if (src) this.fetchData(src)
+
+    const style = document.createElement('style')
+    style.innerText = css(this.duration)
+    this.root.append(style)
   }
 
   get src() {
     return this.hasAttribute('src') ? new URL(this.getAttribute('src') || '', location.href) : ''
+  }
+
+  get duration() {
+    return this.hasAttribute('duration') ? Number(this.getAttribute('duration')) : 5
   }
 
   bindEvents() {
@@ -383,7 +391,7 @@ class StoryViewElement extends HTMLElement {
 
     if (this.currentIndex > this.count - 1) this.currentIndex = 0
 
-    this.timer = setTimeout(this.goTo.bind(this), s * 1000)
+    this.timer = setTimeout(this.goTo.bind(this), this.duration * 1000)
     if (this.paused) this.pause()
   }
 }
