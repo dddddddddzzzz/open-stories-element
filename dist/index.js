@@ -119,25 +119,6 @@ function css(duration) {
     100% { width: 100%; }
   }
 
-  #back, #forward {
-    position: absolute;
-    height: 100%;
-    z-index: 1;
-    width: 40px;
-    font-size: 20px;
-    font-family: system-ui, sans-serif;
-  }
-
-  #back {
-    left: -40px;
-    text-align: left;
-  }
-
-  #forward {
-    right: -40px;
-    text-align: right;
-  }
-
   .loading #bars,
   .loading button {
     opacity: 0;
@@ -200,6 +181,40 @@ function css(duration) {
   #metadata a {
     color: #fff;
   }
+
+  #goToBlock {
+    left: 50%;
+    transform: translate(-50%);
+    width: calc(100vh * 9 / 16);
+    padding: 0 2vw;
+    max-width: 100vw;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    box-sizing: border-box;
+  }
+
+  #back, #forward {
+    position: absolute;
+    height: 100%;
+    z-index: 1;
+    width: 3vw;
+    min-width: 20px;
+    padding: 0;
+    font-size: 20px;
+    margin: 0 -1vw;
+    font-family: system-ui, sans-serif;
+  }
+
+  #back {
+    left: 0;
+    text-align: left;
+  }
+
+  #forward {
+    right: 0;
+    text-align: right;
+  }
 `;
 }
 class StoryViewElement extends HTMLElement {
@@ -221,8 +236,10 @@ class StoryViewElement extends HTMLElement {
       <dialog class="loading">
         <div class="loading-visual"></div>
         <div id="bars"></div>
-        <button id="back" class="paginate">←</button>
-        <button id="forward" class="paginate">→</button>
+        <div id="goToBlock">
+          <button id="back" class="paginate">←</button>
+          <button id="forward" class="paginate">→</button>
+        </div>
         <div id="images"></div>
         <details><summary>⌃</summary><div id="metadata"></div></details>
       </dialog>
