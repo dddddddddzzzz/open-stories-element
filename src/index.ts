@@ -154,9 +154,8 @@ function css(duration: number) {
     z-index: 1;
     left: 0;
     right: 0;
-    background: linear-gradient(0deg, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0.1));
     color: #fff;
-    padding: 3vh;
+    padding: 10px;
   }
 
   summary {
@@ -174,12 +173,16 @@ function css(duration: number) {
   }
 
   #metadata {
+    padding: 16px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
     font-size: 0.8em;
-    color: rgba(255, 255, 255, 0.8);
+    color: #fff;
   }
 
   #metadata a {
-    color: #fff;
+    color: #000;
   }
 
   #goToBlock {
@@ -401,10 +404,7 @@ class StoryViewElement extends HTMLElement {
     this.currentBar.classList.add('progressing')
     this.currentImage.classList.add('shown')
 
-    this.meta.innerHTML = `
-      <p>${this.items[this.currentIndex].summary}</p>
-      <a href="${this.src}">(Feed URL)</a>
-    `
+    this.meta.textContent = this.items[this.currentIndex].summary
 
     if (this.currentIndex > this.count - 1) this.currentIndex = 0
 
