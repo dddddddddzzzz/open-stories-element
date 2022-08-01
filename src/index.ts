@@ -119,10 +119,13 @@ function css(duration: number) {
     100% { width: 100%; }
   }
 
-  .loading #bars,
   .loading button,
   .loading details {
     display: none;
+  }
+
+  .loading #images img {
+    opacity: 0;
   }
 
   .loading .loading-visual {
@@ -371,7 +374,7 @@ class StoryViewElement extends HTMLElement {
   }
   
   async startTimer() {
-    await Promise.all(this.promises)
+    await this.promises[0]
     if (this.dialog.classList.contains('loading')) {
       this.dialog.classList.remove('loading')
       this.bindEvents()
@@ -381,7 +384,7 @@ class StoryViewElement extends HTMLElement {
     this.goTo()
   }
   
-  goTo(delta: number | null = null) {
+  async goTo(delta: number | null = null) {
     delta ||= 1
     // Reset animation
     if (this.currentBar) {
@@ -394,7 +397,6 @@ class StoryViewElement extends HTMLElement {
     if (this.currentImage) this.currentImage.classList.remove('shown')
 
     this.currentIndex += delta
-
     if (this.currentIndex === this.count) {
       this.dialog.close()
       return
@@ -402,8 +404,12 @@ class StoryViewElement extends HTMLElement {
 
     this.currentBar = this.bars[this.currentIndex]
     this.currentImage = this.images[this.currentIndex]
-    this.currentBar.classList.add('progressing')
+    this.currentBar.classList.add('progressing', 'paused')
     this.currentImage.classList.add('shown')
+    this.dialog.classList.add('loading')
+    await this.promises[this.currentIndex]
+    this.dialog.classList.remove('loading')
+    this.currentBar.classList.remove('paused')
 
     this.meta.textContent = this.items[this.currentIndex].summary
 
