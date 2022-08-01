@@ -120,8 +120,9 @@ function css(duration) {
   }
 
   .loading #bars,
-  .loading button {
-    opacity: 0;
+  .loading button,
+  .loading details {
+    display: none;
   }
 
   .loading .loading-visual {
