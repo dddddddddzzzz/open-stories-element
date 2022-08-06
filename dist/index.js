@@ -263,8 +263,10 @@ class StoryViewElement extends HTMLElement {
     connectedCallback() {
         this.button.addEventListener('click', () => {
             this.dialog.open ? this.dialog.close() : this.dialog.showModal();
-            if (this.dialog.open)
-                this.startTimer();
+            if (!this.dialog.open)
+                return;
+            this.dialog.focus();
+            this.startTimer();
         });
         const src = this.getAttribute('src');
         if (src)
@@ -284,8 +286,8 @@ class StoryViewElement extends HTMLElement {
     }
     bindEvents() {
         const images = this.root.querySelector('#images');
-        const back = this.root.querySelector('#back');
-        const forward = this.root.querySelector('#forward');
+        const back = this.root.querySelector('button#back');
+        const forward = this.root.querySelector('button#forward');
         back.addEventListener('click', () => {
             if (this.currentIndex === 0) {
                 this.dialog.close();
@@ -310,6 +312,16 @@ class StoryViewElement extends HTMLElement {
         images.addEventListener('click', () => {
             this.paused ? this.resume() : this.pause();
         });
+        const dialog = this.dialog;
+        document.addEventListener('keydown', keyboradShortcut.bind(this));
+        function keyboradShortcut(event) {
+            if (!dialog.open)
+                return;
+            if (event.key === 'ArrowRight')
+                forward.click();
+            if (event.key === 'ArrowLeft')
+                back.click();
+        }
     }
     async fetchData(url) {
         const json = await (await fetch(url)).json();
