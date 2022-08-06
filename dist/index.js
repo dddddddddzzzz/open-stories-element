@@ -250,7 +250,7 @@ class StoryViewElement extends HTMLElement {
           <button id="forward">→</button>
         </div>
         <div id="images"></div>
-        <details><summary>⌃</summary><div id="metadata"></div></details>
+        <details hidden><summary>⌃</summary><div id="metadata"></div></details>
       </dialog>
     `;
         this.dialog = this.root.querySelector('dialog');
@@ -270,6 +270,9 @@ class StoryViewElement extends HTMLElement {
         const style = document.createElement('style');
         style.innerText = css(this.duration);
         this.root.append(style);
+        if (this.hasAttribute('metadata')) {
+            this.root.querySelector('details').hidden = false;
+        }
     }
     get src() {
         return this.hasAttribute('src') ? new URL(this.getAttribute('src') || '', location.href) : '';

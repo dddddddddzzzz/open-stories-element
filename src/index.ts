@@ -257,7 +257,7 @@ class StoryViewElement extends HTMLElement {
           <button id="forward">→</button>
         </div>
         <div id="images"></div>
-        <details><summary>⌃</summary><div id="metadata"></div></details>
+        <details hidden><summary>⌃</summary><div id="metadata"></div></details>
       </dialog>
     `
 
@@ -279,6 +279,10 @@ class StoryViewElement extends HTMLElement {
     const style = document.createElement('style')
     style.innerText = css(this.duration)
     this.root.append(style)
+
+    if (this.hasAttribute('metadata')) {
+      this.root.querySelector<HTMLElement>('details')!.hidden = false
+    }
   }
 
   get src() {
