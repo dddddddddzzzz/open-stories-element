@@ -311,10 +311,15 @@ class StoryViewElement extends HTMLElement {
         slot.innerHTML = `
       <div class="ring"><img src="${json.icon}" alt="${json.title}" class="avatar"></div>
     `;
-        const ttl = this.hasAttribute('ttl') ? Number(this.getAttribute('ttl')) : 86400;
-        const createdAfter = new Date();
-        createdAfter.setTime(new Date().getTime() - ttl * 1000);
-        this.items = json.items.filter((item) => new Date(item.date_published) >= createdAfter);
+        if (this.getAttribute('ttl') !== 'infinite') {
+            const ttl = this.hasAttribute('ttl') ? Number(this.getAttribute('ttl')) : 86400;
+            const createdAfter = new Date();
+            createdAfter.setTime(new Date().getTime() - ttl * 1000);
+            this.items = json.items.filter((item) => new Date(item.date_published) >= createdAfter);
+        }
+        else {
+            this.items = json.items;
+        }
         if (this.items.length === 0) {
             this.button.disabled = true;
             this.setAttribute('empty', '');
