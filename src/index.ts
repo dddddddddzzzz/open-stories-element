@@ -32,10 +32,12 @@ function css(duration: number) {
     padding: 2px;
     overflow: hidden;
     border: 1px solid #ccc;
+    margin: 1px;
   }
 
   button:not(:disabled) .ring {
     border: 2px solid #08c;
+    margin: 0;
   }
 
   .avatar {
