@@ -27,7 +27,7 @@ function css(duration: number) {
 
   .ring {
     border-radius: 50%;
-    aspect-ratio: 1;
+    aspect-ratio: 1 / 1;
     width: 50px;
     padding: 2px;
     overflow: hidden;
