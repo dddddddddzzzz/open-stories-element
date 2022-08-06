@@ -47,7 +47,7 @@ function css(duration: number) {
   }
 
   dialog {
-    height: 100vh;
+    height: min(88vh, 88vw * 16/9);
     padding: 0;
     border: 0;
     aspect-ratio: 9/16;
