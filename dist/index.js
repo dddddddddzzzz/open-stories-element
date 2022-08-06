@@ -64,15 +64,16 @@ function css(duration) {
     background: #000;
   }
 
-  dialog img {
+  #images img {
     position: absolute;
     max-height: 100%;
+    max-width: 100%;
     aspect-ratio: 9/16;
     top: 0;
     opacity: 0;
   }
 
-  dialog img.shown {
+  #images img.shown {
     opacity: 1;
   }
 
