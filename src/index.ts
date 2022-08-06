@@ -96,6 +96,37 @@ function css(duration: number) {
     gap: 5px;
   }
 
+  #controls {
+    left: 0; 
+    right: 0;
+    top: 0;
+    position: absolute;
+    margin: 20px 10px 10px;
+    display: flex;
+    gap: 1em;
+    align-items: center;
+    z-index: 1;
+  }
+
+  #time {
+    flex: auto;
+    font-size: 1.7vh;
+  }
+
+  #play-pause svg {
+    width: auto;
+    height: 3vh;
+  }
+
+  #play-pause {
+    line-height: 0;
+    padding: 0 0.5vh;
+  }
+
+  #time {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
   .progress {
     height: 100%;
     animation: none;
@@ -123,6 +154,7 @@ function css(duration: number) {
   }
 
   .loading button,
+  .loading #controls,
   .loading details {
     display: none;
   }
@@ -233,6 +265,7 @@ class StoryViewElement extends HTMLElement {
   root: ShadowRoot
   dialog: HTMLDialogElement
   button: HTMLButtonElement
+  time: HTMLElement
   meta: HTMLElement
   currentIndex: number = -1
   count = 0
@@ -254,6 +287,16 @@ class StoryViewElement extends HTMLElement {
       <dialog class="loading">
         <div class="loading-visual"></div>
         <div id="bars"></div>
+        <div id="controls">
+          <span id="time"></span>
+          <button id="play-pause" type="button" aria-label="Play/Pause">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 12.865V7.13504C4 6.2872 4.98886 5.82405 5.64018 6.36682L9.07813 9.23178C9.55789 9.63157 9.55789 10.3684 9.07814 10.7682L5.64018 13.6332C4.98886 14.176 4 13.7128 4 12.865Z" fill="white"/>
+            <rect x="11" y="6" width="2" height="8" rx="1" fill="white"/>
+            <path d="M14 7C14 6.44772 14.4477 6 15 6V6C15.5523 6 16 6.44772 16 7V13C16 13.5523 15.5523 14 15 14V14C14.4477 14 14 13.5523 14 13V7Z" fill="white"/>
+            </svg>
+          </button>
+        </div>
         <div id="goToBlock">
           <button id="back">←</button>
           <button id="forward">→</button>
@@ -266,6 +309,7 @@ class StoryViewElement extends HTMLElement {
     this.dialog = this.root.querySelector('dialog')!
     this.button = this.root.querySelector('button')!
     this.meta = this.root.querySelector('#metadata')!
+    this.time = this.root.querySelector('#time')!
     this.goToBinding = this.goTo.bind(this, 1)
   }
 
@@ -300,6 +344,7 @@ class StoryViewElement extends HTMLElement {
 
   bindEvents() {
     const images = this.root.querySelector('#images')!
+    const playPause = this.root.querySelector<HTMLElement>('#play-pause')!
     const back = this.root.querySelector<HTMLElement>('button#back')!
     const forward = this.root.querySelector<HTMLElement>('button#forward')!
 
@@ -324,8 +369,12 @@ class StoryViewElement extends HTMLElement {
       this.currentIndex = 0
     })
 
-    images.addEventListener('click', () => {
+    playPause.addEventListener('click', () => {
       this.paused ? this.resume() : this.pause()
+    })
+
+    images.addEventListener('click', () => {
+      playPause.click()
     })
 
     const dialog = this.dialog
@@ -437,12 +486,25 @@ class StoryViewElement extends HTMLElement {
     this.dialog.classList.remove('loading')
     this.currentBar.classList.remove('paused')
 
-    this.meta.textContent = this.items[this.currentIndex].summary
+    const item = this.items[this.currentIndex]
+    this.time.textContent = this.relativeTime(item.date_published)
+    this.meta.textContent = item.summary
 
     if (this.currentIndex > this.count - 1) this.currentIndex = 0
 
     this.timer = setTimeout(this.goTo.bind(this), this.duration * 1000)
     if (this.paused) this.pause()
+  }
+  
+  relativeTime(time: string): string {
+    const m = Math.round((new Date().getTime() - new Date(time).getTime()) / 1000 / 60)
+    if (m > 60 * 24) {
+      return `${Math.round(m / 60 / 24)}d`
+    } else if (m > 60) {
+      return `${Math.round(m / 60)}h`
+    } else {
+      return `${m}m`
+    }
   }
 }
 
