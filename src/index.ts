@@ -353,9 +353,9 @@ class StoryViewElement extends HTMLElement {
       this.items = json.items
     }
 
+    this.classList.toggle('is-empty', this.items.length === 0)
     if (this.items.length === 0) {
       this.button.disabled = true
-      this.setAttribute('empty', '')
     } else {
       this.appendImages()
     }

@@ -19,6 +19,10 @@ Render `<story-view>`.
 - `ttl`: Optional. Number in seconds, or `infinite`. Default to `86400`.
 - `metadata`: Optional. Display `items[].summary`.
 
+## Classes
+
+- `.is-empty`: Present when no stories matching `ttl` were found.
+
 ## JSON feed
 
 [Example](/demo/feed.json).
