@@ -389,7 +389,7 @@ class StoryViewElement extends HTMLElement {
         else {
             this.items = json.items;
         }
-        this.items = this.items.reverse()
+        this.items = this.items.reverse();
         this.classList.toggle('is-empty', this.items.length === 0);
         if (this.items.length === 0) {
             this.button.disabled = true;
