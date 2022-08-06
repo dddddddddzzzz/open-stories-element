@@ -22,6 +22,7 @@ function css(duration: number) {
     background: 0;
     appearance: none;
     cursor: pointer;
+    padding: 0;
   }
 
   .ring {
