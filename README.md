@@ -1,16 +1,26 @@
 # `<story-view>`
 
-Include `StoryViewElement`.
+Completely self-serving* Instagram-esque [JSONfeed](https://jsonfeed.org) "story" media viewer. See it in action on [muan.co](https://muan.co).
+
+Under development. Everything is subjected to changes. Make sure to specify a version number if you wish to try it out. 
+
+This requires native [`<dialog>`](https://caniuse.com/dialog) and [Shadow DOM](https://caniuse.com/shadowdomv1) support. No polyfills included.
+
+*Note: not accepting issues/PRs; but if we are close friends, maybe.
+
+## Usage
 
 ```html
-<script src="https://unpkg.com/story-view-element" type="module" defer></script>
+<!-- Include `StoryViewElement` -->
+<script src="https://unpkg.com/story-view-element@0.0.8" type="module" defer></script>
+
+<!-- Render `<story-view>` -->
+<story-view src="./feed.json"></story-view>
 ```
 
-Render `<story-view>`.
+## `<slot>`
 
-```html
-<story-view src="./feed.json" ttl="86400"></story-view>
-```
+Whatever you put inside `<story-view>HERE</story-view>` will replace the default button.
 
 ## Attributes
 
