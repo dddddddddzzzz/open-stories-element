@@ -273,6 +273,7 @@ class StoryViewElement extends HTMLElement {
     this.button.addEventListener('click', () => {
       this.dialog.open ? this.dialog.close() : this.dialog.showModal()
       if (!this.dialog.open) return
+      this.dialog.tabIndex = -1
       this.dialog.focus()
       this.startTimer()
     })
