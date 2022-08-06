@@ -14,7 +14,7 @@ function css(duration: number) {
   }
 
   ::backdrop {
-    background-color: #343434;
+    background-color: rgba(0, 0, 0, 0.9);
   }
 
   button {
@@ -212,6 +212,7 @@ function css(duration: number) {
     font-size: 20px;
     margin: 0 -1vw;
     font-family: system-ui, sans-serif;
+    color: #fff;
   }
 
   #back {
@@ -252,8 +253,8 @@ class StoryViewElement extends HTMLElement {
         <div class="loading-visual"></div>
         <div id="bars"></div>
         <div id="goToBlock">
-          <button id="back" class="paginate">←</button>
-          <button id="forward" class="paginate">→</button>
+          <button id="back">←</button>
+          <button id="forward">→</button>
         </div>
         <div id="images"></div>
         <details><summary>⌃</summary><div id="metadata"></div></details>
