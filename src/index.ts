@@ -332,6 +332,7 @@ class StoryViewElement extends HTMLElement {
 
     if (this.items.length === 0) {
       this.button.disabled = true
+      this.setAttribute('empty', '')
     } else {
       this.appendImages()
     }

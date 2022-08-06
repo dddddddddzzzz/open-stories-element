@@ -317,6 +317,7 @@ class StoryViewElement extends HTMLElement {
         this.items = json.items.filter((item) => new Date(item.date_published) >= createdAfter);
         if (this.items.length === 0) {
             this.button.disabled = true;
+            this.setAttribute('empty', '');
         }
         else {
             this.appendImages();
