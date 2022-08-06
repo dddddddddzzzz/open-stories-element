@@ -53,6 +53,8 @@ function css(duration: number) {
     aspect-ratio: 9/16;
     background: transparent;
     overflow: visible;
+    max-height: 88vh;
+    max-width: 88vw;
   }
   
   #images {
@@ -230,7 +232,7 @@ function css(duration: number) {
     transform: translate(-50%);
     width: calc(100vh * 9 / 16);
     padding: 0 2vw;
-    max-width: 100vw;
+    max-width: 96vw;
     height: 100%;
     position: fixed;
     top: 0;
