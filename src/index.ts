@@ -229,36 +229,38 @@ function css(duration: number) {
 
   #goToBlock {
     left: 50%;
-    transform: translate(-50%);
-    width: calc(100vh * 9 / 16);
+    transform: translate(-50%, -50%);
     padding: 0 2vw;
-    max-width: 96vw;
-    height: 100%;
+    aspect-ratio: 9 / 16;
+    height: min(88vh, 88vw * 16/9);
     position: fixed;
-    top: 0;
+    top: 50%;
+    z-index: 1;
+    pointer-events: none;
     box-sizing: border-box;
   }
 
   #back, #forward {
+    pointer-events: all;
     position: absolute;
-    height: 100%;
     z-index: 1;
-    width: 3vw;
-    min-width: 20px;
+    min-width: 40px;
+    height: calc(100% - 100px);
+    bottom: 50px;
     padding: 0;
-    font-size: 20px;
-    margin: 0 -1vw;
+    font-size: 3vh;
+    width: 12vh;
     font-family: system-ui, sans-serif;
     color: #fff;
   }
 
   #back {
-    left: 0;
+    left: -1.5em;
     text-align: left;
   }
 
   #forward {
-    right: 0;
+    right: -1.5em;
     text-align: right;
   }
 `
