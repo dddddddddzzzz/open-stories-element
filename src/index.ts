@@ -327,6 +327,12 @@ class StoryViewElement extends HTMLElement {
       this.startTimer()
     })
 
+    // Backdrop click to close
+    this.dialog.addEventListener('click', (event) => {
+      if (!this.dialog.open || event.target !== this.dialog) return
+      this.button.click()
+    })
+
     const src = this.getAttribute('src')
     if (src) this.fetchData(src)
 
