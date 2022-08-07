@@ -157,6 +157,7 @@ function css(duration: number) {
     width: auto;
   }
 
+  .is-loading .progressing .progress,
   .is-paused .progressing .progress {
     animation-play-state: paused;
   }
@@ -172,17 +173,17 @@ function css(duration: number) {
     100% { width: 100%; }
   }
 
-  .loading button,
-  .loading #controls,
-  .loading details {
+  .is-loading button,
+  .is-loading #controls,
+  .is-loading details {
     display: none;
   }
 
-  .loading #images img {
+  .is-loading #images img {
     opacity: 0;
   }
 
-  .loading .loading-visual {
+  .is-loading .loading-visual {
     display: block;
     position: absolute;
     top: 50%;
@@ -324,7 +325,7 @@ class StoryViewElement extends HTMLElement {
     this.root = this.attachShadow({mode: 'open'})
     this.root.innerHTML = `
       <button type="dialog" id="trigger"><slot></slot></button>
-      <dialog class="loading">
+      <dialog class="is-loading">
         <div class="loading-visual"></div>
         <div id="bars"></div>
         <div id="controls">
@@ -575,8 +576,8 @@ class StoryViewElement extends HTMLElement {
   
   async startTimer() {
     await this.promises[0]
-    if (this.dialog.classList.contains('loading')) {
-      this.dialog.classList.remove('loading')
+    if (this.dialog.classList.contains('is-loading')) {
+      this.dialog.classList.remove('is-loading')
       this.bindEvents()
     }
 
@@ -605,9 +606,9 @@ class StoryViewElement extends HTMLElement {
     this.currentImage = this.images[this.currentIndex]
     this.currentBar.classList.add('progressing', 'paused')
     this.currentImage.classList.add('shown')
-    this.dialog.classList.add('loading')
+    this.dialog.classList.add('is-loading')
     await this.promises[this.currentIndex]
-    this.dialog.classList.remove('loading')
+    this.dialog.classList.remove('is-loading')
     this.currentBar.classList.remove('paused')
 
     const item = this.items[this.currentIndex]
