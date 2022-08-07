@@ -303,6 +303,7 @@ class StoryViewElement extends HTMLElement {
         this.bars = [];
         this.promises = [];
         this.paused = false;
+        this.open = false;
         this.items = [];
         this.root = this.attachShadow({ mode: 'open' });
         this.root.innerHTML = `
@@ -352,6 +353,7 @@ class StoryViewElement extends HTMLElement {
     connectedCallback() {
         this.button.addEventListener('click', () => {
             this.dialog.open ? this.dialog.close() : this.dialog.showModal();
+            this.open = this.dialog.open;
             if (!this.dialog.open)
                 return;
             this.dialog.tabIndex = -1;
@@ -405,6 +407,7 @@ class StoryViewElement extends HTMLElement {
             }
         });
         this.dialog.addEventListener('close', () => {
+            this.open = this.dialog.open;
             if (this.timer)
                 clearTimeout(this.timer);
             this.currentIndex = -1;
@@ -436,6 +439,9 @@ class StoryViewElement extends HTMLElement {
         return this.items.find((item) => item.id === hash);
     }
     checkHashId() {
+        // Prevent opening multiple viewer sharing the same feed on the page
+        if (Array.from(document.querySelectorAll('story-view')).find(e => e !== this && e.open))
+            return;
         const item = this.itemByHash();
         if (!item)
             return;

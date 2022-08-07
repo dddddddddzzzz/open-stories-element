@@ -309,6 +309,7 @@ class StoryViewElement extends HTMLElement {
   bars: HTMLElement[] = []
   promises: Promise<unknown>[] = []
   paused: boolean = false
+  open: boolean = false
   goToBinding: () => void
   items: {[key: string]: string}[] = []
 
@@ -364,6 +365,7 @@ class StoryViewElement extends HTMLElement {
   connectedCallback() {
     this.button.addEventListener('click', () => {
       this.dialog.open ? this.dialog.close() : this.dialog.showModal()
+      this.open = this.dialog.open
       if (!this.dialog.open) return
       this.dialog.tabIndex = -1
       this.dialog.focus()
@@ -423,6 +425,7 @@ class StoryViewElement extends HTMLElement {
     })
 
     this.dialog.addEventListener('close', () => {
+      this.open = this.dialog.open
       if (this.timer) clearTimeout(this.timer)
       this.currentIndex = -1
 
@@ -456,6 +459,9 @@ class StoryViewElement extends HTMLElement {
   }
 
   checkHashId() {
+    // Prevent opening multiple viewer sharing the same feed on the page
+    if (Array.from(document.querySelectorAll('story-view')).find(e => e !== this && e.open)) return
+
     const item = this.itemByHash()
     if (!item) return
     
