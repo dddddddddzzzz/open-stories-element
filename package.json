@@ -3,6 +3,7 @@
   "version": "0.0.10",
   "main": "dist/index.js",
   "type": "module",
+  "files": [],
   "author": "Mu-An Chiou <me@muanchiou.com>",
   "license": "MIT",
   "dependencies": {
