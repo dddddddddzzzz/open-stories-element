@@ -3,6 +3,8 @@ function css(duration) {
   :host {
     display: inline-block;
     font-family: system-ui, sans-serif;
+    --magic-h: 88vh;
+    --magic-w: 88vw;
   }
 
   :focus {
@@ -15,6 +17,10 @@ function css(duration) {
 
   ::backdrop {
     background-color: rgba(0, 0, 0, 0.9);
+  }
+
+  #close {
+    display: none;
   }
 
   button {
@@ -47,14 +53,14 @@ function css(duration) {
   }
 
   dialog {
-    height: min(88vh, 88vw * 16/9);
+    height: min(var(--magic-h), var(--magic-w) * 16/9);
     padding: 0;
     border: 0;
     aspect-ratio: 9/16;
     background: transparent;
     overflow: visible;
-    max-height: 88vh;
-    max-width: 88vw;
+    max-height: var(--magic-h);
+    max-width: var(--magic-w);
   }
   
   #images {
@@ -113,17 +119,18 @@ function css(duration) {
 
   #time {
     flex: auto;
-    font-size: 1.7vh;
+    font-size: 1.8vh;
   }
 
-  #play-pause svg {
+  #play-pause svg,
+  #close svg {
     width: auto;
-    height: 3vh;
+    height: 3.5vh;
   }
 
-  #play-pause {
+  #play-pause,
+  #close {
     line-height: 0;
-    padding: 0 0.5vh;
   }
 
   #time {
@@ -232,7 +239,7 @@ function css(duration) {
     transform: translate(-50%, -50%);
     padding: 0 2vw;
     aspect-ratio: 9 / 16;
-    height: min(88vh, 88vw * 16/9);
+    height: min(var(--magic-h), var(--magic-w) * 16/9);
     position: fixed;
     top: 50%;
     z-index: 1;
@@ -263,6 +270,17 @@ function css(duration) {
     right: -1.5em;
     text-align: right;
   }
+
+  @media (max-width: 420px), screen and (orientation: portrait) {
+    :host {
+      --magic-h: 100vh;
+      --magic-w: 100vw;
+    }
+
+    #close {
+      display: block;
+    }
+  }
 `;
 }
 class StoryViewElement extends HTMLElement {
@@ -280,17 +298,23 @@ class StoryViewElement extends HTMLElement {
         this.items = [];
         this.root = this.attachShadow({ mode: 'open' });
         this.root.innerHTML = `
-      <button type="dialog"><slot></slot></button>
+      <button type="dialog" id="trigger"><slot></slot></button>
       <dialog class="loading">
         <div class="loading-visual"></div>
         <div id="bars"></div>
         <div id="controls">
           <span id="time"></span>
           <button id="play-pause" type="button" aria-label="Play/Pause">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 12.865V7.13504C4 6.2872 4.98886 5.82405 5.64018 6.36682L9.07813 9.23178C9.55789 9.63157 9.55789 10.3684 9.07814 10.7682L5.64018 13.6332C4.98886 14.176 4 13.7128 4 12.865Z" fill="white"/>
-            <rect x="11" y="6" width="2" height="8" rx="1" fill="white"/>
-            <path d="M14 7C14 6.44772 14.4477 6 15 6V6C15.5523 6 16 6.44772 16 7V13C16 13.5523 15.5523 14 15 14V14C14.4477 14 14 13.5523 14 13V7Z" fill="white"/>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 12.865V7.13504C4 6.2872 4.98886 5.82405 5.64018 6.36682L9.07813 9.23178C9.55789 9.63157 9.55789 10.3684 9.07814 10.7682L5.64018 13.6332C4.98886 14.176 4 13.7128 4 12.865Z" fill="white"/>
+              <rect x="11" y="6" width="2" height="8" rx="1" fill="white"/>
+              <path d="M14 7C14 6.44772 14.4477 6 15 6V6C15.5523 6 16 6.44772 16 7V13C16 13.5523 15.5523 14 15 14V14C14.4477 14 14 13.5523 14 13V7Z" fill="white"/>
+            </svg>
+          </button>
+          <button id="close" type="button" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="7.41422" width="2" height="10.5255" rx="1" transform="rotate(-45 6 7.41422)" fill="white"/>
+              <rect x="7.41422" y="14.8568" width="2" height="10.5255" rx="1" transform="rotate(-135 7.41422 14.8568)" fill="white"/>
             </svg>
           </button>
         </div>
@@ -303,7 +327,8 @@ class StoryViewElement extends HTMLElement {
       </dialog>
     `;
         this.dialog = this.root.querySelector('dialog');
-        this.button = this.root.querySelector('button');
+        this.button = this.root.querySelector('#trigger');
+        this.close = this.root.querySelector('#close');
         this.meta = this.root.querySelector('#metadata');
         this.time = this.root.querySelector('#time');
         this.goToBinding = this.goTo.bind(this, 1);
@@ -316,6 +341,9 @@ class StoryViewElement extends HTMLElement {
             this.dialog.tabIndex = -1;
             this.dialog.focus();
             this.startTimer();
+        });
+        this.close.addEventListener('click', () => {
+            this.button.click();
         });
         // Backdrop click to close
         this.dialog.addEventListener('click', (event) => {
