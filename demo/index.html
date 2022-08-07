@@ -5,13 +5,25 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>&lt;story-view&gt;</title>
+  <link href="https://unpkg.com/muan.css@0.0.2" rel="stylesheet" type="text/css">
   <script src="../dist/index.js" type="module" defer></script>
 </head>
 <body>
-  <story-view src="./feed.json" ttl="infinite"></story-view>
-  <br><br>
-  <story-view src="./feed.json" ttl="infinite">
-    <div style="border: 1px solid black; padding: 10px 20px;">Your button</div>
-  </story-view>
+  <header><h1><code>&lt;story-view&gt;</code></h1></header>
+  <main>
+    <h2>Default</h2>
+    <story-view src="./feed.json" ttl="infinite"></story-view>
+    <h2>State and customizations</h2>
+    <h3>Empty</h3>
+    <story-view src="./feed.json" ttl="1"></story-view>
+    <h3>Custom button</h3>
+    <story-view src="./feed.json" ttl="infinite">
+      <div class="button button:type-submit">Your button</div>
+    </story-view>
+    <h3>Duration</h3>
+    <story-view src="./feed.json" ttl="infinite" duration="20">
+      <div class="button button:type-submit">20 seconds per story</div>
+    </story-view>
+  </main>
 </body>
 </html>
