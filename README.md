@@ -12,7 +12,7 @@ This requires native [`<dialog>`](https://caniuse.com/dialog) and [Shadow DOM](h
 
 ```html
 <!-- Include `StoryViewElement` -->
-<script src="https://unpkg.com/story-view-element@0.0.12" type="module" defer></script>
+<script src="https://unpkg.com/story-view-element@0.0.13" type="module" defer></script>
 
 <!-- Render `<story-view>` -->
 <story-view src="./feed.json"></story-view>
