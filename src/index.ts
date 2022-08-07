@@ -130,6 +130,8 @@ function css(duration: number) {
   #time {
     flex: auto;
     font-size: 1.8vh;
+    color: rgba(255, 255, 255, 0.7);
+    text-shadow: 0 0 5px #000;
   }
 
   #play-pause svg,
@@ -141,10 +143,6 @@ function css(duration: number) {
   #play-pause,
   #close {
     line-height: 0;
-  }
-
-  #time {
-    color: rgba(255, 255, 255, 0.5);
   }
 
   .progress {
