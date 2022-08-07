@@ -328,7 +328,7 @@ class StoryViewElement extends HTMLElement {
         <div id="bars"></div>
         <div id="controls">
           <span id="time"></span>
-          <a href="" id="link">
+          <a href id="link" aria-label="Story (copy link)">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M9.41489 9.17763C9.80542 8.78711 9.80542 8.15395 9.41489 7.76342V7.76342C9.02437 7.3729 8.3912 7.3729 8.00068 7.76342L6.92857 8.83553C5.757 10.0071 5.757 11.9066 6.92857 13.0782C8.10014 14.2497 9.99964 14.2497 11.1712 13.0782V13.0782C11.3254 12.924 11.3254 12.6739 11.1712 12.5197L10.3154 11.664C10.1612 11.5098 9.9112 11.5098 9.757 11.664V11.664C9.36647 12.0545 8.73331 12.0545 8.34278 11.664C7.95226 11.2734 7.95226 10.6403 8.34278 10.2497L9.41489 9.17763ZM11.5918 9.82911C11.2013 10.2196 11.2013 10.8528 11.5918 11.2433V11.2433C11.9824 11.6338 12.6155 11.6338 13.0061 11.2433L13.9996 10.2497C15.1712 9.07817 15.1712 7.17868 13.9996 6.00711C12.8281 4.83553 10.9286 4.83553 9.757 6.00711V6.00711C9.64616 6.11794 9.64616 6.29763 9.757 6.40847L10.7698 7.42132C10.8807 7.53215 11.0604 7.53215 11.1712 7.42132V7.42132C11.5617 7.03079 12.1949 7.03079 12.5854 7.42132C12.9759 7.81184 12.9759 8.44501 12.5854 8.83553L11.5918 9.82911Z" fill="white"/>
             </svg>
@@ -430,6 +430,10 @@ class StoryViewElement extends HTMLElement {
     const playPause = this.root.querySelector<HTMLElement>('#play-pause')!
     const back = this.root.querySelector<HTMLElement>('button#back')!
     const forward = this.root.querySelector<HTMLElement>('button#forward')!
+
+    this.link.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(this.link.href)
+    })
 
     back.addEventListener('click', () => {
       if (this.currentIndex === 0) {
