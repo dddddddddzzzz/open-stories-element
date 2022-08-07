@@ -281,8 +281,12 @@ function css(duration) {
 
   @media (max-width: 420px), screen and (orientation: portrait) {
     :host {
-      --magic-h: 100vh;
+      --magic-h: calc(var(--mobileVh) * 97);
       --magic-w: 100vw;
+    }
+
+    ::backdrop {
+      background-color: #000;
     }
 
     #controls #close {
@@ -294,6 +298,7 @@ function css(duration) {
 class StoryViewElement extends HTMLElement {
     constructor() {
         super();
+        this.themeColor = null;
         this.currentIndex = -1;
         this.count = 0;
         this.timer = null;
@@ -350,6 +355,18 @@ class StoryViewElement extends HTMLElement {
         this.time = this.root.querySelector('#time');
         this.goToBinding = this.goTo.bind(this, 1);
     }
+    setThemeColor(force) {
+        if (force && !this.themeColor) {
+            this.themeColor = document.createElement('meta');
+            this.themeColor.name = 'theme-color';
+            this.themeColor.content = '#000';
+            document.body.append(this.themeColor);
+        }
+        if (!force && this.themeColor) {
+            this.themeColor.remove();
+            this.themeColor = null;
+        }
+    }
     connectedCallback() {
         this.button.addEventListener('click', () => {
             this.dialog.open ? this.dialog.close() : this.dialog.showModal();
@@ -359,6 +376,7 @@ class StoryViewElement extends HTMLElement {
             this.dialog.tabIndex = -1;
             this.dialog.focus();
             this.startTimer();
+            this.setThemeColor(true);
         });
         this.close.addEventListener('click', () => {
             this.button.click();
@@ -375,6 +393,7 @@ class StoryViewElement extends HTMLElement {
         const style = document.createElement('style');
         style.innerText = css(this.duration);
         this.root.append(style);
+        this.style.setProperty('--mobileVh', `${window.innerHeight * 0.01}px`);
         if (this.hasAttribute('metadata')) {
             this.root.querySelector('details').hidden = false;
         }
@@ -407,10 +426,10 @@ class StoryViewElement extends HTMLElement {
             }
         });
         this.dialog.addEventListener('close', () => {
-            this.open = this.dialog.open;
             if (this.timer)
                 clearTimeout(this.timer);
             this.currentIndex = -1;
+            this.setThemeColor(false);
             if (this.itemByHash())
                 window.location.hash = '';
         });

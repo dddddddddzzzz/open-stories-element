@@ -281,8 +281,12 @@ function css(duration: number) {
 
   @media (max-width: 420px), screen and (orientation: portrait) {
     :host {
-      --magic-h: 100vh;
+      --magic-h: calc(var(--mobileVh) * 97);
       --magic-w: 100vw;
+    }
+
+    ::backdrop {
+      background-color: #000;
     }
 
     #controls #close {
@@ -299,6 +303,7 @@ class StoryViewElement extends HTMLElement {
   close: HTMLButtonElement
   time: HTMLElement
   meta: HTMLElement
+  themeColor: HTMLMetaElement | null = null
   link: HTMLAnchorElement
   currentIndex: number = -1
   count = 0
@@ -362,6 +367,21 @@ class StoryViewElement extends HTMLElement {
     this.goToBinding = this.goTo.bind(this, 1)
   }
 
+  setThemeColor(force: boolean) {
+    if (force && !this.themeColor) {
+      this.themeColor = document.createElement('meta')
+      this.themeColor.name = 'theme-color'
+      this.themeColor.content = '#000'
+
+      document.body.append(this.themeColor)
+    }
+
+    if (!force && this.themeColor) {
+      this.themeColor.remove()
+      this.themeColor = null
+    }
+  }
+
   connectedCallback() {
     this.button.addEventListener('click', () => {
       this.dialog.open ? this.dialog.close() : this.dialog.showModal()
@@ -370,6 +390,7 @@ class StoryViewElement extends HTMLElement {
       this.dialog.tabIndex = -1
       this.dialog.focus()
       this.startTimer()
+      this.setThemeColor(true)
     })
 
     this.close.addEventListener('click', () => {
@@ -388,6 +409,8 @@ class StoryViewElement extends HTMLElement {
     const style = document.createElement('style')
     style.innerText = css(this.duration)
     this.root.append(style)
+
+    this.style.setProperty('--mobileVh', `${window.innerHeight * 0.01}px`)
 
     if (this.hasAttribute('metadata')) {
       this.root.querySelector<HTMLElement>('details')!.hidden = false
@@ -425,9 +448,9 @@ class StoryViewElement extends HTMLElement {
     })
 
     this.dialog.addEventListener('close', () => {
-      this.open = this.dialog.open
       if (this.timer) clearTimeout(this.timer)
       this.currentIndex = -1
+      this.setThemeColor(false)
 
       if (this.itemByHash()) window.location.hash = ''
     })
