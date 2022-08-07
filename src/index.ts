@@ -323,7 +323,7 @@ class StoryViewElement extends HTMLElement {
         <div id="bars"></div>
         <div id="controls">
           <span id="time"></span>
-          <button id="play-pause" type="button" aria-label="Play/Pause">
+          <button id="play-pause" type="button" aria-label="Play/Pause" aria-pressed="true">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" id="play">
               <path d="M6 13.0568V6.94319C6 6.12982 6.91937 5.65669 7.58124 6.12946L11.8608 9.18627C12.4191 9.58509 12.4191 10.4149 11.8608 10.8137L7.58124 13.8705C6.91937 14.3433 6 13.8702 6 13.0568Z" fill="white"/>
             </svg>
@@ -423,6 +423,7 @@ class StoryViewElement extends HTMLElement {
     })
 
     playPause.addEventListener('click', () => {
+      playPause.setAttribute('aria-pressed', this.paused.toString())
       this.paused ? this.resume() : this.pause()
     })
 
