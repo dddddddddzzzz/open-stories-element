@@ -39,6 +39,7 @@ function css(duration) {
     appearance: none;
     cursor: pointer;
     padding: 0;
+    margin: 0;
   }
 
   .ring {
