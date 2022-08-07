@@ -19,8 +19,18 @@ function css(duration: number) {
     background-color: rgba(0, 0, 0, 0.9);
   }
 
-  #close {
+  #close,
+  #play,
+  #pause {
     display: none;
+  }
+  
+  dialog.is-paused #play {
+    display: block;
+  }
+
+  dialog:not(.is-paused) #pause {
+    display: block;
   }
 
   button {
@@ -148,7 +158,7 @@ function css(duration: number) {
     width: auto;
   }
 
-  .progressing.paused .progress {
+  .is-paused .progressing .progress {
     animation-play-state: paused;
   }
 
@@ -314,10 +324,12 @@ class StoryViewElement extends HTMLElement {
         <div id="controls">
           <span id="time"></span>
           <button id="play-pause" type="button" aria-label="Play/Pause">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 12.865V7.13504C4 6.2872 4.98886 5.82405 5.64018 6.36682L9.07813 9.23178C9.55789 9.63157 9.55789 10.3684 9.07814 10.7682L5.64018 13.6332C4.98886 14.176 4 13.7128 4 12.865Z" fill="white"/>
-              <rect x="11" y="6" width="2" height="8" rx="1" fill="white"/>
-              <path d="M14 7C14 6.44772 14.4477 6 15 6V6C15.5523 6 16 6.44772 16 7V13C16 13.5523 15.5523 14 15 14V14C14.4477 14 14 13.5523 14 13V7Z" fill="white"/>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" id="play">
+              <path d="M6 13.0568V6.94319C6 6.12982 6.91937 5.65669 7.58124 6.12946L11.8608 9.18627C12.4191 9.58509 12.4191 10.4149 11.8608 10.8137L7.58124 13.8705C6.91937 14.3433 6 13.8702 6 13.0568Z" fill="white"/>
+            </svg>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" id="pause">
+              <rect x="7" y="6" width="2" height="8" rx="1" fill="white"/>
+              <path d="M11 7C11 6.44772 11.4477 6 12 6V6C12.5523 6 13 6.44772 13 7V13C13 13.5523 12.5523 14 12 14V14C11.4477 14 11 13.5523 11 13V7Z" fill="white"/>
             </svg>
           </button>
           <button id="close" type="button" aria-label="Close">
@@ -456,13 +468,15 @@ class StoryViewElement extends HTMLElement {
 
   pause() {
     this.paused = true
-    this.currentBar?.classList.add('paused')
+    this.classList.add('is-paused')
+    this.dialog.classList.add('is-paused')
     if (this.timer) clearTimeout(this.timer)
   }
 
   resume() {
     this.paused = false
-    this.currentBar?.classList.remove('paused')
+    this.classList.remove('is-paused')
+    this.dialog.classList.remove('is-paused')
     this.currentBar?.querySelector('.progress')?.addEventListener('animationend', this.goToBinding, {once: true})
   }
 

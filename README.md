@@ -32,6 +32,7 @@ Whatever you put inside `<story-view>HERE</story-view>` will replace the default
 ## Classes
 
 - `.is-empty`: Present when no stories matching `ttl` were found.
+- `.is-paused`: Present autoplay is paused.
 
 ## JSON feed
 
