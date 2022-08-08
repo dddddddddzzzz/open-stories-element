@@ -69,9 +69,10 @@ function css(duration: number) {
     border: 0;
     aspect-ratio: 9/16;
     background: transparent;
-    overflow: visible;
+    overflow: hidden;
     max-height: var(--magic-h);
     max-width: var(--magic-w);
+    border-radius: 10px;
   }
   
   #images {
@@ -79,7 +80,6 @@ function css(duration: number) {
     height: 100%;
     width: 100%;
     position: absolute;
-    border-radius: 10px;
     background: #000;
   }
 
@@ -128,22 +128,70 @@ function css(duration: number) {
     z-index: 1;
   }
 
+  #metadata-details summary {
+    display: flex;
+    align-items: center;
+  }
+
   #controls button,
-  #controls a {
+  #controls a,
+  #metadata-details summary {
     display: inline-flex;
   }
 
-  #time {
+  #time,
+  #metadata-details {
     flex: auto;
-    font-size: 1.8vh;
+    font-size: 1.7vh;
     color: rgba(255, 255, 255, 0.7);
     text-shadow: 0 0 5px #000;
   }
 
-  #controls svg {
+  svg {
     width: auto;
     height: 3.5vh;
     line-height: 0;
+  }
+
+  #metadata-details {
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    padding: 10px;
+  }
+
+  #metadata-details[open] {
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0)  0%,  rgba(0, 0, 0, 0.5)  25px, rgba(0, 0, 0, .8) 100%);
+  }
+
+  #caret {
+    transition: transform .3s;
+  }
+
+  #metadata-details[open] #caret {
+    transform: rotate(90deg);
+  }
+
+  summary path {
+    fill: rgba(255, 255, 255, 0.7);
+  }
+
+  summary {
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    list-style: none;
+  }
+
+  #metadata {
+    border-radius: 6px;
+    color: #fff;
+  }
+
+  #metadata a {
+    color: #000;
   }
 
   .progress {
@@ -175,7 +223,7 @@ function css(duration: number) {
 
   .is-loading button,
   .is-loading #controls,
-  .is-loading details {
+  .is-loading #metadata-details {
     display: none;
   }
 
@@ -205,43 +253,6 @@ function css(duration: number) {
 
   .loading-visual {
     display: none;
-  }
-
-  details {
-    position: absolute;
-    bottom: 0;
-    z-index: 1;
-    left: 0;
-    right: 0;
-    color: #fff;
-    padding: 10px;
-  }
-
-  summary {
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
-    list-style: none;
-  }
-
-  summary::before { display: none; }
-  summary::-webkit-details-marker { display: none; }
-
-  details[open] summary {
-    transform: scaleY(-1);
-  }
-
-  #metadata {
-    padding: 16px;
-    border-radius: 6px;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
-    font-size: 0.8em;
-    color: #fff;
-  }
-
-  #metadata a {
-    color: #000;
   }
 
   #goToBlock {
@@ -356,7 +367,15 @@ class StoryViewElement extends HTMLElement {
           <button id="forward">→</button>
         </div>
         <div id="images"></div>
-        <details hidden><summary>⌃</summary><div id="metadata"></div></details>
+        <details hidden id="metadata-details">
+          <summary>
+            See description 
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" id="caret">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M8.27665 6.30953C8.65799 5.91003 9.29098 5.89531 9.69048 6.27665L12.6905 9.14028C12.8825 9.32353 12.9937 9.57558 12.9997 9.8409C13.0058 10.1062 12.9061 10.3631 12.7226 10.5549L9.72264 13.6912C9.34089 14.0903 8.70788 14.1044 8.30878 13.7226C7.90968 13.3409 7.89561 12.7079 8.27736 12.3088L10.5854 9.8958L8.30953 7.72336C7.91003 7.34202 7.89531 6.70902 8.27665 6.30953Z" fill="white"/>
+            </svg>
+          </summary>
+          <div id="metadata"></div>
+        </details>
       </dialog>
     `
 
