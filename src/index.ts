@@ -155,13 +155,23 @@ function css(duration: number) {
     line-height: 0;
   }
 
-  #metadata-details {
+  #metadata-details,
+  #open-heart {
     position: absolute;
     bottom: 0;
     z-index: 1;
     left: 0;
     right: 0;
     padding: 10px;
+  }
+
+  #open-heart {
+    left: auto;
+    right: 0;
+  }
+
+  #open-heart[aria-pressed="true"] path {
+    fill: #f00;
   }
 
   #metadata-details[open] {
@@ -225,7 +235,8 @@ function css(duration: number) {
 
   .is-loading button,
   .is-loading #controls,
-  .is-loading #metadata-details {
+  .is-loading #metadata-details,
+  .is-loading #open-heart {
     display: none;
   }
 
@@ -319,6 +330,7 @@ class StoryViewElement extends HTMLElement {
   time: HTMLElement
   metadataDetails: HTMLElement
   meta: HTMLElement
+  openHeart: HTMLButtonElement
   themeColor: HTMLMetaElement | null = null
   link: HTMLAnchorElement
   currentIndex: number = -1
@@ -379,12 +391,18 @@ class StoryViewElement extends HTMLElement {
           </summary>
           <div id="metadata"></div>
         </details>
+        <button type="button" id="open-heart" hidden>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M7.60419 6.08132C9.77084 5.51626 10.1042 8.08132 10.1042 8.08132L10.1042 13.5813C8.60419 13.5813 7.10419 12.0813 6.50161 11.0813C5.89903 10.0813 5.43754 6.64637 7.60419 6.08132ZM12.6042 6.08131C10.4375 5.51626 10.1042 8.08132 10.1042 8.08132L10.1042 13.5813C11.6042 13.5813 13.1042 12.0813 13.7068 11.0813C14.3093 10.0813 14.7708 6.64637 12.6042 6.08131Z" fill="white"/>
+          </svg>
+        </button>
       </dialog>
     `
 
     this.dialog = this.root.querySelector('dialog')!
     this.button = this.root.querySelector('button#trigger')!
     this.close = this.root.querySelector('button#close')!
+    this.openHeart = this.root.querySelector('button#open-heart')!
     this.metadataDetails = this.root.querySelector('#metadata-details')!
     this.meta = this.root.querySelector('#metadata')!
     this.link = this.root.querySelector('a#link')!
@@ -450,11 +468,35 @@ class StoryViewElement extends HTMLElement {
     return this.hasAttribute('duration') ? Number(this.getAttribute('duration')) : 5
   }
 
+  async sendHeart() {
+    const item = this.items[this.currentIndex]
+    const urls = this.items[this.currentIndex]._web_story.reactions?.open_heart_urls || []
+    if (urls.length === 0) return
+
+    const key = `♥︎@${item.id}`
+    const promises = []
+    for (const url of urls) {
+      const urlWithEmoji = new URL(url)
+      urlWithEmoji.searchParams.set('emoji', '♥︎')
+      promises.push(fetch(urlWithEmoji.toString(), {method: 'post'}))
+    }
+
+    await Promise.any(promises)
+    const keys = (localStorage.getItem('_open_heart') || '').split(',').filter(s => s)
+    keys.push(key)
+    localStorage.setItem('_open_heart' ,keys.join(','))
+    this.prepareHeart()
+  }
+
   bindEvents() {
     const images = this.root.querySelector('#images')!
     const playPause = this.root.querySelector<HTMLElement>('#play-pause')!
     const back = this.root.querySelector<HTMLElement>('button#back')!
     const forward = this.root.querySelector<HTMLElement>('button#forward')!
+
+    this.openHeart.addEventListener('click', () => {
+      this.sendHeart()
+    })
 
     this.link.addEventListener('click', async () => {
       await navigator.clipboard.writeText(this.link.href)
@@ -629,10 +671,13 @@ class StoryViewElement extends HTMLElement {
     this.currentBar.classList.remove('paused')
 
     const item = this.items[this.currentIndex]
+
+    // Populate
     this.time.textContent = this.relativeTime(item.date_published!)
     const caption = item._web_story.type === 'image' ? item._web_story.caption : null
     this.metadataDetails.hidden = !caption
     this.meta.textContent = caption || ''
+    this.prepareHeart()
 
     this.link.href = `#${item.id}`
 
@@ -640,6 +685,18 @@ class StoryViewElement extends HTMLElement {
 
     this.timer = window.setTimeout(this.goTo.bind(this), this.duration * 1000)
     if (this.paused) this.pause()
+  }
+
+  prepareHeart() {
+    const item = this.items[this.currentIndex]
+    const hasUrl = (item._web_story.reactions?.open_heart_urls || []).length > 0
+    this.openHeart.hidden = !hasUrl
+    if (!hasUrl) return
+    const keys = (localStorage.getItem('_open_heart') || '').split(',')
+    const hearted = keys.includes(`♥︎@${item.id}`)
+    console.log(hearted)
+    this.openHeart.setAttribute('aria-pressed', hearted.toString())
+    this.openHeart.disabled = hearted
   }
   
   relativeTime(time: string): string {
