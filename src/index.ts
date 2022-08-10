@@ -1,3 +1,5 @@
+import {WebStoriesFeed} from 'webstories-ts-types'
+
 function css(duration: number) {
   return `
   :host {
@@ -329,7 +331,7 @@ class StoryViewElement extends HTMLElement {
   paused: boolean = false
   open: boolean = false
   goToBinding: () => void
-  items: {[key: string]: string}[] = []
+  items: WebStoriesFeed["items"] = []
 
   constructor() {
     super()
@@ -499,7 +501,7 @@ class StoryViewElement extends HTMLElement {
     }
   }
 
-  itemByHash(): {[key: string]: string} | undefined {
+  itemByHash() {
     const hash = (location.hash || '').slice(1)
     if (hash.length === 0) return
     
