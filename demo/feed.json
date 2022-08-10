@@ -7,6 +7,7 @@
   "items": [
     {
       "id": "P41ED1C98-C07A-462F-BEF4-60CF9B1052A4",
+      "date_published": "2022-07-28T00:51:06.000Z",
       "content_html": "<img src=\"https://mochokidae.github.io/story-view-element/demo/stories/5.JPG\" alt=\"Postcard from Alex and Elissa.\">",
       "authors": [{
         "name": "muan"
@@ -24,6 +25,7 @@
     },
     {
       "id": "PAD87ABB0-B87D-4E3D-BE6A-FB9351C3E089",
+      "date_published": "2022-07-28T07:45:09.000Z",
       "content_html": "<img src=\"https://mochokidae.github.io/story-view-element/demo/stories/4.JPG\" alt=\"Screenshot of Stray, the game.\">",
       "authors": [{
         "name": "muan"
@@ -41,6 +43,7 @@
     },
     {
       "id": "PCA97AF8A-AF36-4BDC-A3E9-E96B8053F237",
+      "date_published": "2022-07-12T23:19:29.000Z",
       "content_html": "<img src=\"https://mochokidae.github.io/story-view-element/demo/stories/3.JPG\" alt=\"Received bread from a friend.\">",
       "authors": [{
         "name": "muan"
@@ -58,6 +61,7 @@
     },
     {
       "id": "PEDDC90B0-12BD-41A0-9F5A-D11C90473767",
+      "date_published": "2022-07-10T10:11:13.000Z",
       "content_html": "<img src=\"https://mochokidae.github.io/story-view-element/demo/stories/2.JPG\" alt=\"Postcard from Denmark\">",
       "authors": [{
         "name": "muan"
@@ -75,6 +79,7 @@
     },
     {
       "id": "P1878C0C3-1F69-43C6-A601-8EF1B5ED1544",
+      "date_published": "2022-07-10T09:55:08.000Z",
       "content_html": "<img src=\"https://mochokidae.github.io/story-view-element/demo/stories/1.JPG\" alt=\"A very healthy new monstera leaf.\">",
       "authors": [{
         "name": "muan"
