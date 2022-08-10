@@ -7,7 +7,7 @@
   "files": ["dist/index.d.ts"],
   "scripts": {
     "start": "tsc -w",
-    "prepare": "tsc -d && terser dist/index.js --compress --mangle -o dist/index.js"
+    "prepare": "tsc && terser dist/index.js --compress --mangle -o dist/index.js"
   },
   "author": "Mu-An Chiou <me@muanchiou.com>",
   "license": "MIT",
