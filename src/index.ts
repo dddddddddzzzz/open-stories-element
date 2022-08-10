@@ -317,6 +317,7 @@ class StoryViewElement extends HTMLElement {
   button: HTMLButtonElement
   close: HTMLButtonElement
   time: HTMLElement
+  metadataDetails: HTMLElement
   meta: HTMLElement
   themeColor: HTMLMetaElement | null = null
   link: HTMLAnchorElement
@@ -384,6 +385,7 @@ class StoryViewElement extends HTMLElement {
     this.dialog = this.root.querySelector('dialog')!
     this.button = this.root.querySelector('button#trigger')!
     this.close = this.root.querySelector('button#close')!
+    this.metadataDetails = this.root.querySelector('#metadata-details')!
     this.meta = this.root.querySelector('#metadata')!
     this.link = this.root.querySelector('a#link')!
     this.time = this.root.querySelector('#time')!
@@ -528,22 +530,16 @@ class StoryViewElement extends HTMLElement {
   }
 
   async fetchData(url: string) {
-    const json = await (await fetch(url)).json()
+    const json: WebStoriesFeed = await (await fetch(url)).json()
     const slot = this.root.querySelector('slot')!
     slot.innerHTML = `
       <div class="ring"><img src="${json.icon}" alt="${json.title}" class="avatar"></div>
     `
 
-    if (this.getAttribute('ttl') !== 'infinite') {
-      const ttl = this.hasAttribute('ttl') ? Number(this.getAttribute('ttl')) : 86400
-      const createdAfter = new Date()
-      createdAfter.setTime(new Date().getTime() - ttl * 1000)
-      this.items = json.items.filter((item: {[key: string]: string}) => new Date(item.date_published) >= createdAfter)
-    } else {
-      this.items = json.items
-    }
-
-    this.items = this.items.reverse()
+    const now = new Date()
+    this.items = json.items.filter((item) => {
+      return item._web_story.type === 'image' && now <= new Date(item._web_story.expire_by)
+    }).reverse()
 
     this.classList.toggle('is-empty', this.items.length === 0)
     if (this.items.length === 0) {
@@ -588,8 +584,8 @@ class StoryViewElement extends HTMLElement {
       this.bars.push(bar)
       const img = document.createElement('img')
       this.promises.push(new Promise(resolve => img.addEventListener('load', resolve)))
-      img.src = item.image
-      img.alt = item.summary
+      img.src = item._web_story.url
+      if (item._web_story.type === 'image') img.alt = item._web_story.alt
       images.append(img)
       this.images.push(img)
     }
@@ -633,8 +629,11 @@ class StoryViewElement extends HTMLElement {
     this.currentBar.classList.remove('paused')
 
     const item = this.items[this.currentIndex]
-    this.time.textContent = this.relativeTime(item.date_published)
-    this.meta.textContent = item.summary
+    this.time.textContent = this.relativeTime(item.date_published!)
+    const caption = item._web_story.type === 'image' ? item._web_story.caption : null
+    this.metadataDetails.hidden = !caption
+    this.meta.textContent = caption || ''
+
     this.link.href = `#${item.id}`
 
     if (this.currentIndex > this.count - 1) this.currentIndex = 0
