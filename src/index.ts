@@ -503,7 +503,7 @@ class StoryViewElement extends HTMLElement {
     }
   }
 
-  itemByHash() {
+  itemByHash(): WebStoriesFeed["items"][0] | undefined {
     const hash = (location.hash || '').slice(1)
     if (hash.length === 0) return
     
