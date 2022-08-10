@@ -11,8 +11,11 @@
   "author": "Mu-An Chiou <me@muanchiou.com>",
   "license": "MIT",
   "devDependencies": {
-    "webstories-ts-types": "^0.0.2",
+    "terser": "^5.14.2",
     "typescript": "^4.7.4",
-    "terser": "^5.14.2"
+    "webstories-ts-types": "^0.0.2"
+  },
+  "dependencies": {
+    "open-heart-element": "^0.0.6"
   }
 }
