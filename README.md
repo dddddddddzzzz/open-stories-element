@@ -26,7 +26,8 @@ Whatever you put inside `<story-view>HERE</story-view>` will replace the default
 
 - `src`: Required. A [JSONfeed](https://jsonfeed.org) URL. Required fields: `title`, `icon`, `items[].date_published`, `items[].image`, `items[].summary`.
 - `duration`: Optional. Number in seconds. Default to `5`.
-- `metadata`: Optional. Display `items[].summary`.
+- `show-metadata`: Optional. Display `items[].summary`.
+- `is-highlight`: Optional. View history does not get set.
 
 ## Classes
 

@@ -453,6 +453,14 @@ class StoryViewElement extends HTMLElement {
     this.goToBinding = this.goTo.bind(this, 1)
   }
 
+  get isHighlight() {
+    return this.hasAttribute('is-highlight')
+  }
+
+  get showMetadata() {
+    return this.hasAttribute('show-metadata')
+  }
+
   setThemeColor(force: boolean) {
     if (force && !this.themeColor) {
       this.themeColor = document.createElement('meta')
@@ -498,7 +506,7 @@ class StoryViewElement extends HTMLElement {
 
     this.style.setProperty('--mobileVh', `${window.innerHeight * 0.01}px`)
 
-    if (this.hasAttribute('metadata')) {
+    if (this.showMetadata) {
       this.root.querySelector<HTMLElement>('details')!.hidden = false
     }
   }
@@ -621,6 +629,8 @@ class StoryViewElement extends HTMLElement {
   }
 
   checkIfAllRead() {
+    if (this.isHighlight) return false
+
     const lastItem = this.items[this.items.length - 1]
     const id = this.getViewedId()
     const allRead = lastItem && lastItem.id === id
@@ -653,6 +663,8 @@ class StoryViewElement extends HTMLElement {
   }
 
   setIndexToUnread() {
+    if (this.isHighlight) return false
+
     const viewedId = this.getViewedId()
     if (!viewedId) return
 
@@ -740,7 +752,7 @@ class StoryViewElement extends HTMLElement {
     this.currentBar.classList.remove('paused')
 
     const item = this.items[this.currentIndex]
-    this.setViewed(item.id)
+    if (!this.isHighlight) this.setViewed(item.id)
 
     // Populate
     this.time.textContent = this.relativeTime(item.date_published!)
