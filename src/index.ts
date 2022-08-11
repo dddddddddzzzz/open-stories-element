@@ -601,7 +601,7 @@ class StoryViewElement extends HTMLElement {
 
   checkHashId(): boolean {
     // Prevent opening multiple viewer sharing the same feed on the page
-    if (Array.from(document.querySelectorAll('story-view')).find(e => e !== this && e.open)) return
+    if (Array.from(document.querySelectorAll('story-view')).find(e => e !== this && e.open)) return false
 
     const item = this.itemByHash()
     if (!item) return false
