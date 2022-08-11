@@ -30,7 +30,8 @@ Whatever you put inside `<story-view>HERE</story-view>` will replace the default
 
 ## Classes
 
-- `.is-empty`: Present when no stories matching `ttl` were found.
+- `.is-empty`: Present when no stories found.
+- `.is-read`: Present when stories have all been viewed. This relies on `localStroage` and does not work cross-origin/cross-devices.
 - `.is-paused`: Present autoplay is paused.
 
 ## JSON feed
