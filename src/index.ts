@@ -54,7 +54,11 @@ function css(duration: number) {
     margin: 1px;
   }
 
-  button:not(:disabled) .ring {
+  :host(story-view.is-empty) .ring {
+    opacity: 0.5;
+  }
+
+  :host(story-view:not(.is-read):not(.is-empty)) .ring {
     border: 2px solid #08c;
     margin: 0;
   }
@@ -560,8 +564,10 @@ class StoryViewElement extends HTMLElement {
     })
 
     this.dialog.addEventListener('close', () => {
+      if (this.paused) this.resume()
       if (this.timer) clearTimeout(this.timer)
-      this.currentIndex = -1
+      if (this.currentIndex === this.items.length - 1) this.currentIndex = -1
+      this.checkIfAllRead()
       this.setThemeColor(false)
 
       if (this.itemByHash()) window.location.hash = ''
@@ -593,15 +599,15 @@ class StoryViewElement extends HTMLElement {
     return this.items.find((item) => item.id === hash)
   }
 
-  checkHashId() {
+  checkHashId(): boolean {
     // Prevent opening multiple viewer sharing the same feed on the page
     if (Array.from(document.querySelectorAll('story-view')).find(e => e !== this && e.open)) return
 
     const item = this.itemByHash()
-    if (!item) return
+    if (!item) return false
     
     const index = this.items.indexOf(item)
-    if (this.currentIndex === index) return
+    if (this.currentIndex === index) return false
 
     this.currentIndex = index - 1
 
@@ -610,6 +616,16 @@ class StoryViewElement extends HTMLElement {
     } else {
       this.goTo(1)
     }
+
+    return true
+  }
+
+  checkIfAllRead() {
+    const lastItem = this.items[this.items.length - 1]
+    const id = this.getViewedId()
+    const allRead = lastItem && lastItem.id === id
+    this.classList.toggle('is-read', allRead)
+    return allRead
   }
 
   async fetchData(url: string) {
@@ -630,9 +646,21 @@ class StoryViewElement extends HTMLElement {
     } else {
       this.appendImages()
     }
-
-    this.checkHashId()
+    
     window.addEventListener('hashchange', this.checkHashId.bind(this))
+    if (this.checkHashId()) return
+    this.setIndexToUnread()
+  }
+
+  setIndexToUnread() {
+    const viewedId = this.getViewedId()
+    if (!viewedId) return
+
+    const viewedItemIndex = this.items.findIndex(item => item.id === viewedId)
+    if (viewedItemIndex < 0) return
+    if (this.checkIfAllRead()) return
+
+    this.currentIndex = viewedItemIndex
   }
 
   pause() {
@@ -712,6 +740,7 @@ class StoryViewElement extends HTMLElement {
     this.currentBar.classList.remove('paused')
 
     const item = this.items[this.currentIndex]
+    this.setViewed(item.id)
 
     // Populate
     this.time.textContent = this.relativeTime(item.date_published!)
@@ -726,6 +755,25 @@ class StoryViewElement extends HTMLElement {
 
     this.timer = window.setTimeout(this.goTo.bind(this), this.duration * 1000)
     if (this.paused) this.pause()
+  }
+
+  get viewedKey() {
+    return new URL(this.getAttribute('src')!, location.origin).toString()
+  }
+
+  setViewed(id: string) {
+    const lastViewedIndex = this.items.findIndex(item => item.id === this.getViewedId())
+    const newViewedIndex = this.items.findIndex(item => item.id === id)
+    if (newViewedIndex < lastViewedIndex) return
+
+    const viewedByFeed = JSON.parse(localStorage.getItem('_story_view') || '{}')
+    viewedByFeed[this.viewedKey] = id
+    localStorage.setItem('_story_view', JSON.stringify(viewedByFeed))
+  }
+
+  getViewedId() {
+    const viewedByFeed = JSON.parse(localStorage.getItem('_story_view') || '{}')
+    return viewedByFeed[this.viewedKey]
   }
 
   prepareHeart() {
