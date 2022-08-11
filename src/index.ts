@@ -131,8 +131,8 @@ function css(duration: number) {
   }
 
   #metadata-details summary {
-    display: flex;
     align-items: center;
+    font-size: 1.6vh;
   }
 
   #controls button,
@@ -168,10 +168,46 @@ function css(duration: number) {
   #open-heart {
     left: auto;
     right: 0;
+    display: inline-flex;
+    cursor: pointer;
+    transition: transform .3s;
   }
 
-  #open-heart[aria-pressed="true"] path {
-    fill: #f00;
+  #open-heart .off {
+    transition: opacity .3s;
+  }
+
+  #open-heart .on {
+    position: absolute;
+    z-index: 1;
+    opacity: 0;
+    transform: scale(0);
+    transition: transform .3s;
+  }
+
+  #open-heart:not([disabled]):hover,
+  #open-heart:not([disabled]):focus {
+    transform: scale(1.2);
+  }
+
+  #open-heart[aria-pressed="true"] .on { 
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  #open-heart[aria-pressed="true"] .off { opacity: 0; }
+
+  #open-heart[aria-pressed="true"] path { fill: #f00; }
+
+  #open-heart[aria-busy="true"] { animation: pulsate .4s infinite; }
+
+  @keyframes pulsate {
+    0% { transform: scale(1) }
+    100% { transform: scale(1.2) }
+  }
+
+  #open-heart[errored] {
+    opacity: .5;
   }
 
   #metadata-details[open] {
@@ -392,8 +428,11 @@ class StoryViewElement extends HTMLElement {
           <div id="metadata"></div>
         </details>
         <button type="button" id="open-heart" hidden>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="on">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M7.60419 6.08132C9.77084 5.51626 10.1042 8.08132 10.1042 8.08132L10.1042 13.5813C8.60419 13.5813 7.10419 12.0813 6.50161 11.0813C5.89903 10.0813 5.43754 6.64637 7.60419 6.08132ZM12.6042 6.08131C10.4375 5.51626 10.1042 8.08132 10.1042 8.08132L10.1042 13.5813C11.6042 13.5813 13.1042 12.0813 13.7068 11.0813C14.3093 10.0813 14.7708 6.64637 12.6042 6.08131Z" fill="white"/>
+          </svg>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="off">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.51776 6.65626C9.99827 7.26627 10.1042 8.08132 10.1042 8.08132C10.1042 8.08132 10.2101 7.26627 10.6906 6.65626C11.0625 6.1841 11.6589 5.83478 12.6042 6.08131C14.7708 6.64637 14.3093 10.0813 13.7068 11.0813C13.1042 12.0813 11.6042 13.5813 10.1042 13.5813C8.60419 13.5813 7.10419 12.0813 6.50161 11.0813C5.89903 10.0813 5.43754 6.64637 7.60419 6.08132C8.54951 5.83478 9.14584 6.1841 9.51776 6.65626ZM9.11332 8.21616L9.11237 8.20995C9.111 8.20138 9.10825 8.18497 9.10382 8.16202C9.09487 8.11576 9.07949 8.04512 9.05555 7.95993C9.00587 7.78317 8.92824 7.57595 8.81703 7.39676C8.70614 7.2181 8.58996 7.11151 8.47666 7.0572C8.3811 7.0114 8.20033 6.95929 7.85655 7.04895C7.4012 7.1677 7.08018 7.59115 7.01156 8.494C6.97938 8.91746 7.01661 9.36612 7.09563 9.76183C7.17781 10.1734 7.28974 10.4517 7.35813 10.5652C7.5966 10.9609 8.04101 11.4942 8.58331 11.9193C9.13877 12.3547 9.67326 12.5813 10.1042 12.5813C10.5351 12.5813 11.0696 12.3547 11.6251 11.9193C12.1674 11.4942 12.6118 10.9609 12.8503 10.5652C12.9186 10.4517 13.0306 10.1734 13.1127 9.76183C13.1918 9.36612 13.229 8.91746 13.1968 8.49399C13.1282 7.59115 12.8072 7.1677 12.3518 7.04895C12.008 6.95929 11.8273 7.0114 11.7317 7.0572C11.6184 7.11151 11.5022 7.2181 11.3913 7.39676C11.2801 7.57595 11.2025 7.78317 11.1528 7.95993C11.1289 8.04512 11.1135 8.11576 11.1046 8.16202C11.1001 8.18497 11.0974 8.20138 11.096 8.20995L11.0951 8.21615C11.0277 8.71143 10.6047 9.08132 10.1042 9.08132C9.60373 9.08132 9.18068 8.71144 9.11332 8.21616Z" fill="white"/>
           </svg>
         </button>
       </dialog>
@@ -481,7 +520,9 @@ class StoryViewElement extends HTMLElement {
       promises.push(fetch(urlWithEmoji.toString(), {method: 'post'}))
     }
 
+    this.openHeart.setAttribute('aria-busy', 'true')
     await Promise.any(promises)
+    this.openHeart.setAttribute('aria-busy', 'false')
     const keys = (localStorage.getItem('_open_heart') || '').split(',').filter(s => s)
     keys.push(key)
     localStorage.setItem('_open_heart' ,keys.join(','))
@@ -694,7 +735,6 @@ class StoryViewElement extends HTMLElement {
     if (!hasUrl) return
     const keys = (localStorage.getItem('_open_heart') || '').split(',')
     const hearted = keys.includes(`♥︎@${item.id}`)
-    console.log(hearted)
     this.openHeart.setAttribute('aria-pressed', hearted.toString())
     this.openHeart.disabled = hearted
   }
