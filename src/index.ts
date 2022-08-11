@@ -637,7 +637,7 @@ class StoryViewElement extends HTMLElement {
 
     const now = new Date()
     this.items = json.items.filter((item) => {
-      return item._web_story.type === 'image' && now <= new Date(item._web_story.expire_by)
+      return item._web_story.type === 'image' && (!item._web_story.date_expired || now <= new Date(item._web_story.date_expired))
     }).reverse()
 
     this.classList.toggle('is-empty', this.items.length === 0)
