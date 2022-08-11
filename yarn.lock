@@ -85,7 +85,7 @@ typescript@^4.7.4:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.7.4.tgz#1a88596d1cf47d59507a1bcdfb5b9dfe4d488235"
   integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
 
-webstories-ts-types@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/webstories-ts-types/-/webstories-ts-types-0.0.2.tgz#3a3cd6c1660108009901afc4daf3a17f46f9fd7e"
-  integrity sha512-D4QOXrvi19VE/zLaCfV/r4f4UT/5LFMrFlNbFU6sMrCNoG5HGbXogw1illbdFbZEERiEVVak0g9ttQjuE9SG8g==
+webstories-ts-types@0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/webstories-ts-types/-/webstories-ts-types-0.0.4.tgz#334b7a3055ea35ff84e410ec746fbb4af26aeb71"
+  integrity sha512-sWgciau4/HRwb8A6/6VCr6mrxMCAxCbHj2YEWC2Lnfy56JK2zlU8CS7W8TZkil/XNi5Sv9wlObfk84w8mHYkTA==
