@@ -347,6 +347,10 @@ function css(duration: number) {
       display: inline-flex;
     }
   }
+
+  [hidden] {
+    display: none !important;
+  }
 `
 }
 
