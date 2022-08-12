@@ -533,9 +533,7 @@ class StoryViewElement extends HTMLElement {
     const key = `♥︎@${item.id}`
     const promises = []
     for (const url of urls) {
-      const urlWithEmoji = new URL(url)
-      urlWithEmoji.searchParams.set('emoji', '♥︎')
-      promises.push(fetch(urlWithEmoji.toString(), {method: 'post'}))
+      promises.push(fetch(url, {method: 'post', body: '♥︎'}))
     }
 
     this.openHeart.setAttribute('aria-busy', 'true')
