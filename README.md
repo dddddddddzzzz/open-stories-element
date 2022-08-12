@@ -18,9 +18,20 @@ This requires native [`<dialog>`](https://caniuse.com/dialog) and [Shadow DOM](h
 <story-view src="./feed.json"></story-view>
 ```
 
-## `<slot>`
+## Parts
 
-Whatever you put inside `<story-view>HERE</story-view>` will replace the default button.
+Style elements with `::part` ([MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/::part)):
+
+- `story-view::part(button)`: The `<button>` that opens the story viewer modal.
+- `story-view::part(dialog)`: The modal `<dialog>`.
+- `story-view::part(loading-visual)`: The loading overlay.
+- `story-view::part(metadata)`: The `<details>` for metadata.
+- `story-view::part(metadata-summary)`: The `<summary>` for expanding metadata.
+- `story-view::part(metadata-content)`: The metadata content container.
+
+## Button text / `<slot>`
+
+Whatever you put inside `<story-view>HERE</story-view>` will replace the default button text "View Stories".  ([MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot))
 
 ## Attributes
 
