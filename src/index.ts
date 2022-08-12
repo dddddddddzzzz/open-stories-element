@@ -381,7 +381,7 @@ class StoryViewElement extends HTMLElement {
       <button type="dialog" id="trigger" part="button"><slot>View stories</slot></button>
       <dialog class="is-loading" part="dialog">
         <div class="loading-visual" part="loading-visual"></div>
-        <div id="bars" part="progree-bar"></div>
+        <div id="bars"></div>
         <div id="controls">
           <span id="time"></span>
           <a href id="link" aria-label="Story (copy link)">
