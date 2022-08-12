@@ -583,7 +583,7 @@ class StoryViewElement extends HTMLElement {
     this.dialog.addEventListener('close', () => {
       if (this.paused) this.resume()
       if (this.timer) clearTimeout(this.timer)
-      if (this.currentIndex === this.items.length - 1) this.currentIndex = -1
+      if (this.currentIndex >= this.items.length - 1) this.currentIndex = -1
       this.checkIfAllRead()
       this.setThemeColor(false)
 
