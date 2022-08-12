@@ -9,16 +9,17 @@ function css(duration: number) {
     --magic-w: 88vw;
   }
 
-  :focus {
-    outline: none;
-  }
-
-  :focus-visible {
-    outline: default;
-  }
-
   ::backdrop {
     background-color: rgba(0, 0, 0, 0.9);
+  }
+
+  dialog button {
+    border: 0;
+    background: 0;
+    appearance: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
   }
 
   #controls #close,
@@ -33,25 +34,6 @@ function css(duration: number) {
 
   dialog:not(.is-paused) #pause {
     display: block;
-  }
-
-  button {
-    border: 0;
-    background: 0;
-    appearance: none;
-    cursor: pointer;
-    padding: 0;
-    margin: 0;
-  }
-
-  .ring {
-    border-radius: 50%;
-    aspect-ratio: 1 / 1;
-    width: 50px;
-    padding: 2px;
-    overflow: hidden;
-    border: 1px solid #ccc;
-    margin: 1px;
   }
 
   :host(story-view.is-empty) .ring {
@@ -396,10 +378,10 @@ class StoryViewElement extends HTMLElement {
     super()
     this.root = this.attachShadow({mode: 'open'})
     this.root.innerHTML = `
-      <button type="dialog" id="trigger"><slot></slot></button>
-      <dialog class="is-loading">
-        <div class="loading-visual"></div>
-        <div id="bars"></div>
+      <button type="dialog" id="trigger" part="button"><slot>View stories</slot></button>
+      <dialog class="is-loading" part="dialog">
+        <div class="loading-visual" part="loading-visual"></div>
+        <div id="bars" part="progree-bar"></div>
         <div id="controls">
           <span id="time"></span>
           <a href id="link" aria-label="Story (copy link)">
@@ -428,16 +410,16 @@ class StoryViewElement extends HTMLElement {
           <button id="forward">→</button>
         </div>
         <div id="images"></div>
-        <details hidden id="metadata-details">
-          <summary>
+        <details hidden id="metadata-details" part="metadata">
+          <summary part="metadata-summary">
             See description 
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" id="caret">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M8.27665 6.30953C8.65799 5.91003 9.29098 5.89531 9.69048 6.27665L12.6905 9.14028C12.8825 9.32353 12.9937 9.57558 12.9997 9.8409C13.0058 10.1062 12.9061 10.3631 12.7226 10.5549L9.72264 13.6912C9.34089 14.0903 8.70788 14.1044 8.30878 13.7226C7.90968 13.3409 7.89561 12.7079 8.27736 12.3088L10.5854 9.8958L8.30953 7.72336C7.91003 7.34202 7.89531 6.70902 8.27665 6.30953Z" fill="white"/>
             </svg>
           </summary>
-          <div id="metadata"></div>
+          <div id="metadata" part="metadata-content"></div>
         </details>
-        <button type="button" id="open-heart" hidden>
+        <button type="button" id="open-heart" part="open-heart" part="open-heart" hidden>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="on">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M7.60419 6.08132C9.77084 5.51626 10.1042 8.08132 10.1042 8.08132L10.1042 13.5813C8.60419 13.5813 7.10419 12.0813 6.50161 11.0813C5.89903 10.0813 5.43754 6.64637 7.60419 6.08132ZM12.6042 6.08131C10.4375 5.51626 10.1042 8.08132 10.1042 8.08132L10.1042 13.5813C11.6042 13.5813 13.1042 12.0813 13.7068 11.0813C14.3093 10.0813 14.7708 6.64637 12.6042 6.08131Z" fill="white"/>
           </svg>
@@ -653,10 +635,6 @@ class StoryViewElement extends HTMLElement {
 
   async fetchData(url: string) {
     const json: WebStoriesFeed = await (await fetch(url)).json()
-    const slot = this.root.querySelector('slot')!
-    slot.innerHTML = `
-      <div class="ring"><img src="${json.icon}" alt="${json.title}" class="avatar"></div>
-    `
 
     const now = new Date()
     this.items = json.items.filter((item) => {

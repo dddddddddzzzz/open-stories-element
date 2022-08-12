@@ -8,6 +8,18 @@
   <link href="https://unpkg.com/muan.css@latest" rel="stylesheet" type="text/css">
   <!-- <script src="../dist/index.js" type="module" defer></script> -->
   <script src="https://unpkg.com/story-view-element@>0.0.0" type="module" defer></script>
+
+<style>
+    story-view.customized::part(button) {
+      padding: 0.8em 1.6em;
+      background: var(--linkColor);
+      color: var(--backgroundColor);
+      border: 0;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+  </style>
 </head>
 <body>
   <header><h1><code>&lt;story-view&gt;</code></h1></header>
@@ -19,13 +31,17 @@
     <story-view src="./feed.json"></story-view>
     <h3>Image description</h3>
     <story-view src="./feed.json" show-metadata></story-view>
-    <h3>Custom button</h3>
-    <story-view src="./feed.json">
-      <div class="button button:type-submit">Your button</div>
-    </story-view>
+
+    <h3>Styling your button</h3>
+    <story-view src="./feed.json" class="customized">Your button</div></story-view>
+    <pre>
+story-view::part(button) {
+  ...
+}</pre>
+
     <h3>Duration</h3>
     <story-view src="./feed.json" duration="20">
-      <div class="button button:type-submit">20 seconds per story</div>
+      20 seconds per story
     </story-view>
   </main>
 </body>
