@@ -533,8 +533,17 @@ class StoryViewElement extends HTMLElement {
     }
 
     this.openHeart.setAttribute('aria-busy', 'true')
-    await Promise.any(promises)
-    this.openHeart.setAttribute('aria-busy', 'false')
+    let response: Response | null = null
+
+    try {
+      response = await Promise.any(promises)
+    } catch { 
+      // noop
+    } finally {
+      this.openHeart.setAttribute('aria-busy', 'false')
+      if (!response) return
+    }
+
     const keys = (localStorage.getItem('_open_heart') || '').split(',').filter(s => s)
     keys.push(key)
     localStorage.setItem('_open_heart' ,keys.join(','))
