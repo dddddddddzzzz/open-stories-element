@@ -75,10 +75,9 @@ function css(duration: number) {
     border: 0;
     aspect-ratio: 9/16;
     background: transparent;
-    overflow: hidden;
+    overflow: visible;
     max-height: var(--magic-h);
     max-width: var(--magic-w);
-    border-radius: 10px;
   }
   
   #images {
@@ -87,6 +86,7 @@ function css(duration: number) {
     width: 100%;
     position: absolute;
     background: #000;
+    border-radius: 10px;
   }
 
   #images img {
@@ -214,8 +214,12 @@ function css(duration: number) {
     opacity: .5;
   }
 
+  #metadata-details {
+    border-radius: 10px;
+  }
+
   #metadata-details[open] {
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0)  0%,  rgba(0, 0, 0, 0.5)  25px, rgba(0, 0, 0, .8) 100%);
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0)  0%,  rgba(0, 0, 0, 0.5)  25px, rgba(0, 0, 0, .7) 100%);
   }
 
   #caret {
@@ -236,6 +240,8 @@ function css(duration: number) {
     text-align: left;
     list-style: none;
   }
+
+  summary::-webkit-details-marker { display: none; }
 
   #metadata {
     border-radius: 6px;
@@ -314,7 +320,7 @@ function css(duration: number) {
     padding: 0 2vw;
     aspect-ratio: 9 / 16;
     height: min(var(--magic-h), var(--magic-w) * 16/9);
-    position: fixed;
+    position: absolute;
     top: 50%;
     z-index: 1;
     pointer-events: none;
