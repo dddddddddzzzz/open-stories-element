@@ -198,6 +198,7 @@ function css(duration: number) {
 
   #metadata-details {
     border-radius: 10px;
+    padding: 10px 15px;
   }
 
   #metadata-details[open] {
@@ -228,6 +229,9 @@ function css(duration: number) {
   #metadata {
     border-radius: 6px;
     color: #fff;
+    line-height: 1.5em;
+    padding: 5px 0;
+    padding-right: 40px;
   }
 
   #metadata a {
