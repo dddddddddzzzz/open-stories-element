@@ -10,6 +10,7 @@
   <script src="https://unpkg.com/story-view-element@>0.0.0" type="module" defer></script>
 
 <style>
+    story-view.customized:not(:defined),
     story-view.customized::part(button) {
       padding: 0.8em 1.6em;
       background: var(--linkColor);
@@ -35,6 +36,7 @@
     <h3>Styling your button</h3>
     <story-view src="./feed.json" class="customized">Your button</div></story-view>
     <pre>
+story-view:not(:defined),
 story-view::part(button) {
   ...
 }</pre>
