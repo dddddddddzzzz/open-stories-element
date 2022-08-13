@@ -646,7 +646,7 @@ class StoryViewElement extends HTMLElement {
 
     const now = new Date()
     this.items = json.items.filter((item) => {
-      return item._web_story.type === 'image' && (!item._web_story.date_expired || now <= new Date(item._web_story.date_expired))
+      return item._web_story.mime_type.startsWith('image') && (!item._web_story.date_expired || now <= new Date(item._web_story.date_expired))
     }).reverse()
 
     this.classList.toggle('is-empty', this.items.length === 0)
@@ -707,7 +707,7 @@ class StoryViewElement extends HTMLElement {
       const img = document.createElement('img')
       this.promises.push(new Promise(resolve => img.addEventListener('load', resolve)))
       img.src = item._web_story.url
-      if (item._web_story.type === 'image') img.alt = item._web_story.alt
+      if ('alt' in item._web_story) img.alt = item._web_story.alt
       images.append(img)
       this.images.push(img)
     }
@@ -755,7 +755,7 @@ class StoryViewElement extends HTMLElement {
 
     // Populate
     this.time.textContent = this.relativeTime(item.date_published!)
-    const caption = item._web_story.type === 'image' ? item._web_story.caption : null
+    const caption = 'caption' in item._web_story ? item._web_story.caption : null
     this.metadataDetails.hidden = !caption
     this.meta.textContent = caption || ''
     this.prepareHeart()
