@@ -29,6 +29,8 @@ Style elements with `::part` ([MDN](https://developer.mozilla.org/en-US/docs/Web
 - `story-view::part(metadata-summary)`: The `<summary>` for expanding metadata.
 - `story-view::part(metadata-content)`: The metadata content container.
 
+*Note: when defining `story-view::part(button)` it would be good to style `story-view:not(:defined)` the same way, to prevent styles flash when the script is executed.
+
 ## Button text / `<slot>`
 
 Whatever you put inside `<story-view>HERE</story-view>` will replace the default button text "View Stories".  ([MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot))
