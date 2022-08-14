@@ -88,9 +88,10 @@ function css(duration: number) {
     border-radius: 3px;
     overflow: hidden;
     height: 100%;
-    background: rgba(255, 255, 255, .2);
+    background: rgba(200, 200, 200, .2);
     z-index: 1;
     flex: auto;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
   }
 
   #bars {
@@ -132,12 +133,13 @@ function css(duration: number) {
     flex: auto;
     font-size: 1.7vh;
     color: rgba(255, 255, 255, 0.7);
-    text-shadow: 0 0 5px #000;
+    text-shadow: 0 0 3px rgba(0, 0, 0, .4), 0 0 3px rgba(0, 0, 0, .4);
   }
 
   svg {
     width: auto;
     height: 3.5vh;
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, .5));
     line-height: 0;
   }
 
@@ -202,7 +204,7 @@ function css(duration: number) {
   }
 
   #metadata-details[open] {
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0)  0%,  rgba(0, 0, 0, 0.5)  25px, rgba(0, 0, 0, .7) 100%);
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0)  0%,  rgba(0, 0, 0, 0.2)  25px, rgba(0, 0, 0, .7) 100%);
   }
 
   #caret {
