@@ -36,11 +36,11 @@ function css(duration: number) {
     display: block;
   }
 
-  :host(story-view.is-empty) .ring {
+  :host(open-stories.is-empty) .ring {
     opacity: 0.5;
   }
 
-  :host(story-view:not(.is-read):not(.is-empty)) .ring {
+  :host(open-stories:not(.is-read):not(.is-empty)) .ring {
     border: 2px solid #08c;
     margin: 0;
   }
@@ -614,7 +614,7 @@ class StoryViewElement extends HTMLElement {
 
   checkHashId(): boolean {
     // Prevent opening multiple viewer sharing the same feed on the page
-    if (Array.from(document.querySelectorAll('story-view')).find(e => e !== this && e.open)) return false
+    if (Array.from(document.querySelectorAll('open-stories')).find(e => e !== this && e.open)) return false
 
     const item = this.itemByHash()
     if (!item) return false
@@ -812,9 +812,9 @@ class StoryViewElement extends HTMLElement {
   }
 }
 
-if (!window.customElements.get('story-view')) {
+if (!window.customElements.get('open-stories')) {
   window.StoryViewElement = StoryViewElement
-  window.customElements.define('story-view', StoryViewElement)
+  window.customElements.define('open-stories', StoryViewElement)
 }
 
 export default StoryViewElement
@@ -824,6 +824,6 @@ declare global {
     StoryViewElement: typeof StoryViewElement
   }
   interface HTMLElementTagNameMap {
-    'story-view': StoryViewElement
+    'open-stories': StoryViewElement
   }
 }

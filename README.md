@@ -1,4 +1,4 @@
-# `<story-view>`
+# `<open-stories>`
 
 Completely self-serving* Instagram-esque [JSONfeed](https://jsonfeed.org) "story" media viewer. See it in action on [muan.co](https://muan.co).
 
@@ -12,28 +12,28 @@ This requires native [`<dialog>`](https://caniuse.com/dialog) and [Shadow DOM](h
 
 ```html
 <!-- Include `StoryViewElement` -->
-<script src="https://unpkg.com/story-view-element@0.0.14" type="module" defer></script>
+<script src="https://unpkg.com/open-stories-element@0.0.14" type="module" defer></script>
 
-<!-- Render `<story-view>` -->
-<story-view src="./feed.json"></story-view>
+<!-- Render `<open-stories>` -->
+<open-stories src="./feed.json"></open-stories>
 ```
 
 ## Parts
 
 Style elements with `::part` ([MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/::part)):
 
-- `story-view::part(button)`: The `<button>` that opens the story viewer modal.
-- `story-view::part(dialog)`: The modal `<dialog>`.
-- `story-view::part(loading-visual)`: The loading overlay.
-- `story-view::part(metadata)`: The `<details>` for metadata.
-- `story-view::part(metadata-summary)`: The `<summary>` for expanding metadata.
-- `story-view::part(metadata-content)`: The metadata content container.
+- `open-stories::part(button)`: The `<button>` that opens the story viewer modal.
+- `open-stories::part(dialog)`: The modal `<dialog>`.
+- `open-stories::part(loading-visual)`: The loading overlay.
+- `open-stories::part(metadata)`: The `<details>` for metadata.
+- `open-stories::part(metadata-summary)`: The `<summary>` for expanding metadata.
+- `open-stories::part(metadata-content)`: The metadata content container.
 
-*Note: when defining `story-view::part(button)` it would be good to style `story-view:not(:defined)` the same way, to prevent styles flash when the script is executed.
+*Note: when defining `open-stories::part(button)` it would be good to style `open-stories:not(:defined)` the same way, to prevent styles flash when the script is executed.
 
 ## Button text / `<slot>`
 
-Whatever you put inside `<story-view>HERE</story-view>` will replace the default button text "View Stories".  ([MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot))
+Whatever you put inside `<open-stories>HERE</open-stories>` will replace the default button text "View Stories".  ([MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot))
 
 ## Attributes
 
