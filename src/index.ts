@@ -1,4 +1,4 @@
-import {WebStoriesFeed} from 'webstories-ts-types'
+import {OpenStoriesFeed} from 'openstories-types'
 
 function css(duration: number) {
   return `
@@ -382,7 +382,7 @@ class StoryViewElement extends HTMLElement {
   paused: boolean = false
   open: boolean = false
   goToBinding: () => void
-  items: WebStoriesFeed["items"] = []
+  items: OpenStoriesFeed["items"] = []
 
   constructor() {
     super()
@@ -519,7 +519,7 @@ class StoryViewElement extends HTMLElement {
 
   async sendHeart() {
     const item = this.items[this.currentIndex]
-    const urls = this.items[this.currentIndex]._web_story.reactions?.open_heart_urls || []
+    const urls = this.items[this.currentIndex]._open_stories.reactions?.open_heart_urls || []
     if (urls.length === 0) return
 
     const key = `♥︎@${item.id}`
@@ -605,7 +605,7 @@ class StoryViewElement extends HTMLElement {
     }
   }
 
-  itemByHash(): WebStoriesFeed["items"][0] | undefined {
+  itemByHash(): OpenStoriesFeed["items"][0] | undefined {
     const hash = (location.hash || '').slice(1)
     if (hash.length === 0) return
     
@@ -644,11 +644,11 @@ class StoryViewElement extends HTMLElement {
   }
 
   async fetchData(url: string) {
-    const json: WebStoriesFeed = await (await fetch(url)).json()
+    const json: OpenStoriesFeed = await (await fetch(url)).json()
 
     const now = new Date()
     this.items = json.items.filter((item) => {
-      return item._web_story.mime_type.startsWith('image') && (!item._web_story.date_expired || now <= new Date(item._web_story.date_expired))
+      return item._open_stories.mime_type.startsWith('image') && (!item._open_stories.date_expired || now <= new Date(item._open_stories.date_expired))
     }).reverse()
 
     this.classList.toggle('is-empty', this.items.length === 0)
@@ -708,8 +708,8 @@ class StoryViewElement extends HTMLElement {
       this.bars.push(bar)
       const img = document.createElement('img')
       this.promises.push(new Promise(resolve => img.addEventListener('load', resolve)))
-      img.src = item._web_story.url
-      if ('alt' in item._web_story) img.alt = item._web_story.alt
+      img.src = item._open_stories.url
+      if ('alt' in item._open_stories) img.alt = item._open_stories.alt
       images.append(img)
       this.images.push(img)
     }
@@ -757,7 +757,7 @@ class StoryViewElement extends HTMLElement {
 
     // Populate
     this.time.textContent = this.relativeTime(item.date_published!)
-    const caption = 'caption' in item._web_story ? item._web_story.caption : null
+    const caption = 'caption' in item._open_stories ? item._open_stories.caption : null
     this.metadataDetails.hidden = !caption
     this.meta.textContent = caption || ''
     this.prepareHeart()
@@ -791,7 +791,7 @@ class StoryViewElement extends HTMLElement {
 
   prepareHeart() {
     const item = this.items[this.currentIndex]
-    const hasUrl = (item._web_story.reactions?.open_heart_urls || []).length > 0
+    const hasUrl = (item._open_stories.reactions?.open_heart_urls || []).length > 0
     this.openHeart.hidden = !hasUrl
     if (!hasUrl) return
     const keys = (localStorage.getItem('_open_heart') || '').split(',')

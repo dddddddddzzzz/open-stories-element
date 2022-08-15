@@ -57,6 +57,11 @@ commander@^2.20.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
 
+openstories-types@0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/openstories-types/-/openstories-types-0.0.7.tgz#fbcb710a9f486c0d00793dce698d85bfaa4f049e"
+  integrity sha512-eWVEcnaGK1hTLERRRiG49PWM2LFrshMX54kE/0PjwJwai+qy8skDP3pxLh0mFJiKNC2GgvHqScmSwbrmcwtzhA==
+
 source-map-support@~0.5.20:
   version "0.5.21"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.21.tgz#04fe7c7f9e1ed2d662233c28cb2b35b9f63f6e4f"
@@ -84,8 +89,3 @@ typescript@^4.7.4:
   version "4.7.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.7.4.tgz#1a88596d1cf47d59507a1bcdfb5b9dfe4d488235"
   integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
-
-webstories-ts-types@0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/webstories-ts-types/-/webstories-ts-types-0.0.6.tgz#cad8464a7d4b9784757ad50160567cf026c1a535"
-  integrity sha512-TOdpCzEXlagmuUD2saVvWA6QdnJufAi2VDEcasw4khELIYIYf8TyKxr4zYR+4TK5mXsmcdej0YXV3hwAkbvFmw==
