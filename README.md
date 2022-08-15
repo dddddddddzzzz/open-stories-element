@@ -1,22 +1,19 @@
 # `<open-stories>`
 
-Completely self-serving* Instagram-esque [JSONfeed](https://jsonfeed.org) "story" media viewer. See it in action on [muan.co](https://muan.co).
+A [OpenStoriesFeed](https://github.com/mochokidae/OpenStories) viewer. See it in action on [muan.co](https://muan.co).
 
-Under development. Everything is subjected to changes. Make sure to specify a version number if you wish to try it out. 
-
-This requires native [`<dialog>`](https://caniuse.com/dialog) and [Shadow DOM](https://caniuse.com/shadowdomv1) support. No polyfills included.
-
-*Note: not accepting issues/PRs; but if we are close friends, maybe.
 
 ## Usage
 
 ```html
-<!-- Include `StoryViewElement` -->
-<script src="https://unpkg.com/open-stories-element@0.0.14" type="module" defer></script>
+<!-- Include `OpenStoriesElement` -->
+<script src="https://unpkg.com/open-stories-element@0.0.15" type="module" defer></script>
 
 <!-- Render `<open-stories>` -->
 <open-stories src="./feed.json"></open-stories>
 ```
+
+This requires native [`<dialog>`](https://caniuse.com/dialog) and [Shadow DOM](https://caniuse.com/shadowdomv1) support. No polyfills included.
 
 ## Parts
 
