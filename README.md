@@ -19,14 +19,17 @@ This requires native [`<dialog>`](https://caniuse.com/dialog) and [Shadow DOM](h
 
 Style elements with `::part` ([MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/::part)):
 
-- `open-stories::part(button)`: The `<button>` that opens the story modal.
+### Button
+
+`open-stories::part(button)` is the selector for the `<button>` that opens the story modal. It would be good to style `open-stories:not(:defined)` the same way, to prevent style flashing as the script executes.
+
+### Advanced
+
 - `open-stories::part(dialog)`: The modal `<dialog>`.
 - `open-stories::part(loading-visual)`: The loading overlay.
 - `open-stories::part(metadata)`: The `<details>` for metadata.
 - `open-stories::part(metadata-summary)`: The `<summary>` for expanding metadata.
 - `open-stories::part(metadata-content)`: The metadata content container.
-
-*Note: when defining `open-stories::part(button)` it would be good to style `open-stories:not(:defined)` the same way, to prevent styles flash when the script is executed.
 
 ## Button text / `<slot>`
 
