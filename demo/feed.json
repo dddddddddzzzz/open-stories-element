@@ -12,13 +12,12 @@
       "authors": [{
         "name": "muan"
       }],
-      "_web_story": {
-        "type": "image",
+      "_open_stories": {
         "mime_type": "image/jpg",
         "url": "https://mochokidae.github.io/open-stories-element/demo/stories/5.JPG",
         "caption": "Postcard from Alex and Elissa.",
         "alt": "A postcard.",
-        "expire_by": "2099-01-01T00:00:00+08:00",
+        "date_expired": "2099-01-01T00:00:00+08:00",
         "reactions": {
           "open_heart_urls": ["https://httpbin.org/post?id=P41ED1C98-C07A-462F-BEF4-60CF9B1052A4"]
         }
@@ -31,13 +30,12 @@
       "authors": [{
         "name": "muan"
       }],
-      "_web_story": {
-        "type": "image",
+      "_open_stories": {
         "mime_type": "image/jpg",
         "url": "https://mochokidae.github.io/open-stories-element/demo/stories/4.JPG",
         "caption": "Screenshot of Stray, the game.",
         "alt": "Screenshot of Stray, the game.",
-        "expire_by": "2099-01-01T00:00:00+08:00",
+        "date_expired": "2099-01-01T00:00:00+08:00",
         "reactions": {
           "open_heart_urls": ["https://httpbin.org/post?id=PAD87ABB0-B87D-4E3D-BE6A-FB9351C3E089"]
         }
@@ -50,13 +48,12 @@
       "authors": [{
         "name": "muan"
       }],
-      "_web_story": {
-        "type": "image",
+      "_open_stories": {
         "mime_type": "image/jpg",
         "url": "https://mochokidae.github.io/open-stories-element/demo/stories/3.JPG",
         "caption": "Received bread from a friend.",
         "alt": "Bread on a plate.",
-        "expire_by": "2099-01-01T00:00:00+08:00",
+        "date_expired": "2099-01-01T00:00:00+08:00",
         "reactions": {
           "open_heart_urls": ["https://httpbin.org/post?id=PCA97AF8A-AF36-4BDC-A3E9-E96B8053F237"]
         }
@@ -69,13 +66,12 @@
       "authors": [{
         "name": "muan"
       }],
-      "_web_story": {
-        "type": "image",
+      "_open_stories": {
         "mime_type": "image/jpg",
         "url": "https://mochokidae.github.io/open-stories-element/demo/stories/2.JPG",
         "caption": "Postcard from Denmark",
         "alt": "Postcard from Denmark",
-        "expire_by": "2099-01-01T00:00:00+08:00",
+        "date_expired": "2099-01-01T00:00:00+08:00",
         "reactions": {
           "open_heart_urls": ["https://httpbin.org/post?id=PEDDC90B0-12BD-41A0-9F5A-D11C90473767"]
         }
@@ -88,13 +84,12 @@
       "authors": [{
         "name": "muan"
       }],
-      "_web_story": {
-        "type": "image",
+      "_open_stories": {
         "mime_type": "image/jpg",
         "url": "https://mochokidae.github.io/open-stories-element/demo/stories/1.JPG",
         "caption": "A very healthy new monstera leaf.",
         "alt": "A very healthy new monstera leaf.",
-        "expire_by": "2099-01-01T00:00:00+08:00",
+        "date_expired": "2099-01-01T00:00:00+08:00",
         "reactions": {
           "open_heart_urls": ["https://httpbin.org/post?id=P1878C0C3-1F69-43C6-A601-8EF1B5ED1544"]
         }
