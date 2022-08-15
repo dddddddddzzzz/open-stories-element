@@ -4,6 +4,9 @@
   "icon": "https://github.com/muan.png",
   "home_page_url": "https://mochokidae.github.io/open-stories-element/demo/feed.json",
   "description": "Photos.",
+  "_open_stories": {
+    "version": "0.0.8"
+  },
   "items": [
     {
       "id": "P41ED1C98-C07A-462F-BEF4-60CF9B1052A4",
