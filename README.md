@@ -34,7 +34,7 @@ Whatever you put inside `<open-stories>HERE</open-stories>` will replace the def
 
 ## Attributes
 
-- `src`: Required. A [JSONfeed](https://jsonfeed.org) URL. Required fields: `title`, `icon`, `items[].date_published`, `items[].image`, `items[].summary`.
+- `src`: Required. A [OpenStoriesFeed](https://github.com/mochokidae/OpenStories) URL.
 - `duration`: Optional. Number in seconds. Default to `5`.
 - `show-metadata`: Optional. Display `items[].summary`.
 - `is-highlight`: Optional. View history does not get set.
@@ -44,7 +44,3 @@ Whatever you put inside `<open-stories>HERE</open-stories>` will replace the def
 - `.is-empty`: Present when no stories found.
 - `.is-read`: Present when stories have all been viewed. This relies on `localStroage` and does not work cross-origin/cross-devices.
 - `.is-paused`: Present autoplay is paused.
-
-## JSON feed
-
-[Example](/demo/feed.json).
