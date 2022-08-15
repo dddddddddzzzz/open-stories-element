@@ -1,6 +1,6 @@
 # `<open-stories>`
 
-A [OpenStoriesFeed](https://github.com/mochokidae/OpenStories) viewer. See it in action on [muan.co](https://muan.co).
+An [OpenStoriesFeed](https://github.com/mochokidae/OpenStories) viewer. See it in action on [muan.co](https://muan.co).
 
 
 ## Usage
