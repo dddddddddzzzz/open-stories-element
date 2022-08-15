@@ -360,7 +360,7 @@ function css(duration: number) {
 `
 }
 
-class StoryViewElement extends HTMLElement {
+class OpenStoriesElement extends HTMLElement {
   root: ShadowRoot
   dialog: HTMLDialogElement
   button: HTMLButtonElement
@@ -779,13 +779,13 @@ class StoryViewElement extends HTMLElement {
     const newViewedIndex = this.items.findIndex(item => item.id === id)
     if (newViewedIndex < lastViewedIndex) return
 
-    const viewedByFeed = JSON.parse(localStorage.getItem('_story_view') || '{}')
+    const viewedByFeed = JSON.parse(localStorage.getItem('_open_stories') || '{}')
     viewedByFeed[this.viewedKey] = id
-    localStorage.setItem('_story_view', JSON.stringify(viewedByFeed))
+    localStorage.setItem('_open_stories', JSON.stringify(viewedByFeed))
   }
 
   getViewedId() {
-    const viewedByFeed = JSON.parse(localStorage.getItem('_story_view') || '{}')
+    const viewedByFeed = JSON.parse(localStorage.getItem('_open_stories') || '{}')
     return viewedByFeed[this.viewedKey]
   }
 
@@ -813,17 +813,17 @@ class StoryViewElement extends HTMLElement {
 }
 
 if (!window.customElements.get('open-stories')) {
-  window.StoryViewElement = StoryViewElement
-  window.customElements.define('open-stories', StoryViewElement)
+  window.OpenStoriesElement = OpenStoriesElement
+  window.customElements.define('open-stories', OpenStoriesElement)
 }
 
-export default StoryViewElement
+export default OpenStoriesElement
 
 declare global {
   interface Window {
-    StoryViewElement: typeof StoryViewElement
+    OpenStoriesElement: typeof OpenStoriesElement
   }
   interface HTMLElementTagNameMap {
-    'open-stories': StoryViewElement
+    'open-stories': OpenStoriesElement
   }
 }

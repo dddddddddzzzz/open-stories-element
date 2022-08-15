@@ -7,7 +7,7 @@ A [OpenStoriesFeed](https://github.com/mochokidae/OpenStories) viewer. See it in
 
 ```html
 <!-- Include `OpenStoriesElement` -->
-<script src="https://unpkg.com/open-stories-element@0.0.15" type="module" defer></script>
+<script src="https://unpkg.com/open-stories-element@0.0.16" type="module" defer></script>
 
 <!-- Render `<open-stories>` -->
 <open-stories src="./feed.json"></open-stories>
@@ -19,7 +19,7 @@ This requires native [`<dialog>`](https://caniuse.com/dialog) and [Shadow DOM](h
 
 Style elements with `::part` ([MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/::part)):
 
-- `open-stories::part(button)`: The `<button>` that opens the story viewer modal.
+- `open-stories::part(button)`: The `<button>` that opens the story modal.
 - `open-stories::part(dialog)`: The modal `<dialog>`.
 - `open-stories::part(loading-visual)`: The loading overlay.
 - `open-stories::part(metadata)`: The `<details>` for metadata.
