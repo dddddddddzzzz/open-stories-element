@@ -2,7 +2,7 @@
   "version": "https://jsonfeed.org/version/1.1",
   "title": "@muan's stories",
   "icon": "https://github.com/muan.png",
-  "home_page_url": "https://mochokidae.github.io/open-stories-element/demo/feed.json",
+  "home_page_url": "https://dddddddddzzzz.github.io/open-stories-element/demo/feed.json",
   "description": "Photos.",
   "_open_stories": {
     "version": "0.0.8"
@@ -11,13 +11,13 @@
     {
       "id": "P41ED1C98-C07A-462F-BEF4-60CF9B1052A4",
       "date_published": "2022-07-28T00:51:06.000Z",
-      "content_html": "<img src=\"https://mochokidae.github.io/open-stories-element/demo/stories/5.JPG\" alt=\"A postcard.\">",
+      "content_html": "<img src=\"https://dddddddddzzzz.github.io/open-stories-element/demo/stories/5.JPG\" alt=\"A postcard.\">",
       "authors": [{
         "name": "muan"
       }],
       "_open_stories": {
         "mime_type": "image/jpg",
-        "url": "https://mochokidae.github.io/open-stories-element/demo/stories/5.JPG",
+        "url": "https://dddddddddzzzz.github.io/open-stories-element/demo/stories/5.JPG",
         "caption": "Postcard from Alex and Elissa.",
         "alt": "A postcard.",
         "date_expired": "2099-01-01T00:00:00+08:00",
@@ -29,13 +29,13 @@
     {
       "id": "PAD87ABB0-B87D-4E3D-BE6A-FB9351C3E089",
       "date_published": "2022-07-28T07:45:09.000Z",
-      "content_html": "<img src=\"https://mochokidae.github.io/open-stories-element/demo/stories/4.JPG\" alt=\"Screenshot of Stray, the game.\">",
+      "content_html": "<img src=\"https://dddddddddzzzz.github.io/open-stories-element/demo/stories/4.JPG\" alt=\"Screenshot of Stray, the game.\">",
       "authors": [{
         "name": "muan"
       }],
       "_open_stories": {
         "mime_type": "image/jpg",
-        "url": "https://mochokidae.github.io/open-stories-element/demo/stories/4.JPG",
+        "url": "https://dddddddddzzzz.github.io/open-stories-element/demo/stories/4.JPG",
         "caption": "Screenshot of Stray, the game.",
         "alt": "Screenshot of Stray, the game.",
         "date_expired": "2099-01-01T00:00:00+08:00",
@@ -47,13 +47,13 @@
     {
       "id": "PCA97AF8A-AF36-4BDC-A3E9-E96B8053F237",
       "date_published": "2022-07-12T23:19:29.000Z",
-      "content_html": "<img src=\"https://mochokidae.github.io/open-stories-element/demo/stories/3.JPG\" alt=\"Bread on a plate.\">",
+      "content_html": "<img src=\"https://dddddddddzzzz.github.io/open-stories-element/demo/stories/3.JPG\" alt=\"Bread on a plate.\">",
       "authors": [{
         "name": "muan"
       }],
       "_open_stories": {
         "mime_type": "image/jpg",
-        "url": "https://mochokidae.github.io/open-stories-element/demo/stories/3.JPG",
+        "url": "https://dddddddddzzzz.github.io/open-stories-element/demo/stories/3.JPG",
         "caption": "Received bread from a friend.",
         "alt": "Bread on a plate.",
         "date_expired": "2099-01-01T00:00:00+08:00",
@@ -65,13 +65,13 @@
     {
       "id": "PEDDC90B0-12BD-41A0-9F5A-D11C90473767",
       "date_published": "2022-07-10T10:11:13.000Z",
-      "content_html": "<img src=\"https://mochokidae.github.io/open-stories-element/demo/stories/2.JPG\" alt=\"Postcard from Denmark\">",
+      "content_html": "<img src=\"https://dddddddddzzzz.github.io/open-stories-element/demo/stories/2.JPG\" alt=\"Postcard from Denmark\">",
       "authors": [{
         "name": "muan"
       }],
       "_open_stories": {
         "mime_type": "image/jpg",
-        "url": "https://mochokidae.github.io/open-stories-element/demo/stories/2.JPG",
+        "url": "https://dddddddddzzzz.github.io/open-stories-element/demo/stories/2.JPG",
         "caption": "Postcard from Denmark",
         "alt": "Postcard from Denmark",
         "date_expired": "2099-01-01T00:00:00+08:00",
@@ -83,13 +83,13 @@
     {
       "id": "P1878C0C3-1F69-43C6-A601-8EF1B5ED1544",
       "date_published": "2022-07-10T09:55:08.000Z",
-      "content_html": "<img src=\"https://mochokidae.github.io/open-stories-element/demo/stories/1.JPG\" alt=\"A very healthy new monstera leaf.\">",
+      "content_html": "<img src=\"https://dddddddddzzzz.github.io/open-stories-element/demo/stories/1.JPG\" alt=\"A very healthy new monstera leaf.\">",
       "authors": [{
         "name": "muan"
       }],
       "_open_stories": {
         "mime_type": "image/jpg",
-        "url": "https://mochokidae.github.io/open-stories-element/demo/stories/1.JPG",
+        "url": "https://dddddddddzzzz.github.io/open-stories-element/demo/stories/1.JPG",
         "caption": "A very healthy new monstera leaf.",
         "alt": "A very healthy new monstera leaf.",
         "date_expired": "2099-01-01T00:00:00+08:00",

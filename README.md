@@ -1,6 +1,6 @@
 # `<open-stories>`
 
-An [OpenStoriesFeed](https://github.com/mochokidae/OpenStories) viewer. See it in action on [muan.co](https://muan.co).
+An [OpenStoriesFeed](https://github.com/dddddddddzzzz/OpenStories) viewer. See it in action on [muan.co](https://muan.co).
 
 
 ## Usage
@@ -37,7 +37,7 @@ Whatever you put inside `<open-stories>HERE</open-stories>` will replace the def
 
 ## Attributes
 
-- `src`: Required. A [OpenStoriesFeed](https://github.com/mochokidae/OpenStories) URL.
+- `src`: Required. A [OpenStoriesFeed](https://github.com/dddddddddzzzz/OpenStories) URL.
 - `duration`: Optional. Number in seconds. Default to `5`.
 - `show-metadata`: Optional. Display `items[]._open_stories.caption`.
 - `is-highlight`: Optional. View history does not get set.
