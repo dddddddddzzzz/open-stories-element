@@ -57,10 +57,10 @@ commander@^2.20.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
 
-openstories-types@0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/openstories-types/-/openstories-types-0.0.8.tgz#d7249ca8fca1d360213edf0912f33aa91997948c"
-  integrity sha512-+RkFlmBr7PQjU5vA9UCh7p7v4PaRMFM4IcGGDoo5bdI2n831BXNsUrRrzbs3o6ZtmuVKFCJ8TONMG0yVBaVIxg==
+openstories-types@0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/openstories-types/-/openstories-types-0.0.9.tgz#e0932ec808930a24a869f2bbbd6b4220cb9eb6db"
+  integrity sha512-inVxrJ2zXSh/vJHZg1jUCpYjHww+qO2N7u0O0bliH+V7n+p99UrGehmqWKe6LCApBY3OrntbRtgXLkXzfMjRAw==
 
 source-map-support@~0.5.20:
   version "0.5.21"
