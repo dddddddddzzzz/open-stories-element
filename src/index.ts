@@ -455,10 +455,6 @@ class OpenStoriesElement extends HTMLElement {
     return this.hasAttribute('is-highlight')
   }
 
-  get showMetadata() {
-    return this.hasAttribute('show-metadata')
-  }
-
   setThemeColor(force: boolean) {
     if (force && !this.themeColor) {
       this.themeColor = document.createElement('meta')
@@ -503,10 +499,6 @@ class OpenStoriesElement extends HTMLElement {
     this.root.append(style)
 
     this.style.setProperty('--mobileVh', `${window.innerHeight * 0.01}px`)
-
-    if (this.showMetadata) {
-      this.root.querySelector<HTMLElement>('details')!.hidden = false
-    }
   }
 
   get src() {
