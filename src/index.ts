@@ -748,7 +748,7 @@ class OpenStoriesElement extends HTMLElement {
     if (!this.isHighlight) this.setViewed(item.id)
 
     // Populate
-    this.time.textContent = this.relativeTime(item.date_published!)
+    this.time.textContent = this.relativeTime(item.date_published)
     const caption = 'caption' in item._open_stories ? item._open_stories.caption : null
     this.metadataDetails.hidden = !caption
     this.meta.textContent = caption || ''
@@ -792,8 +792,12 @@ class OpenStoriesElement extends HTMLElement {
     this.openHeart.disabled = hearted
   }
   
-  relativeTime(time: string): string {
-    const m = Math.round((new Date().getTime() - new Date(time).getTime()) / 1000 / 60)
+  relativeTime(time: string | undefined): string {
+    if (!time) return ''
+    const published = new Date(time)
+    if (published.toString() === 'Invalid Date') return ''
+
+    const m = Math.round((new Date().getTime() - published.getTime()) / 1000 / 60)
     if (m > 60 * 24) {
       return `${Math.round(m / 60 / 24)}d`
     } else if (m > 60) {
