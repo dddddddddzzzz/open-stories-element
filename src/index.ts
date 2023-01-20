@@ -21,8 +21,15 @@ function css(duration: number) {
     padding: 0;
     margin: 0;
   }
+  
+  #side-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7vh;
+  }
 
-  #controls #close,
+  #side-controls #close,
   #play,
   #pause {
     display: none;
@@ -109,38 +116,33 @@ function css(duration: number) {
     padding: 10px;
     display: flex;
     gap: 5px;
-    z-index: 1;
+    z-index: 2;
   }
 
-  #controls {
-    left: 0; 
-    right: 0;
-    top: 0;
-    position: absolute;
-    margin: 20px 10px 10px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    z-index: 1;
-  }
-
-  #metadata-details summary {
-    align-items: center;
-    font-size: 1.6vh;
-  }
-
-  #controls button,
-  #controls a,
-  #metadata-details summary {
+  #side-controls button,
+  #side-controls a {
     display: inline-flex;
   }
 
-  #time,
-  #metadata-details {
-    flex: auto;
-    font-size: 1.7vh;
+  #time {
+    position: absolute;
+    margin: 10px;
+    top: 0; 
+    left: 0;
+    z-index: 1;
+  }
+
+  #time, {
     color: rgba(255, 255, 255, 0.7);
-    text-shadow: 0 0 3px rgba(0, 0, 0, .4), 0 0 3px rgba(0, 0, 0, .4);
+  }
+
+  #time,
+  #metadata,
+  #more {
+    color: #fff;
+    font-size: 1.7vh;
+    font-weight: 600;
+    text-shadow: 0 0 2px black;;
   }
 
   svg {
@@ -150,22 +152,33 @@ function css(duration: number) {
     line-height: 0;
   }
 
-  #metadata-details,
-  #open-heart {
+  #bottom-controls {
     position: absolute;
-    bottom: 0;
     z-index: 1;
+    bottom: 0;
     left: 0;
     right: 0;
     padding: 10px;
+    display: flex;
+    align-items: end;
+    overflow: hidden;
+    gap: 1vh;
+  }
+
+  .action {
+    cursor: pointer;
+    transition: transform .3s;
+  }
+
+  .action:not([disabled]):hover,
+  .action:not([disabled]):focus {
+    transform: scale(1.2);
   }
 
   #open-heart {
     left: auto;
     right: 0;
     display: inline-flex;
-    cursor: pointer;
-    transition: transform .3s;
   }
 
   #open-heart .off {
@@ -178,11 +191,6 @@ function css(duration: number) {
     opacity: 0;
     transform: scale(0);
     transition: transform .3s;
-  }
-
-  #open-heart:not([disabled]):hover,
-  #open-heart:not([disabled]):focus {
-    transform: scale(1.2);
   }
 
   #open-heart[aria-pressed="true"] .on { 
@@ -206,41 +214,28 @@ function css(duration: number) {
   }
 
   #metadata-details {
-    border-radius: 10px;
-    padding: 10px 15px;
+    display: flex;
+    flex: 1 1 auto;
+    align-items: end;
+    overflow: hidden;
+    padding: 0.7vh 0;
+    gap: 0.7vh; 
   }
 
-  #metadata-details[open] {
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0)  0%,  rgba(0, 0, 0, 0.2)  25px, rgba(0, 0, 0, .7) 100%);
+  #metadata,
+  #more {
+    line-height: 1.5em;
   }
-
-  #caret {
-    transition: transform .3s;
-  }
-
-  #metadata-details[open] #caret {
-    transform: rotate(90deg);
-  }
-
-  summary path {
-    fill: rgba(255, 255, 255, 0.7);
-  }
-
-  summary {
+  
+  #more {
     cursor: pointer;
-    width: 100%;
-    text-align: left;
-    list-style: none;
   }
-
-  summary::-webkit-details-marker { display: none; }
 
   #metadata {
-    border-radius: 6px;
-    color: #fff;
-    line-height: 1.5em;
-    padding: 5px 0;
-    padding-right: 40px;
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   #metadata a {
@@ -356,7 +351,7 @@ function css(duration: number) {
       background-color: #000;
     }
 
-    #controls #close {
+    #side-controls #close {
       display: inline-flex;
     }
   }
@@ -399,51 +394,50 @@ class OpenStoriesElement extends HTMLElement {
       <dialog class="is-loading" part="dialog">
         <div class="loading-visual" part="loading-visual"></div>
         <div id="bars"></div>
-        <div id="controls">
-          <span id="time"></span>
-          <a href id="link" aria-label="Story (copy link)">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M9.41489 9.17763C9.80542 8.78711 9.80542 8.15395 9.41489 7.76342V7.76342C9.02437 7.3729 8.3912 7.3729 8.00068 7.76342L6.92857 8.83553C5.757 10.0071 5.757 11.9066 6.92857 13.0782C8.10014 14.2497 9.99964 14.2497 11.1712 13.0782V13.0782C11.3254 12.924 11.3254 12.6739 11.1712 12.5197L10.3154 11.664C10.1612 11.5098 9.9112 11.5098 9.757 11.664V11.664C9.36647 12.0545 8.73331 12.0545 8.34278 11.664C7.95226 11.2734 7.95226 10.6403 8.34278 10.2497L9.41489 9.17763ZM11.5918 9.82911C11.2013 10.2196 11.2013 10.8528 11.5918 11.2433V11.2433C11.9824 11.6338 12.6155 11.6338 13.0061 11.2433L13.9996 10.2497C15.1712 9.07817 15.1712 7.17868 13.9996 6.00711C12.8281 4.83553 10.9286 4.83553 9.757 6.00711V6.00711C9.64616 6.11794 9.64616 6.29763 9.757 6.40847L10.7698 7.42132C10.8807 7.53215 11.0604 7.53215 11.1712 7.42132V7.42132C11.5617 7.03079 12.1949 7.03079 12.5854 7.42132C12.9759 7.81184 12.9759 8.44501 12.5854 8.83553L11.5918 9.82911Z" fill="white"/>
-            </svg>
-          </a>
-          <button id="play-pause" type="button" aria-label="Play/Pause" aria-pressed="true">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" id="play">
-              <path d="M7 13.0568V6.94319C7 6.12982 7.91937 5.65669 8.58124 6.12946L12.8608 9.18627C13.4191 9.58509 13.4191 10.4149 12.8608 10.8137L8.58124 13.8705C7.91937 14.3433 7 13.8702 7 13.0568Z" fill="white"/>
-            </svg>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" id="pause">
-              <rect x="7" y="6" width="2" height="8" rx="1" fill="white"/>
-              <path d="M11 7C11 6.44772 11.4477 6 12 6V6C12.5523 6 13 6.44772 13 7V13C13 13.5523 12.5523 14 12 14V14C11.4477 14 11 13.5523 11 13V7Z" fill="white"/>
-            </svg>
-          </button>
-          <button id="close" type="button" aria-label="Close">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="6" y="7.35723" width="1.91942" height="10.1014" rx="0.95971" transform="rotate(-45 6 7.35723)" fill="white"/>
-              <rect x="7.35724" y="14.5" width="1.91942" height="10.1014" rx="0.95971" transform="rotate(-135 7.35724 14.5)" fill="white"/>
-            </svg>
-          </button>
-        </div>
+        <span id="time"></span>
         <div id="goToBlock">
           <button id="back">←</button>
           <button id="forward">→</button>
         </div>
         <div id="images"></div>
-        <details hidden id="metadata-details" part="metadata">
-          <summary part="metadata-summary">
-            See description 
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" id="caret">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M8.27665 6.30953C8.65799 5.91003 9.29098 5.89531 9.69048 6.27665L12.6905 9.14028C12.8825 9.32353 12.9937 9.57558 12.9997 9.8409C13.0058 10.1062 12.9061 10.3631 12.7226 10.5549L9.72264 13.6912C9.34089 14.0903 8.70788 14.1044 8.30878 13.7226C7.90968 13.3409 7.89561 12.7079 8.27736 12.3088L10.5854 9.8958L8.30953 7.72336C7.91003 7.34202 7.89531 6.70902 8.27665 6.30953Z" fill="white"/>
-            </svg>
-          </summary>
-          <div id="metadata" part="metadata-content"></div>
-        </details>
-        <button type="button" id="open-heart" part="open-heart" part="open-heart" hidden>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="on">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M7.60419 6.08132C9.77084 5.51626 10.1042 8.08132 10.1042 8.08132L10.1042 13.5813C8.60419 13.5813 7.10419 12.0813 6.50161 11.0813C5.89903 10.0813 5.43754 6.64637 7.60419 6.08132ZM12.6042 6.08131C10.4375 5.51626 10.1042 8.08132 10.1042 8.08132L10.1042 13.5813C11.6042 13.5813 13.1042 12.0813 13.7068 11.0813C14.3093 10.0813 14.7708 6.64637 12.6042 6.08131Z" fill="white"/>
-          </svg>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="off">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.51776 6.65626C9.99827 7.26627 10.1042 8.08132 10.1042 8.08132C10.1042 8.08132 10.2101 7.26627 10.6906 6.65626C11.0625 6.1841 11.6589 5.83478 12.6042 6.08131C14.7708 6.64637 14.3093 10.0813 13.7068 11.0813C13.1042 12.0813 11.6042 13.5813 10.1042 13.5813C8.60419 13.5813 7.10419 12.0813 6.50161 11.0813C5.89903 10.0813 5.43754 6.64637 7.60419 6.08132C8.54951 5.83478 9.14584 6.1841 9.51776 6.65626ZM9.11332 8.21616L9.11237 8.20995C9.111 8.20138 9.10825 8.18497 9.10382 8.16202C9.09487 8.11576 9.07949 8.04512 9.05555 7.95993C9.00587 7.78317 8.92824 7.57595 8.81703 7.39676C8.70614 7.2181 8.58996 7.11151 8.47666 7.0572C8.3811 7.0114 8.20033 6.95929 7.85655 7.04895C7.4012 7.1677 7.08018 7.59115 7.01156 8.494C6.97938 8.91746 7.01661 9.36612 7.09563 9.76183C7.17781 10.1734 7.28974 10.4517 7.35813 10.5652C7.5966 10.9609 8.04101 11.4942 8.58331 11.9193C9.13877 12.3547 9.67326 12.5813 10.1042 12.5813C10.5351 12.5813 11.0696 12.3547 11.6251 11.9193C12.1674 11.4942 12.6118 10.9609 12.8503 10.5652C12.9186 10.4517 13.0306 10.1734 13.1127 9.76183C13.1918 9.36612 13.229 8.91746 13.1968 8.49399C13.1282 7.59115 12.8072 7.1677 12.3518 7.04895C12.008 6.95929 11.8273 7.0114 11.7317 7.0572C11.6184 7.11151 11.5022 7.2181 11.3913 7.39676C11.2801 7.57595 11.2025 7.78317 11.1528 7.95993C11.1289 8.04512 11.1135 8.11576 11.1046 8.16202C11.1001 8.18497 11.0974 8.20138 11.096 8.20995L11.0951 8.21615C11.0277 8.71143 10.6047 9.08132 10.1042 9.08132C9.60373 9.08132 9.18068 8.71144 9.11332 8.21616Z" fill="white"/>
-          </svg>
-        </button>
+        <div id="bottom-controls">
+          <div id="metadata-details">
+            <div id="metadata" part="metadata-content"></div>
+            <button type="button" id="more" part="metadata-summary">
+            [more]
+            </button>
+          </div>
+          <div id="side-controls">
+            <button id="close" class="action" type="button" aria-label="Close">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="6" y="7.35723" width="1.91942" height="10.1014" rx="0.95971" transform="rotate(-45 6 7.35723)" fill="white"/>
+                <rect x="7.35724" y="14.5" width="1.91942" height="10.1014" rx="0.95971" transform="rotate(-135 7.35724 14.5)" fill="white"/>
+              </svg>
+            </button>
+            <button id="play-pause" class="action" type="button" aria-label="Play/Pause" aria-pressed="true">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" id="play">
+                <path d="M7 13.0568V6.94319C7 6.12982 7.91937 5.65669 8.58124 6.12946L12.8608 9.18627C13.4191 9.58509 13.4191 10.4149 12.8608 10.8137L8.58124 13.8705C7.91937 14.3433 7 13.8702 7 13.0568Z" fill="white"/>
+              </svg>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" id="pause">
+                <rect x="7" y="6" width="2" height="8" rx="1" fill="white"/>
+                <path d="M11 7C11 6.44772 11.4477 6 12 6V6C12.5523 6 13 6.44772 13 7V13C13 13.5523 12.5523 14 12 14V14C11.4477 14 11 13.5523 11 13V7Z" fill="white"/>
+              </svg>
+            </button>
+            <a href id="link" class="action" aria-label="Story (copy link)">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M9.41489 9.17763C9.80542 8.78711 9.80542 8.15395 9.41489 7.76342V7.76342C9.02437 7.3729 8.3912 7.3729 8.00068 7.76342L6.92857 8.83553C5.757 10.0071 5.757 11.9066 6.92857 13.0782C8.10014 14.2497 9.99964 14.2497 11.1712 13.0782V13.0782C11.3254 12.924 11.3254 12.6739 11.1712 12.5197L10.3154 11.664C10.1612 11.5098 9.9112 11.5098 9.757 11.664V11.664C9.36647 12.0545 8.73331 12.0545 8.34278 11.664C7.95226 11.2734 7.95226 10.6403 8.34278 10.2497L9.41489 9.17763ZM11.5918 9.82911C11.2013 10.2196 11.2013 10.8528 11.5918 11.2433V11.2433C11.9824 11.6338 12.6155 11.6338 13.0061 11.2433L13.9996 10.2497C15.1712 9.07817 15.1712 7.17868 13.9996 6.00711C12.8281 4.83553 10.9286 4.83553 9.757 6.00711V6.00711C9.64616 6.11794 9.64616 6.29763 9.757 6.40847L10.7698 7.42132C10.8807 7.53215 11.0604 7.53215 11.1712 7.42132V7.42132C11.5617 7.03079 12.1949 7.03079 12.5854 7.42132C12.9759 7.81184 12.9759 8.44501 12.5854 8.83553L11.5918 9.82911Z" fill="white"/>
+              </svg>
+            </a>
+            <button type="button" class="action" id="open-heart" part="open-heart" part="open-heart" hidden>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="on">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.60419 6.08132C9.77084 5.51626 10.1042 8.08132 10.1042 8.08132L10.1042 13.5813C8.60419 13.5813 7.10419 12.0813 6.50161 11.0813C5.89903 10.0813 5.43754 6.64637 7.60419 6.08132ZM12.6042 6.08131C10.4375 5.51626 10.1042 8.08132 10.1042 8.08132L10.1042 13.5813C11.6042 13.5813 13.1042 12.0813 13.7068 11.0813C14.3093 10.0813 14.7708 6.64637 12.6042 6.08131Z" fill="white"/>
+              </svg>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="off">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M9.51776 6.65626C9.99827 7.26627 10.1042 8.08132 10.1042 8.08132C10.1042 8.08132 10.2101 7.26627 10.6906 6.65626C11.0625 6.1841 11.6589 5.83478 12.6042 6.08131C14.7708 6.64637 14.3093 10.0813 13.7068 11.0813C13.1042 12.0813 11.6042 13.5813 10.1042 13.5813C8.60419 13.5813 7.10419 12.0813 6.50161 11.0813C5.89903 10.0813 5.43754 6.64637 7.60419 6.08132C8.54951 5.83478 9.14584 6.1841 9.51776 6.65626ZM9.11332 8.21616L9.11237 8.20995C9.111 8.20138 9.10825 8.18497 9.10382 8.16202C9.09487 8.11576 9.07949 8.04512 9.05555 7.95993C9.00587 7.78317 8.92824 7.57595 8.81703 7.39676C8.70614 7.2181 8.58996 7.11151 8.47666 7.0572C8.3811 7.0114 8.20033 6.95929 7.85655 7.04895C7.4012 7.1677 7.08018 7.59115 7.01156 8.494C6.97938 8.91746 7.01661 9.36612 7.09563 9.76183C7.17781 10.1734 7.28974 10.4517 7.35813 10.5652C7.5966 10.9609 8.04101 11.4942 8.58331 11.9193C9.13877 12.3547 9.67326 12.5813 10.1042 12.5813C10.5351 12.5813 11.0696 12.3547 11.6251 11.9193C12.1674 11.4942 12.6118 10.9609 12.8503 10.5652C12.9186 10.4517 13.0306 10.1734 13.1127 9.76183C13.1918 9.36612 13.229 8.91746 13.1968 8.49399C13.1282 7.59115 12.8072 7.1677 12.3518 7.04895C12.008 6.95929 11.8273 7.0114 11.7317 7.0572C11.6184 7.11151 11.5022 7.2181 11.3913 7.39676C11.2801 7.57595 11.2025 7.78317 11.1528 7.95993C11.1289 8.04512 11.1135 8.11576 11.1046 8.16202C11.1001 8.18497 11.0974 8.20138 11.096 8.20995L11.0951 8.21615C11.0277 8.71143 10.6047 9.08132 10.1042 9.08132C9.60373 9.08132 9.18068 8.71144 9.11332 8.21616Z" fill="white"/>
+              </svg>
+            </button>
+          </div>
+        </div>
       </dialog>
     `
 
