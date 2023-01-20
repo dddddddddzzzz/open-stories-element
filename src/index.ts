@@ -92,6 +92,12 @@ function css(duration: number) {
     z-index: 1;
     flex: auto;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+    transition: all 200ms;
+  }
+
+  #bars:hover .bar {
+    height: 4px;
+    transform: translateY(-1px);
   }
 
   #bars {
@@ -100,9 +106,10 @@ function css(duration: number) {
     top: 0;
     height: 2px;
     position: absolute;
-    margin: 10px;
+    padding: 10px;
     display: flex;
     gap: 5px;
+    z-index: 1;
   }
 
   #controls {
@@ -690,11 +697,19 @@ class OpenStoriesElement extends HTMLElement {
 
     const bars = this.root.querySelector('#bars')!
     const images = this.root.querySelector('#images')!
+
     for (const item of this.items) {
-      const bar = document.createElement('div')
+      const bar = document.createElement('button')
+      bar.type = 'button'
       bar.classList.add('bar')
+      const idx = this.images.length
+      bar.addEventListener('click', () => {
+        const delta = idx - this.currentIndex
+        if (delta !== 0) this.goTo(delta)
+      })
       const progress = document.createElement('div')
       progress.classList.add('progress')
+      bar.setAttribute('aria-label', `${idx + 1} of ${this.items.length} ${this.items.length === 1 ? 'stroy' : 'stories'}`)
       bar.append(progress)
       bars.append(bar)
       this.bars.push(bar)
