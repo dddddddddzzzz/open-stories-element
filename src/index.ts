@@ -226,16 +226,28 @@ function css(duration: number) {
   #more {
     line-height: 1.5em;
   }
+
+  .is-collapsed #more {
+    display: block;
+  }
   
   #more {
+    display: none;
     cursor: pointer;
   }
 
   #metadata {
     flex: 1 1 auto;
+    white-space: nowrap;
+  }
+  
+  .is-collapsed #metadata {
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+  }
+
+  .is-expanded #metadata {
+    white-space: normal;
   }
 
   #metadata a {
@@ -369,6 +381,7 @@ class OpenStoriesElement extends HTMLElement {
   close: HTMLButtonElement
   time: HTMLElement
   metadataDetails: HTMLElement
+  moreMetadata: HTMLButtonElement
   meta: HTMLElement
   openHeart: HTMLButtonElement
   themeColor: HTMLMetaElement | null = null
@@ -447,6 +460,7 @@ class OpenStoriesElement extends HTMLElement {
     this.openHeart = this.root.querySelector('button#open-heart')!
     this.metadataDetails = this.root.querySelector('#metadata-details')!
     this.meta = this.root.querySelector('#metadata')!
+    this.moreMetadata = this.root.querySelector('#more')!
     this.link = this.root.querySelector('a#link')!
     this.time = this.root.querySelector('#time')!
     this.goToBinding = this.goTo.bind(this, 1)
@@ -500,6 +514,11 @@ class OpenStoriesElement extends HTMLElement {
     this.root.append(style)
 
     this.style.setProperty('--mobileVh', `${window.innerHeight * 0.01}px`)
+
+    this.moreMetadata.addEventListener('click', () => {
+      this.metadataDetails.classList.add('is-expanded')
+      this.metadataDetails.classList.remove('is-collapsed')
+    })
   }
 
   get src() {
@@ -759,8 +778,12 @@ class OpenStoriesElement extends HTMLElement {
     // Populate
     this.time.textContent = this.relativeTime(item.date_published)
     const caption = 'caption' in item._open_stories ? item._open_stories.caption : null
+    this.metadataDetails.classList.remove('is-expanded', 'is-collapsed')
     this.metadataDetails.hidden = !caption
     this.meta.textContent = caption || ''
+    if (this.meta.clientWidth > this.metadataDetails.clientWidth) {
+      this.metadataDetails.classList.add('is-collapsed')
+    }
     this.prepareHeart()
 
     this.link.href = `#${item.id}`
