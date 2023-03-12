@@ -162,6 +162,7 @@ function css(duration: number) {
     display: flex;
     align-items: end;
     overflow: hidden;
+    pointer-events: none;
     gap: 1vh;
   }
 
@@ -234,6 +235,11 @@ function css(duration: number) {
   #more {
     display: none;
     cursor: pointer;
+  }
+
+  #more,
+  .action {
+    pointer-events: auto;
   }
 
   #metadata {
@@ -351,12 +357,6 @@ function css(duration: number) {
   #forward {
     right: -1.5em;
     text-align: right;
-  }
-
-  .disabled, :disabled {
-    opacity: 0.8;
-    pointer-events: none;
-    cursor: default;
   }
 
   @media (max-width: 420px), screen and (orientation: portrait) {
@@ -792,10 +792,10 @@ class OpenStoriesElement extends HTMLElement {
     this.prepareHeart()
 
     if (item.url) {
-      this.link.classList.remove('disabled')
+      this.link.hidden = false
       this.link.href = item.url
     } else {
-      this.link.classList.add('disabled')
+      this.link.hidden = true
       this.link.removeAttribute('href')
     }
 
