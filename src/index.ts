@@ -662,7 +662,9 @@ class OpenStoriesElement extends HTMLElement {
   }
 
   async fetchData(url: string) {
+    this.classList.add('is-loading')
     const json: OpenStoriesFeed = await (await fetch(url)).json()
+    this.classList.remove('is-loading')
 
     const now = new Date()
     this.items = json.items.filter((item) => {
