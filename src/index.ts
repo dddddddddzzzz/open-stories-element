@@ -785,7 +785,6 @@ class OpenStoriesElement extends HTMLElement {
     this.time.textContent = this.relativeTime(item.date_published)
     const caption = 'caption' in item._open_stories ? item._open_stories.caption : null
     this.metadataDetails.classList.remove('is-expanded', 'is-collapsed')
-    this.meta.hidden = !caption
     this.meta.textContent = caption || ''
     if (this.meta.clientWidth > this.metadataDetails.clientWidth) {
       this.metadataDetails.classList.add('is-collapsed')
