@@ -754,6 +754,13 @@ class OpenStoriesElement extends HTMLElement {
       this.bindEvents()
     }
 
+    if (this.lazyLoad) {
+      for (const image of this.images) {
+        if (image.src || !image.hasAttribute('data-src')) continue
+        image.src = image.getAttribute('data-src') || ''
+      }
+    }
+
     this.goTo()
   }
   
@@ -777,9 +784,6 @@ class OpenStoriesElement extends HTMLElement {
 
     this.currentBar = this.bars[this.currentIndex]
     this.currentImage = this.images[this.currentIndex]
-    if (this.lazyLoad && !this.currentImage.src) {
-      this.currentImage.src = this.currentImage.getAttribute('data-src') || ''
-    }
     this.currentBar.classList.add('progressing', 'paused')
     this.currentImage.classList.add('shown')
     this.dialog.classList.add('is-loading')
