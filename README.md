@@ -16,7 +16,7 @@ Things yet to be supported:
 
 ```html
 <!-- Include `OpenStoriesElement` -->
-<script src="https://unpkg.com/open-stories-element@0.0.16" type="module" defer></script>
+<script src="https://unpkg.com/open-stories-element@0.0.21" type="module" defer></script>
 
 <!-- Render `<open-stories>` -->
 <open-stories src="./feed.json"></open-stories>
@@ -47,6 +47,7 @@ Whatever you put inside `<open-stories>HERE</open-stories>` will replace the def
 ## Attributes
 
 - `src`: Required. A [OpenStoriesFeed](https://github.com/dddddddddzzzz/OpenStories) URL.
+- `loading`: Optional. Values: `lazy` or `eager`. Default to `eager`. When set to `lazy`, only the first story in the feed is loaded before user interaction.
 - `duration`: Optional. Number in seconds. Default to `5`.
 - `show-metadata`: Optional. Display `items[]._open_stories.caption`.
 - `is-highlight`: Optional. View history does not get set.
