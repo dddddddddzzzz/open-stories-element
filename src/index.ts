@@ -396,8 +396,8 @@ class OpenStoriesElement extends HTMLElement {
   count = 0
   timer: number | null = null
   currentBar: HTMLElement | null = null
-  currentImage: HTMLElement | null = null
-  images: HTMLElement[] = []
+  currentImage: HTMLImageElement | null = null
+  images: HTMLImageElement[] = []
   bars: HTMLElement[] = []
   promises: Promise<unknown>[] = []
   paused: boolean = false
@@ -736,7 +736,11 @@ class OpenStoriesElement extends HTMLElement {
       this.bars.push(bar)
       const img = document.createElement('img')
       this.promises.push(new Promise(resolve => img.addEventListener('load', resolve)))
-      img.src = item._open_stories.url
+      if (this.promises.length !== 1 && this.lazyLoad) {
+        img.setAttribute('data-src', item._open_stories.url)
+      } else {
+        img.src = item._open_stories.url
+      }
       if ('alt' in item._open_stories) img.alt = item._open_stories.alt
       images.append(img)
       this.images.push(img)
@@ -773,6 +777,9 @@ class OpenStoriesElement extends HTMLElement {
 
     this.currentBar = this.bars[this.currentIndex]
     this.currentImage = this.images[this.currentIndex]
+    if (this.lazyLoad && !this.currentImage.src) {
+      this.currentImage.src = this.currentImage.getAttribute('data-src') || ''
+    }
     this.currentBar.classList.add('progressing', 'paused')
     this.currentImage.classList.add('shown')
     this.dialog.classList.add('is-loading')
@@ -809,6 +816,10 @@ class OpenStoriesElement extends HTMLElement {
 
   get viewedKey() {
     return new URL(this.getAttribute('src')!, location.origin).toString()
+  }
+
+  get lazyLoad() {
+    return this.getAttribute('loading') === 'lazy'
   }
 
   setViewed(id: string) {
