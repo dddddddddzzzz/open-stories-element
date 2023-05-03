@@ -1,6 +1,6 @@
 {
   "name": "open-stories-element",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "main": "dist/index.js",
   "type": "module",
   "types": "dist/index.d.ts",
