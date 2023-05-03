@@ -105,6 +105,19 @@ function css(duration: number) {
   #bars:hover .bar {
     height: 4px;
     transform: translateY(-1px);
+    background: rgba(200, 200, 200, .5);
+  }
+
+  .bar:hover {
+    transform: translateY(-1px);
+    flex-shrink: 0;
+    transform-origin: center;
+    min-width: 20px;
+    height: 4px;
+  }
+
+  #bars:hover {
+    gap: 2px;
   }
 
   #bars {
@@ -115,7 +128,7 @@ function css(duration: number) {
     position: absolute;
     padding: 10px;
     display: flex;
-    gap: 5px;
+    gap: 3px;
     z-index: 2;
   }
 
@@ -287,9 +300,8 @@ function css(duration: number) {
     100% { width: 100%; }
   }
 
-  .is-loading button,
+  .is-loading button:not(.bar),
   .is-loading #controls,
-  .is-loading #metadata-details,
   .is-loading #open-heart {
     display: none;
   }
@@ -731,6 +743,7 @@ class OpenStoriesElement extends HTMLElement {
       const progress = document.createElement('div')
       progress.classList.add('progress')
       bar.setAttribute('aria-label', `${idx + 1} of ${this.items.length} ${this.items.length === 1 ? 'stroy' : 'stories'}`)
+      bar.setAttribute('title', `${idx + 1} of ${this.items.length} ${this.items.length === 1 ? 'stroy' : 'stories'}`)
       bar.append(progress)
       bars.append(bar)
       this.bars.push(bar)
@@ -772,6 +785,7 @@ class OpenStoriesElement extends HTMLElement {
       this.currentBar.offsetHeight
       this.currentBar.style.removeProperty('animation')
       this.currentBar.classList.remove('progressing')
+      this.meta.textContent = ''
     } 
     if (this.timer) clearTimeout(this.timer)
     if (this.currentImage) this.currentImage.classList.remove('shown')
