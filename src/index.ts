@@ -82,6 +82,7 @@ function css(duration: number) {
     position: absolute;
     max-height: 100%;
     max-width: 100%;
+    width: 100%;
     aspect-ratio: 9/16;
     top: 0;
     opacity: 0;
