@@ -84,6 +84,7 @@ function css(duration: number) {
     max-width: 100%;
     width: 100%;
     aspect-ratio: 9/16;
+    object-fit: contain;
     top: 0;
     opacity: 0;
   }
