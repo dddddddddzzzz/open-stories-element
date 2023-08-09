@@ -417,7 +417,7 @@ class OpenStoriesElement extends HTMLElement {
   open: boolean = false
   goToBinding: () => void
   items: OpenStoriesFeed["items"] = []
-	_src: URL | null
+	_src: string
 	_duration: number
 
   constructor() {
@@ -530,7 +530,7 @@ class OpenStoriesElement extends HTMLElement {
       this.button.click()
     })
 
-    const src = this.src?.toString()
+    const src = this.src
     if (src) this.fetchData(src)
 
     const style = document.createElement('style')
@@ -546,10 +546,10 @@ class OpenStoriesElement extends HTMLElement {
   }
 
   set src(path: string) {
-    this._src = new URL(path || "", location.href);
+    this._src = new URL(path || "", location.href).toString()
   }
 
-  get src(): URL | null {
+  get src(): string {
     return this._src;
   }
 
@@ -847,7 +847,7 @@ class OpenStoriesElement extends HTMLElement {
   }
 
   get viewedKey() {
-    return this.src?.toString()
+    return this.src
   }
 
   get lazyLoad() {
