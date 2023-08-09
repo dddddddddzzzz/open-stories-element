@@ -417,6 +417,8 @@ class OpenStoriesElement extends HTMLElement {
   open: boolean = false
   goToBinding: () => void
   items: OpenStoriesFeed["items"] = []
+	_src: URL | null
+	_duration: number
 
   constructor() {
     super()
@@ -483,6 +485,9 @@ class OpenStoriesElement extends HTMLElement {
     this.link = this.root.querySelector('a#link')!
     this.time = this.root.querySelector('#time')!
     this.goToBinding = this.goTo.bind(this, 1)
+		
+		this._src = ""
+		this._duration = 5
   }
 
   get isHighlight() {
@@ -525,7 +530,7 @@ class OpenStoriesElement extends HTMLElement {
       this.button.click()
     })
 
-    const src = this.getAttribute('src')
+    const src = this.src?.toString()
     if (src) this.fetchData(src)
 
     const style = document.createElement('style')
@@ -540,12 +545,20 @@ class OpenStoriesElement extends HTMLElement {
     })
   }
 
-  get src() {
-    return this.hasAttribute('src') ? new URL(this.getAttribute('src') || '', location.href) : ''
+  set src(path: string) {
+    this._src = new URL(path || "", location.href);
   }
 
-  get duration() {
-    return this.hasAttribute('duration') ? Number(this.getAttribute('duration')) : 5
+  get src(): URL | null {
+    return this._src;
+  }
+
+  set duration(value: number) {
+    this._duration = Number(value) || 5;
+  }
+
+  get duration(): number {
+    return this._duration;
   }
 
   async sendHeart() {
@@ -834,7 +847,7 @@ class OpenStoriesElement extends HTMLElement {
   }
 
   get viewedKey() {
-    return new URL(this.getAttribute('src')!, location.origin).toString()
+    return this.src?.toString()
   }
 
   get lazyLoad() {
