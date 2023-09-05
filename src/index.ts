@@ -486,8 +486,13 @@ class OpenStoriesElement extends HTMLElement {
     this.time = this.root.querySelector('#time')!
     this.goToBinding = this.goTo.bind(this, 1)
 		
-		this._src = ""
-		this._duration = 5
+    this._src = this.hasAttribute("src")
+      ? this.formatSrc(this.getAttribute("src"))
+      : "";
+
+    this._duration = this.hasAttribute("duration")
+      ? Number(this.getAttribute("duration"))
+      : 5;
   }
 
   get isHighlight() {
@@ -546,7 +551,7 @@ class OpenStoriesElement extends HTMLElement {
   }
 
   set src(path: string) {
-    this._src = new URL(path || "", location.href).toString()
+    this._src = this.formatSrc(path);
   }
 
   get src(): string {
@@ -554,7 +559,7 @@ class OpenStoriesElement extends HTMLElement {
   }
 
   set duration(value: number) {
-    this._duration = Number(value) || 5;
+    this._duration = Number(value);
   }
 
   get duration(): number {
@@ -707,6 +712,15 @@ class OpenStoriesElement extends HTMLElement {
     window.addEventListener('hashchange', this.checkHashId.bind(this))
     if (this.checkHashId()) return
     this.setIndexToUnread()
+  }
+
+  /**
+   * Format a path to a valid URL. 
+   * @param path - The path to format.
+   * @returns - The formatted path.
+   */
+  formatSrc(path: string | null): string {
+    return new URL(path || "", location.href).toString()
   }
 
   setIndexToUnread() {
