@@ -486,13 +486,13 @@ class OpenStoriesElement extends HTMLElement {
     this.time = this.root.querySelector('#time')!
     this.goToBinding = this.goTo.bind(this, 1)
 		
-    this._src = this.hasAttribute("src")
-      ? this.formatSrc(this.getAttribute("src"))
-      : "";
+    this._src = this.hasAttribute('src')
+      ? this.formatSrc(this.getAttribute('src'))
+      : ''
 
-    this._duration = this.hasAttribute("duration")
-      ? Number(this.getAttribute("duration"))
-      : 5;
+    this._duration = this.hasAttribute('duration')
+      ? Number(this.getAttribute('duration'))
+      : 5
   }
 
   get isHighlight() {
@@ -551,19 +551,19 @@ class OpenStoriesElement extends HTMLElement {
   }
 
   set src(path: string) {
-    this._src = this.formatSrc(path);
+    this._src = this.formatSrc(path)
   }
 
   get src(): string {
-    return this._src;
+    return this._src
   }
 
   set duration(value: number) {
-    this._duration = Number(value);
+    this._duration = Number(value)
   }
 
   get duration(): number {
-    return this._duration;
+    return this._duration
   }
 
   async sendHeart() {
@@ -720,7 +720,7 @@ class OpenStoriesElement extends HTMLElement {
    * @returns - The formatted path.
    */
   formatSrc(path: string | null): string {
-    return new URL(path || "", location.href).toString()
+    return new URL(path || '', location.href).toString()
   }
 
   setIndexToUnread() {
