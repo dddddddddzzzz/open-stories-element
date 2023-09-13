@@ -418,6 +418,8 @@ class OpenStoriesElement extends HTMLElement {
   open: boolean = false
   goToBinding: () => void
   items: OpenStoriesFeed["items"] = []
+	_src: string
+	_duration: number
 
   constructor() {
     super()
@@ -484,6 +486,14 @@ class OpenStoriesElement extends HTMLElement {
     this.link = this.root.querySelector('a#link')!
     this.time = this.root.querySelector('#time')!
     this.goToBinding = this.goTo.bind(this, 1)
+		
+    this._src = this.hasAttribute('src')
+      ? this.formatSrc(this.getAttribute('src'))
+      : ''
+
+    this._duration = this.hasAttribute('duration')
+      ? Number(this.getAttribute('duration'))
+      : 5
   }
 
   get isHighlight() {
@@ -526,7 +536,7 @@ class OpenStoriesElement extends HTMLElement {
       this.button.click()
     })
 
-    const src = this.getAttribute('src')
+    const src = this.src
     if (src) this.fetchData(src)
 
     const style = document.createElement('style')
@@ -541,12 +551,21 @@ class OpenStoriesElement extends HTMLElement {
     })
   }
 
-  get src() {
-    return this.hasAttribute('src') ? new URL(this.getAttribute('src') || '', location.href) : ''
+  set src(path: string) {
+    this.setAttribute('src', path)
+    this._src = this.formatSrc(path)
   }
 
-  get duration() {
-    return this.hasAttribute('duration') ? Number(this.getAttribute('duration')) : 5
+  get src(): string {
+    return this._src
+  }
+
+  set duration(value: number) {
+    this._duration = Number(value)
+  }
+
+  get duration(): number {
+    return this._duration
   }
 
   async sendHeart() {
@@ -697,6 +716,15 @@ class OpenStoriesElement extends HTMLElement {
     this.setIndexToUnread()
   }
 
+  /**
+   * Format a path to a valid URL. 
+   * @param path - The path to format.
+   * @returns - The formatted path.
+   */
+  formatSrc(path: string | null): string {
+    return new URL(path || '', location.href).toString()
+  }
+
   setIndexToUnread() {
     if (this.isHighlight) return false
 
@@ -835,7 +863,7 @@ class OpenStoriesElement extends HTMLElement {
   }
 
   get viewedKey() {
-    return new URL(this.getAttribute('src')!, location.origin).toString()
+    return this.src
   }
 
   get lazyLoad() {
