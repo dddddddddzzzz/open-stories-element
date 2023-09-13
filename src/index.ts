@@ -551,6 +551,7 @@ class OpenStoriesElement extends HTMLElement {
   }
 
   set src(path: string) {
+    this.setAttribute('src', path)
     this._src = this.formatSrc(path)
   }
 
