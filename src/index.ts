@@ -519,7 +519,7 @@ class OpenStoriesElement extends HTMLElement {
     return ['src', 'duration']
   }
 
-  attributeChangedCallback(name: string, _, newValue: string) {
+  attributeChangedCallback(name: string, _oldValue: string, newValue: string) {
     if (name === 'src') {
       this.dialog.close()
       this.fetchData(this.formatSrc(newValue))
@@ -704,7 +704,7 @@ class OpenStoriesElement extends HTMLElement {
 
   async fetchData(url: string) {
     this.classList.add('is-loading')
-    let json: OpenStoriesFeed
+    let json: OpenStoriesFeed | null = null
     try {
       json = await (await fetch(url)).json()
     } catch (_) {
@@ -714,7 +714,7 @@ class OpenStoriesElement extends HTMLElement {
     this.classList.remove('is-loading')
 
     const now = new Date()
-    this.items = json ? json.items.filter((item) => {
+    this.items = json !== null ? json.items.filter((item) => {
       return item._open_stories.mime_type.startsWith('image') && (!item._open_stories.date_expired || now <= new Date(item._open_stories.date_expired))
     }).reverse() : []
 
