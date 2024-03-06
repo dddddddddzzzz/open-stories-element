@@ -5,6 +5,7 @@ function css(duration: number) {
   :host {
     display: inline-block;
     font-family: system-ui, sans-serif;
+    --dialog-margin: 4rem;
     --magic-h: calc(100vh - var(--dialog-margin) * 2);
     --magic-w: calc(100vw - var(--dialog-margin) * 2);
 	--magic-size: min(var(--magic-h), var(--magic-w) * var(--aspect-ratio-h)/var(--aspect-ratio-w));
@@ -62,7 +63,6 @@ function css(duration: number) {
   }
 
   dialog {
-	--dialog-margin: 4rem;
     height: var(---magic-size);
     padding: 0;
     border: 0;
@@ -387,7 +387,7 @@ function css(duration: number) {
     }
 
     ::backdrop {
-      background-color: red;
+      background-color: #000;
     }
 
     #side-controls #close {
