@@ -24,6 +24,33 @@ Things yet to be supported:
 
 This requires native [`<dialog>`](https://caniuse.com/dialog) and [Shadow DOM](https://caniuse.com/shadowdomv1) support. No polyfills included.
 
+## Development
+
+### Install dependancies with yarn
+
+```shell
+yarn install
+```
+
+### Watch for changes
+
+```shell
+yarn start
+```
+
+Swap script in `demo.html` to local build:
+
+```html
+<script src="../dist/index.js" type="module"></script>
+<!-- <script src="https://unpkg.com/open-stories-element@>0.0.0" type="module"></script> -->
+```
+
+### Build
+
+```shell
+yarn prepare
+```
+
 ## Parts
 
 Style elements with `::part` ([MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/::part)):
