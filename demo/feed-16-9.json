@@ -1,0 +1,37 @@
+{
+	"version": "https://jsonfeed.org/version/1.1",
+	"title": "16 by 9 demo",
+	"feed_url": "https://openstories.fyi/feeds/good-pretzel-max.json",
+	"authors": [{ "name": "dddddddddzzzz", "url": "https://openstories.fyi" }],
+	"_open_stories": {
+		"version": "0.0.9"
+	},
+	"items": [
+		{
+			"id": "a1",
+			"content_html": "<img src=https://picsum.photos/1600/900?random=1 alt=''>",
+			"date_published": "2022-11-14T00:00:00+08:00",
+			"_open_stories": {
+				"mime_type": "image/jpeg",
+				"url": "https://picsum.photos/1600/900?random=1",
+				"alt": "16 by 9 demo",
+				"date_expired": "2222-12-31T00:00:00+08:00",
+				"duration_in_seconds": 5,
+				"caption": "16 by 9 demo"
+			}
+		},
+		{
+			"id": "a2",
+			"content_html": "<img src=https://picsum.photos/1600/900?random=2 alt=''>",
+			"date_published": "2022-11-07T00:00:00+08:00",
+			"_open_stories": {
+				"mime_type": "image/jpeg",
+				"url": "https://picsum.photos/1600/900?random=2",
+				"alt": "16 by 9 demo",
+				"date_expired": "2222-12-31T00:00:00+08:00",
+				"duration_in_seconds": 1,
+				"caption": "16 by 9 demo"
+			}
+		}
+	]
+}

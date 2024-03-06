@@ -1,12 +1,16 @@
-import {OpenStoriesFeed} from 'openstories-types'
+import { OpenStoriesFeed } from "openstories-types";
 
 function css(duration: number) {
-  return `
+	return `
   :host {
     display: inline-block;
     font-family: system-ui, sans-serif;
-    --magic-h: 88vh;
-    --magic-w: 88vw;
+    --dialog-margin: 4rem;
+    --magic-h: calc(100vh - var(--dialog-margin) * 2);
+    --magic-w: calc(100vw - var(--dialog-margin) * 2);
+	--magic-size: min(var(--magic-h), var(--magic-w) * var(--aspect-ratio-h)/var(--aspect-ratio-w));
+    --aspect-ratio-h: 16;
+    --aspect-ratio-w: 9;
   }
 
   ::backdrop {
@@ -59,14 +63,15 @@ function css(duration: number) {
   }
 
   dialog {
-    height: min(var(--magic-h), var(--magic-w) * 16/9);
+    height: var(---magic-size);
     padding: 0;
     border: 0;
-    aspect-ratio: 9/16;
+    aspect-ratio: var(--aspect-ratio-w) / var(--aspect-ratio-h);
     background: transparent;
     overflow: visible;
-    max-height: var(--magic-h);
-    max-width: var(--magic-w);
+    max-height: calc(100% - var(--dialog-margin) * 2);
+    max-width: calc(100% - var(--dialog-margin) * 2);
+	width: auto;
   }
   
   #images {
@@ -76,6 +81,7 @@ function css(duration: number) {
     position: absolute;
     background: #000;
     border-radius: 10px;
+	background: var(--story-image-background, #000);
   }
 
   #images img {
@@ -83,7 +89,7 @@ function css(duration: number) {
     max-height: 100%;
     max-width: 100%;
     width: 100%;
-    aspect-ratio: 9/16;
+    aspect-ratio: var(--aspect-ratio-w)/var(--aspect-ratio-h);
     object-fit: contain;
     top: 0;
     opacity: 0;
@@ -340,8 +346,9 @@ function css(duration: number) {
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 0 2vw;
-    aspect-ratio: 9 / 16;
-    height: min(var(--magic-h), var(--magic-w) * 16/9);
+    aspect-ratio: var(--aspect-ratio-w) / var(--aspect-ratio-h);
+    height: var(---magic-size);
+	width: 100%;
     position: absolute;
     top: 50%;
     z-index: 1;
@@ -353,14 +360,15 @@ function css(duration: number) {
     pointer-events: all;
     position: absolute;
     z-index: 1;
-    min-width: 40px;
+    min-width: 25%;
     height: calc(100% - 100px);
     bottom: 50px;
     padding: 0;
-    font-size: 3vh;
+    font-size: 2vh;
     width: 12vh;
     font-family: system-ui, sans-serif;
     color: #fff;
+
   }
 
   #back {
@@ -373,10 +381,9 @@ function css(duration: number) {
     text-align: right;
   }
 
-  @media (max-width: 420px), screen and (orientation: portrait) {
-    :host {
-      --magic-h: calc(var(--mobileVh) * 97);
-      --magic-w: 100vw;
+  @media (max-width: 420px) {
+    dialog {
+	  --dialog-margin: 0px;
     }
 
     ::backdrop {
@@ -391,40 +398,40 @@ function css(duration: number) {
   [hidden] {
     display: none !important;
   }
-`
+`;
 }
 
 class OpenStoriesElement extends HTMLElement {
-  root: ShadowRoot
-  dialog: HTMLDialogElement
-  button: HTMLButtonElement
-  close: HTMLButtonElement
-  time: HTMLElement
-  metadataDetails: HTMLElement
-  moreMetadata: HTMLButtonElement
-  meta: HTMLElement
-  openHeart: HTMLButtonElement
-  themeColor: HTMLMetaElement | null = null
-  link: HTMLAnchorElement
-  currentIndex: number = -1
-  count = 0
-  timer: number | null = null
-  currentBar: HTMLElement | null = null
-  currentImage: HTMLImageElement | null = null
-  images: HTMLImageElement[] = []
-  bars: HTMLElement[] = []
-  promises: Promise<unknown>[] = []
-  paused: boolean = false
-  open: boolean = false
-  goToBinding: () => void
-  items: OpenStoriesFeed["items"] = []
-	_src: string
-	_duration: number
+	root: ShadowRoot;
+	dialog: HTMLDialogElement;
+	button: HTMLButtonElement;
+	close: HTMLButtonElement;
+	time: HTMLElement;
+	metadataDetails: HTMLElement;
+	moreMetadata: HTMLButtonElement;
+	meta: HTMLElement;
+	openHeart: HTMLButtonElement;
+	themeColor: HTMLMetaElement | null = null;
+	link: HTMLAnchorElement;
+	currentIndex: number = -1;
+	count = 0;
+	timer: number | null = null;
+	currentBar: HTMLElement | null = null;
+	currentImage: HTMLImageElement | null = null;
+	images: HTMLImageElement[] = [];
+	bars: HTMLElement[] = [];
+	promises: Promise<unknown>[] = [];
+	paused: boolean = false;
+	open: boolean = false;
+	goToBinding: () => void;
+	items: OpenStoriesFeed["items"] = [];
+	_src: string;
+	_duration: number;
 
-  constructor() {
-    super()
-    this.root = this.attachShadow({mode: 'open'})
-    this.root.innerHTML = `
+	constructor() {
+		super();
+		this.root = this.attachShadow({ mode: "open" });
+		this.root.innerHTML = `
       <button type="dialog" id="trigger" part="button"><slot>View stories</slot></button>
       <dialog class="is-loading" part="dialog">
         <div class="loading-visual" part="loading-visual"></div>
@@ -474,456 +481,497 @@ class OpenStoriesElement extends HTMLElement {
           </div>
         </div>
       </dialog>
-    `
-
-    this.dialog = this.root.querySelector('dialog')!
-    this.button = this.root.querySelector('button#trigger')!
-    this.close = this.root.querySelector('button#close')!
-    this.openHeart = this.root.querySelector('button#open-heart')!
-    this.metadataDetails = this.root.querySelector('#metadata-details')!
-    this.meta = this.root.querySelector('#metadata')!
-    this.moreMetadata = this.root.querySelector('#more')!
-    this.link = this.root.querySelector('a#link')!
-    this.time = this.root.querySelector('#time')!
-    this.goToBinding = this.goTo.bind(this, 1)
-		
-    this._src = this.hasAttribute('src')
-      ? this.formatSrc(this.getAttribute('src'))
-      : ''
-
-    this._duration = this.hasAttribute('duration')
-      ? Number(this.getAttribute('duration'))
-      : 5
-  }
-
-  get isHighlight() {
-    return this.hasAttribute('is-highlight')
-  }
-
-  setThemeColor(force: boolean) {
-    if (force && !this.themeColor) {
-      this.themeColor = document.createElement('meta')
-      this.themeColor.name = 'theme-color'
-      this.themeColor.content = '#000'
-
-      document.body.append(this.themeColor)
-    }
-
-    if (!force && this.themeColor) {
-      this.themeColor.remove()
-      this.themeColor = null
-    }
-  }
-
-  connectedCallback() {
-    this.button.addEventListener('click', () => {
-      this.dialog.open ? this.dialog.close() : this.dialog.showModal()
-      this.open = this.dialog.open
-      if (!this.dialog.open) return
-      this.dialog.tabIndex = -1
-      this.dialog.focus()
-      this.startTimer()
-      this.setThemeColor(true)
-    })
-
-    this.close.addEventListener('click', () => {
-      this.button.click()
-    })
-
-    // Backdrop click to close
-    this.dialog.addEventListener('click', (event) => {
-      if (!this.dialog.open || event.target !== this.dialog) return
-      this.button.click()
-    })
-
-    const src = this.src
-    if (src) this.fetchData(src)
-
-    const style = document.createElement('style')
-    style.innerText = css(this.duration)
-    this.root.append(style)
-
-    this.style.setProperty('--mobileVh', `${window.innerHeight * 0.01}px`)
-
-    this.moreMetadata.addEventListener('click', () => {
-      this.metadataDetails.classList.add('is-expanded')
-      this.metadataDetails.classList.remove('is-collapsed')
-    })
-  }
-
-  set src(path: string) {
-    this.setAttribute('src', path)
-    this._src = this.formatSrc(path)
-  }
-
-  get src(): string {
-    return this._src
-  }
-
-  set duration(value: number) {
-    this._duration = Number(value)
-  }
-
-  get duration(): number {
-    return this._duration
-  }
-
-  async sendHeart() {
-    const item = this.items[this.currentIndex]
-    const urls = this.items[this.currentIndex]._open_stories.reactions?.open_heart_urls || []
-    if (urls.length === 0) return
-
-    const key = `♥︎@${item.id}`
-    const promises = []
-    for (const url of urls) {
-      promises.push(fetch(url, {method: 'post', body: '❤️'}))
-    }
-
-    this.openHeart.setAttribute('aria-busy', 'true')
-    let response: Response | null = null
-
-    try {
-      response = await Promise.any(promises)
-    } catch { 
-      // noop
-    } finally {
-      this.openHeart.setAttribute('aria-busy', 'false')
-      if (!response) return
-    }
-
-    const keys = (localStorage.getItem('_open_heart') || '').split(',').filter(s => s)
-    keys.push(key)
-    localStorage.setItem('_open_heart' ,keys.join(','))
-    this.prepareHeart()
-  }
-
-  bindEvents() {
-    const images = this.root.querySelector('#images')!
-    const playPause = this.root.querySelector<HTMLElement>('#play-pause')!
-    const back = this.root.querySelector<HTMLElement>('button#back')!
-    const forward = this.root.querySelector<HTMLElement>('button#forward')!
-
-    this.openHeart.addEventListener('click', () => {
-      this.sendHeart()
-    })
-
-    this.link.addEventListener('click', async () => {
-      await navigator.clipboard.writeText(this.link.href)
-    })
-
-    back.addEventListener('click', () => {
-      if (this.currentIndex === 0) {
-        this.dialog.close()
-      } else {
-        this.goTo(-1)
-      }
-    })
-
-    forward.addEventListener('click', () => {
-      if (this.currentIndex === this.count - 1) {
-        this.dialog.close()
-      } else {
-        this.goTo(1)
-      }
-    })
-
-    this.dialog.addEventListener('close', () => {
-      if (this.paused) this.resume()
-      if (this.timer) clearTimeout(this.timer)
-      if (this.currentIndex >= this.items.length - 1) this.currentIndex = -1
-      this.checkIfAllRead()
-      this.setThemeColor(false)
-
-      if (this.itemByHash()) window.location.hash = ''
-    })
-
-    playPause.addEventListener('click', () => {
-      playPause.setAttribute('aria-pressed', this.paused.toString())
-      this.paused ? this.resume() : this.pause()
-    })
-
-    images.addEventListener('click', () => {
-      playPause.click()
-    })
-
-    const dialog = this.dialog
-
-    document.addEventListener('keydown', keyboradShortcut.bind(this))
-    function keyboradShortcut(event: KeyboardEvent) {
-      if (!dialog.open) return
-      if (event.key === 'ArrowRight') forward.click()
-      if (event.key === 'ArrowLeft') back.click()
-    }
-  }
-
-  itemByHash(): OpenStoriesFeed["items"][0] | undefined {
-    const hash = (location.hash || '').slice(1)
-    if (hash.length === 0) return
-    
-    return this.items.find((item) => item.id === hash)
-  }
-
-  checkHashId(): boolean {
-    // Prevent opening multiple viewer sharing the same feed on the page
-    if (Array.from(document.querySelectorAll('open-stories')).find(e => e !== this && e.open)) return false
-
-    const item = this.itemByHash()
-    if (!item) return false
-    
-    const index = this.items.indexOf(item)
-    if (this.currentIndex === index) return false
-
-    this.currentIndex = index - 1
-
-    if (!this.dialog.open) {
-      this.button.click()
-    } else {
-      this.goTo(1)
-    }
-
-    return true
-  }
-
-  checkIfAllRead() {
-    if (this.isHighlight) return false
-
-    const lastItem = this.items[this.items.length - 1]
-    const id = this.getViewedId()
-    const allRead = lastItem && lastItem.id === id
-    this.classList.toggle('is-read', allRead)
-    return allRead
-  }
-
-  async fetchData(url: string) {
-    this.classList.add('is-loading')
-    const json: OpenStoriesFeed = await (await fetch(url)).json()
-    this.classList.remove('is-loading')
-
-    const now = new Date()
-    this.items = json.items.filter((item) => {
-      return item._open_stories.mime_type.startsWith('image') && (!item._open_stories.date_expired || now <= new Date(item._open_stories.date_expired))
-    }).reverse()
-
-    this.classList.toggle('is-empty', this.items.length === 0)
-    if (this.items.length === 0) {
-      this.button.disabled = true
-    } else {
-      this.appendImages()
-    }
-    
-    window.addEventListener('hashchange', this.checkHashId.bind(this))
-    if (this.checkHashId()) return
-    this.setIndexToUnread()
-  }
-
-  /**
-   * Format a path to a valid URL. 
-   * @param path - The path to format.
-   * @returns - The formatted path.
-   */
-  formatSrc(path: string | null): string {
-    return new URL(path || '', location.href).toString()
-  }
-
-  setIndexToUnread() {
-    if (this.isHighlight) return false
-
-    const viewedId = this.getViewedId()
-    if (!viewedId) return
-
-    const viewedItemIndex = this.items.findIndex(item => item.id === viewedId)
-    if (viewedItemIndex < 0) return
-    if (this.checkIfAllRead()) return
-
-    this.currentIndex = viewedItemIndex
-  }
-
-  pause() {
-    this.paused = true
-    this.classList.add('is-paused')
-    this.dialog.classList.add('is-paused')
-    if (this.timer) clearTimeout(this.timer)
-  }
-
-  resume() {
-    this.paused = false
-    this.classList.remove('is-paused')
-    this.dialog.classList.remove('is-paused')
-    this.currentBar?.querySelector('.progress')?.addEventListener('animationend', this.goToBinding, {once: true})
-  }
-
-  appendImages() {
-    this.count = this.items.length
-    this.images = []
-    this.bars = []
-    this.promises = []
-
-    const bars = this.root.querySelector('#bars')!
-    const images = this.root.querySelector('#images')!
-
-    for (const item of this.items) {
-      const bar = document.createElement('button')
-      bar.type = 'button'
-      bar.classList.add('bar')
-      const idx = this.images.length
-      bar.addEventListener('click', () => {
-        const delta = idx - this.currentIndex
-        if (delta !== 0) this.goTo(delta)
-      })
-      const progress = document.createElement('div')
-      progress.classList.add('progress')
-      bar.setAttribute('aria-label', `${idx + 1} of ${this.items.length} ${this.items.length === 1 ? 'stroy' : 'stories'}`)
-      bar.setAttribute('title', `${idx + 1} of ${this.items.length} ${this.items.length === 1 ? 'stroy' : 'stories'}`)
-      bar.append(progress)
-      bars.append(bar)
-      this.bars.push(bar)
-      const img = document.createElement('img')
-      this.promises.push(new Promise(resolve => img.addEventListener('load', resolve)))
-      if (this.promises.length !== 1 && this.lazyLoad) {
-        img.setAttribute('data-src', item._open_stories.url)
-      } else {
-        img.src = item._open_stories.url
-      }
-      if ('alt' in item._open_stories) img.alt = item._open_stories.alt
-      images.append(img)
-      this.images.push(img)
-    }
-  }
-  
-  async startTimer() {
-    await this.promises[0]
-    if (this.dialog.classList.contains('is-loading')) {
-      this.dialog.classList.remove('is-loading')
-      this.bindEvents()
-    }
-
-    if (this.lazyLoad) {
-      for (const image of this.images) {
-        if (image.src || !image.hasAttribute('data-src')) continue
-        image.src = image.getAttribute('data-src') || ''
-      }
-    }
-
-    this.goTo()
-  }
-  
-  async goTo(delta: number | null = null) {
-    delta ||= 1
-    // Reset animation
-    if (this.currentBar) {
-      this.currentBar.style.animation = 'none'
-      this.currentBar.offsetHeight
-      this.currentBar.style.removeProperty('animation')
-      this.currentBar.classList.remove('progressing')
-      this.meta.textContent = ''
-    } 
-    if (this.timer) clearTimeout(this.timer)
-    if (this.currentImage) this.currentImage.classList.remove('shown')
-
-    this.currentIndex += delta
-    if (this.currentIndex === this.count) {
-      this.dialog.close()
-      return
-    }
-
-    this.currentBar = this.bars[this.currentIndex]
-    this.currentImage = this.images[this.currentIndex]
-    this.currentBar.classList.add('progressing', 'paused')
-    this.currentImage.classList.add('shown')
-    this.dialog.classList.add('is-loading')
-    await this.promises[this.currentIndex]
-    this.dialog.classList.remove('is-loading')
-    this.currentBar.classList.remove('paused')
-
-    const item = this.items[this.currentIndex]
-    if (!this.isHighlight) this.setViewed(item.id)
-
-    // Populate
-    this.time.textContent = this.relativeTime(item.date_published)
-    const caption = 'caption' in item._open_stories ? item._open_stories.caption : null
-    this.metadataDetails.classList.remove('is-expanded', 'is-collapsed')
-    this.meta.textContent = caption || ''
-    if (this.meta.clientWidth > this.metadataDetails.clientWidth) {
-      this.metadataDetails.classList.add('is-collapsed')
-    }
-    this.prepareHeart()
-
-    if (item.url) {
-      this.link.hidden = false
-      this.link.href = item.url
-    } else {
-      this.link.hidden = true
-      this.link.removeAttribute('href')
-    }
-
-    if (this.currentIndex > this.count - 1) this.currentIndex = 0
-
-    this.timer = window.setTimeout(this.goTo.bind(this), this.duration * 1000)
-    if (this.paused) this.pause()
-  }
-
-  get viewedKey() {
-    return this.src
-  }
-
-  get lazyLoad() {
-    return this.getAttribute('loading') === 'lazy'
-  }
-
-  setViewed(id: string) {
-    const lastViewedIndex = this.items.findIndex(item => item.id === this.getViewedId())
-    const newViewedIndex = this.items.findIndex(item => item.id === id)
-    if (newViewedIndex < lastViewedIndex) return
-
-    const viewedByFeed = JSON.parse(localStorage.getItem('_open_stories') || '{}')
-    viewedByFeed[this.viewedKey] = id
-    localStorage.setItem('_open_stories', JSON.stringify(viewedByFeed))
-  }
-
-  getViewedId() {
-    const viewedByFeed = JSON.parse(localStorage.getItem('_open_stories') || '{}')
-    return viewedByFeed[this.viewedKey]
-  }
-
-  prepareHeart() {
-    const item = this.items[this.currentIndex]
-    const hasUrl = (item._open_stories.reactions?.open_heart_urls || []).length > 0
-    this.openHeart.hidden = !hasUrl
-    if (!hasUrl) return
-    const keys = (localStorage.getItem('_open_heart') || '').split(',')
-    const hearted = keys.includes(`♥︎@${item.id}`)
-    this.openHeart.setAttribute('aria-pressed', hearted.toString())
-    this.openHeart.disabled = hearted
-  }
-  
-  relativeTime(time: string | undefined): string {
-    if (!time) return ''
-    const published = new Date(time)
-    if (published.toString() === 'Invalid Date') return ''
-
-    const m = Math.round((new Date().getTime() - published.getTime()) / 1000 / 60)
-    if (m > 60 * 24) {
-      return `${Math.round(m / 60 / 24)}d`
-    } else if (m > 60) {
-      return `${Math.round(m / 60)}h`
-    } else {
-      return `${m}m`
-    }
-  }
+    `;
+
+		this.dialog = this.root.querySelector("dialog")!;
+		this.button = this.root.querySelector("button#trigger")!;
+		this.close = this.root.querySelector("button#close")!;
+		this.openHeart = this.root.querySelector("button#open-heart")!;
+		this.metadataDetails = this.root.querySelector("#metadata-details")!;
+		this.meta = this.root.querySelector("#metadata")!;
+		this.moreMetadata = this.root.querySelector("#more")!;
+		this.link = this.root.querySelector("a#link")!;
+		this.time = this.root.querySelector("#time")!;
+		this.goToBinding = this.goTo.bind(this, 1);
+
+		this._src = this.hasAttribute("src")
+			? this.formatSrc(this.getAttribute("src"))
+			: "";
+
+		this._duration = this.hasAttribute("duration")
+			? Number(this.getAttribute("duration"))
+			: 5;
+	}
+
+	get isHighlight() {
+		return this.hasAttribute("is-highlight");
+	}
+
+	setThemeColor(force: boolean) {
+		if (force && !this.themeColor) {
+			this.themeColor = document.createElement("meta");
+			this.themeColor.name = "theme-color";
+			this.themeColor.content = "#000";
+
+			document.body.append(this.themeColor);
+		}
+
+		if (!force && this.themeColor) {
+			this.themeColor.remove();
+			this.themeColor = null;
+		}
+	}
+
+	connectedCallback() {
+		this.button.addEventListener("click", () => {
+			this.dialog.open ? this.dialog.close() : this.dialog.showModal();
+			this.open = this.dialog.open;
+			if (!this.dialog.open) return;
+			this.dialog.tabIndex = -1;
+			this.dialog.focus();
+			this.startTimer();
+			this.setThemeColor(true);
+		});
+
+		this.close.addEventListener("click", () => {
+			this.button.click();
+		});
+
+		// Backdrop click to close
+		this.dialog.addEventListener("click", (event) => {
+			if (!this.dialog.open || event.target !== this.dialog) return;
+			this.button.click();
+		});
+
+		const src = this.src;
+		if (src) this.fetchData(src);
+
+		const style = document.createElement("style");
+		style.innerText = css(this.duration);
+		this.root.append(style);
+
+		this.style.setProperty("--mobileVh", `${window.innerHeight * 0.01}px`);
+
+		this.moreMetadata.addEventListener("click", () => {
+			this.metadataDetails.classList.add("is-expanded");
+			this.metadataDetails.classList.remove("is-collapsed");
+		});
+	}
+
+	set src(path: string) {
+		this.setAttribute("src", path);
+		this._src = this.formatSrc(path);
+	}
+
+	get src(): string {
+		return this._src;
+	}
+
+	set duration(value: number) {
+		this._duration = Number(value);
+	}
+
+	get duration(): number {
+		return this._duration;
+	}
+
+	async sendHeart() {
+		const item = this.items[this.currentIndex];
+		const urls =
+			this.items[this.currentIndex]._open_stories.reactions?.open_heart_urls ||
+			[];
+		if (urls.length === 0) return;
+
+		const key = `♥︎@${item.id}`;
+		const promises = [];
+		for (const url of urls) {
+			promises.push(fetch(url, { method: "post", body: "❤️" }));
+		}
+
+		this.openHeart.setAttribute("aria-busy", "true");
+		let response: Response | null = null;
+
+		try {
+			response = await Promise.any(promises);
+		} catch {
+			// noop
+		} finally {
+			this.openHeart.setAttribute("aria-busy", "false");
+			if (!response) return;
+		}
+
+		const keys = (localStorage.getItem("_open_heart") || "")
+			.split(",")
+			.filter((s) => s);
+		keys.push(key);
+		localStorage.setItem("_open_heart", keys.join(","));
+		this.prepareHeart();
+	}
+
+	bindEvents() {
+		const images = this.root.querySelector("#images")!;
+		const playPause = this.root.querySelector<HTMLElement>("#play-pause")!;
+		const back = this.root.querySelector<HTMLElement>("button#back")!;
+		const forward = this.root.querySelector<HTMLElement>("button#forward")!;
+
+		this.openHeart.addEventListener("click", () => {
+			this.sendHeart();
+		});
+
+		this.link.addEventListener("click", async () => {
+			await navigator.clipboard.writeText(this.link.href);
+		});
+
+		back.addEventListener("click", () => {
+			if (this.currentIndex === 0) {
+				this.dialog.close();
+			} else {
+				this.goTo(-1);
+			}
+		});
+
+		forward.addEventListener("click", () => {
+			if (this.currentIndex === this.count - 1) {
+				this.dialog.close();
+			} else {
+				this.goTo(1);
+			}
+		});
+
+		this.dialog.addEventListener("close", () => {
+			if (this.paused) this.resume();
+			if (this.timer) clearTimeout(this.timer);
+			if (this.currentIndex >= this.items.length - 1) this.currentIndex = -1;
+			this.checkIfAllRead();
+			this.setThemeColor(false);
+
+			if (this.itemByHash()) window.location.hash = "";
+		});
+
+		playPause.addEventListener("click", () => {
+			playPause.setAttribute("aria-pressed", this.paused.toString());
+			this.paused ? this.resume() : this.pause();
+		});
+
+		images.addEventListener("click", () => {
+			playPause.click();
+		});
+
+		const dialog = this.dialog;
+
+		document.addEventListener("keydown", keyboradShortcut.bind(this));
+		function keyboradShortcut(event: KeyboardEvent) {
+			if (!dialog.open) return;
+			if (event.key === "ArrowRight") forward.click();
+			if (event.key === "ArrowLeft") back.click();
+		}
+	}
+
+	itemByHash(): OpenStoriesFeed["items"][0] | undefined {
+		const hash = (location.hash || "").slice(1);
+		if (hash.length === 0) return;
+
+		return this.items.find((item) => item.id === hash);
+	}
+
+	checkHashId(): boolean {
+		// Prevent opening multiple viewer sharing the same feed on the page
+		if (
+			Array.from(document.querySelectorAll("open-stories")).find(
+				(e) => e !== this && e.open
+			)
+		)
+			return false;
+
+		const item = this.itemByHash();
+		if (!item) return false;
+
+		const index = this.items.indexOf(item);
+		if (this.currentIndex === index) return false;
+
+		this.currentIndex = index - 1;
+
+		if (!this.dialog.open) {
+			this.button.click();
+		} else {
+			this.goTo(1);
+		}
+
+		return true;
+	}
+
+	checkIfAllRead() {
+		if (this.isHighlight) return false;
+
+		const lastItem = this.items[this.items.length - 1];
+		const id = this.getViewedId();
+		const allRead = lastItem && lastItem.id === id;
+		this.classList.toggle("is-read", allRead);
+		return allRead;
+	}
+
+	async fetchData(url: string) {
+		this.classList.add("is-loading");
+		const json: OpenStoriesFeed = await (await fetch(url)).json();
+		this.classList.remove("is-loading");
+
+		const now = new Date();
+		this.items = json.items
+			.filter((item) => {
+				return (
+					item._open_stories.mime_type.startsWith("image") &&
+					(!item._open_stories.date_expired ||
+						now <= new Date(item._open_stories.date_expired))
+				);
+			})
+			.reverse();
+
+		this.classList.toggle("is-empty", this.items.length === 0);
+		if (this.items.length === 0) {
+			this.button.disabled = true;
+		} else {
+			this.appendImages();
+		}
+
+		window.addEventListener("hashchange", this.checkHashId.bind(this));
+		if (this.checkHashId()) return;
+		this.setIndexToUnread();
+	}
+
+	/**
+	 * Format a path to a valid URL.
+	 * @param path - The path to format.
+	 * @returns - The formatted path.
+	 */
+	formatSrc(path: string | null): string {
+		return new URL(path || "", location.href).toString();
+	}
+
+	setIndexToUnread() {
+		if (this.isHighlight) return false;
+
+		const viewedId = this.getViewedId();
+		if (!viewedId) return;
+
+		const viewedItemIndex = this.items.findIndex(
+			(item) => item.id === viewedId
+		);
+		if (viewedItemIndex < 0) return;
+		if (this.checkIfAllRead()) return;
+
+		this.currentIndex = viewedItemIndex;
+	}
+
+	pause() {
+		this.paused = true;
+		this.classList.add("is-paused");
+		this.dialog.classList.add("is-paused");
+		if (this.timer) clearTimeout(this.timer);
+	}
+
+	resume() {
+		this.paused = false;
+		this.classList.remove("is-paused");
+		this.dialog.classList.remove("is-paused");
+		this.currentBar
+			?.querySelector(".progress")
+			?.addEventListener("animationend", this.goToBinding, { once: true });
+	}
+
+	appendImages() {
+		this.count = this.items.length;
+		this.images = [];
+		this.bars = [];
+		this.promises = [];
+
+		const bars = this.root.querySelector("#bars")!;
+		const images = this.root.querySelector("#images")!;
+
+		for (const item of this.items) {
+			const bar = document.createElement("button");
+			bar.type = "button";
+			bar.classList.add("bar");
+			const idx = this.images.length;
+			bar.addEventListener("click", () => {
+				const delta = idx - this.currentIndex;
+				if (delta !== 0) this.goTo(delta);
+			});
+			const progress = document.createElement("div");
+			progress.classList.add("progress");
+			bar.setAttribute(
+				"aria-label",
+				`${idx + 1} of ${this.items.length} ${
+					this.items.length === 1 ? "stroy" : "stories"
+				}`
+			);
+			bar.setAttribute(
+				"title",
+				`${idx + 1} of ${this.items.length} ${
+					this.items.length === 1 ? "stroy" : "stories"
+				}`
+			);
+			bar.append(progress);
+			bars.append(bar);
+			this.bars.push(bar);
+			const img = document.createElement("img");
+			this.promises.push(
+				new Promise((resolve) => img.addEventListener("load", resolve))
+			);
+			if (this.promises.length !== 1 && this.lazyLoad) {
+				img.setAttribute("data-src", item._open_stories.url);
+			} else {
+				img.src = item._open_stories.url;
+			}
+			if ("alt" in item._open_stories) img.alt = item._open_stories.alt;
+			images.append(img);
+			this.images.push(img);
+		}
+	}
+
+	async startTimer() {
+		await this.promises[0];
+		if (this.dialog.classList.contains("is-loading")) {
+			this.dialog.classList.remove("is-loading");
+			this.bindEvents();
+		}
+
+		if (this.lazyLoad) {
+			for (const image of this.images) {
+				if (image.src || !image.hasAttribute("data-src")) continue;
+				image.src = image.getAttribute("data-src") || "";
+			}
+		}
+
+		this.goTo();
+	}
+
+	async goTo(delta: number | null = null) {
+		delta ||= 1;
+		// Reset animation
+		if (this.currentBar) {
+			this.currentBar.style.animation = "none";
+			this.currentBar.offsetHeight;
+			this.currentBar.style.removeProperty("animation");
+			this.currentBar.classList.remove("progressing");
+			this.meta.textContent = "";
+		}
+		if (this.timer) clearTimeout(this.timer);
+		if (this.currentImage) this.currentImage.classList.remove("shown");
+
+		this.currentIndex += delta;
+		if (this.currentIndex === this.count) {
+			this.dialog.close();
+			return;
+		}
+
+		this.currentBar = this.bars[this.currentIndex];
+		this.currentImage = this.images[this.currentIndex];
+		this.currentBar.classList.add("progressing", "paused");
+		this.currentImage.classList.add("shown");
+		this.dialog.classList.add("is-loading");
+		await this.promises[this.currentIndex];
+		this.dialog.classList.remove("is-loading");
+		this.currentBar.classList.remove("paused");
+
+		const item = this.items[this.currentIndex];
+		if (!this.isHighlight) this.setViewed(item.id);
+
+		// Populate
+		this.time.textContent = this.relativeTime(item.date_published);
+		const caption =
+			"caption" in item._open_stories ? item._open_stories.caption : null;
+		this.metadataDetails.classList.remove("is-expanded", "is-collapsed");
+		this.meta.textContent = caption || "";
+		if (this.meta.clientWidth > this.metadataDetails.clientWidth) {
+			this.metadataDetails.classList.add("is-collapsed");
+		}
+		this.prepareHeart();
+
+		if (item.url) {
+			this.link.hidden = false;
+			this.link.href = item.url;
+		} else {
+			this.link.hidden = true;
+			this.link.removeAttribute("href");
+		}
+
+		if (this.currentIndex > this.count - 1) this.currentIndex = 0;
+
+		this.timer = window.setTimeout(this.goTo.bind(this), this.duration * 1000);
+		if (this.paused) this.pause();
+	}
+
+	get viewedKey() {
+		return this.src;
+	}
+
+	get lazyLoad() {
+		return this.getAttribute("loading") === "lazy";
+	}
+
+	setViewed(id: string) {
+		const lastViewedIndex = this.items.findIndex(
+			(item) => item.id === this.getViewedId()
+		);
+		const newViewedIndex = this.items.findIndex((item) => item.id === id);
+		if (newViewedIndex < lastViewedIndex) return;
+
+		const viewedByFeed = JSON.parse(
+			localStorage.getItem("_open_stories") || "{}"
+		);
+		viewedByFeed[this.viewedKey] = id;
+		localStorage.setItem("_open_stories", JSON.stringify(viewedByFeed));
+	}
+
+	getViewedId() {
+		const viewedByFeed = JSON.parse(
+			localStorage.getItem("_open_stories") || "{}"
+		);
+		return viewedByFeed[this.viewedKey];
+	}
+
+	prepareHeart() {
+		const item = this.items[this.currentIndex];
+		const hasUrl =
+			(item._open_stories.reactions?.open_heart_urls || []).length > 0;
+		this.openHeart.hidden = !hasUrl;
+		if (!hasUrl) return;
+		const keys = (localStorage.getItem("_open_heart") || "").split(",");
+		const hearted = keys.includes(`♥︎@${item.id}`);
+		this.openHeart.setAttribute("aria-pressed", hearted.toString());
+		this.openHeart.disabled = hearted;
+	}
+
+	relativeTime(time: string | undefined): string {
+		if (!time) return "";
+		const published = new Date(time);
+		if (published.toString() === "Invalid Date") return "";
+
+		const m = Math.round(
+			(new Date().getTime() - published.getTime()) / 1000 / 60
+		);
+		if (m > 60 * 24) {
+			return `${Math.round(m / 60 / 24)}d`;
+		} else if (m > 60) {
+			return `${Math.round(m / 60)}h`;
+		} else {
+			return `${m}m`;
+		}
+	}
 }
 
-if (!window.customElements.get('open-stories')) {
-  window.OpenStoriesElement = OpenStoriesElement
-  window.customElements.define('open-stories', OpenStoriesElement)
+if (!window.customElements.get("open-stories")) {
+	window.OpenStoriesElement = OpenStoriesElement;
+	window.customElements.define("open-stories", OpenStoriesElement);
 }
 
-export default OpenStoriesElement
+export default OpenStoriesElement;
 
 declare global {
-  interface Window {
-    OpenStoriesElement: typeof OpenStoriesElement
-  }
-  interface HTMLElementTagNameMap {
-    'open-stories': OpenStoriesElement
-  }
+	interface Window {
+		OpenStoriesElement: typeof OpenStoriesElement;
+	}
+	interface HTMLElementTagNameMap {
+		"open-stories": OpenStoriesElement;
+	}
 }

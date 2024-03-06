@@ -20,6 +20,15 @@
       cursor: pointer;
       border-radius: 2px;
     }
+
+	open-stories.one-by-one {
+		--aspect-ratio-w: 1;
+		--aspect-ratio-h: 1;
+	}
+	open-stories.sixteen-by-nine {
+		--aspect-ratio-w: 16;
+		--aspect-ratio-h: 9;
+	}
   </style>
 </head>
 <body>
@@ -28,6 +37,11 @@
     <h2>Default</h2>
     <open-stories src="https://openstories.fyi/feeds/good-pretzel-max.json"></open-stories>
     <h2>State and customizations</h2>
+	<h3>Aspect ratio</h3>
+	<h4>1:1</h4>
+    <open-stories class="one-by-one" src="./feed-1-1.json"></open-stories>
+	<h4>16:9</h4>
+    <open-stories class="sixteen-by-nine" src="./feed-16-9.json"></open-stories>
     <h3>Empty</h3>
     <open-stories src="./empty.json"></open-stories>
     <h3>Styling your button</h3>
