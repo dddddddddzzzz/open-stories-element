@@ -5,8 +5,9 @@ function css(duration: number) {
   :host {
     display: inline-block;
     font-family: system-ui, sans-serif;
-    --magic-h: 88vh;
-    --magic-w: 88vw;
+    --magic-h: calc(100vh - var(--dialog-margin) * 2);
+    --magic-w: calc(100vw - var(--dialog-margin) * 2);
+	--magic-size: min(var(--magic-h), var(--magic-w) * var(--aspect-ratio-h)/var(--aspect-ratio-w));
     --aspect-ratio-h: 16;
     --aspect-ratio-w: 9;
   }
@@ -61,14 +62,16 @@ function css(duration: number) {
   }
 
   dialog {
-    height: min(var(--magic-h), var(--magic-w) * var(--aspect-ratio-h)/var(--aspect-ratio-w));
+	--dialog-margin: 4rem;
+    height: var(---magic-size);
     padding: 0;
     border: 0;
-    aspect-ratio: 9/var(--aspect-ratio-h);
+    aspect-ratio: var(--aspect-ratio-w) / var(--aspect-ratio-h);
     background: transparent;
     overflow: visible;
-    max-height: var(--magic-h);
-    max-width: var(--magic-w);
+    max-height: calc(100% - var(--dialog-margin) * 2);
+    max-width: calc(100% - var(--dialog-margin) * 2);
+	width: auto;
   }
   
   #images {
@@ -78,6 +81,7 @@ function css(duration: number) {
     position: absolute;
     background: #000;
     border-radius: 10px;
+	background: var(--story-image-background, #000);
   }
 
   #images img {
@@ -343,7 +347,8 @@ function css(duration: number) {
     transform: translate(-50%, -50%);
     padding: 0 2vw;
     aspect-ratio: var(--aspect-ratio-w) / var(--aspect-ratio-h);
-    height: min(var(--magic-h), var(--magic-w) * var(--aspect-ratio-h)/var(--aspect-ratio-w));
+    height: var(---magic-size);
+	width: 100%;
     position: absolute;
     top: 50%;
     z-index: 1;
@@ -355,14 +360,15 @@ function css(duration: number) {
     pointer-events: all;
     position: absolute;
     z-index: 1;
-    min-width: 40px;
+    min-width: 25%;
     height: calc(100% - 100px);
     bottom: 50px;
     padding: 0;
-    font-size: 3vh;
+    font-size: 2vh;
     width: 12vh;
     font-family: system-ui, sans-serif;
     color: #fff;
+
   }
 
   #back {
@@ -375,14 +381,13 @@ function css(duration: number) {
     text-align: right;
   }
 
-  @media (max-width: 420px), screen and (orientation: portrait) {
-    :host {
-      --magic-h: calc(var(--mobileVh) * 97);
-      --magic-w: 100vw;
+  @media (max-width: 420px) {
+    dialog {
+	  --dialog-margin: 0px;
     }
 
     ::backdrop {
-      background-color: #000;
+      background-color: red;
     }
 
     #side-controls #close {
