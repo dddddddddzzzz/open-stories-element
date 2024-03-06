@@ -4,7 +4,7 @@ An [OpenStoriesFeed](https://github.com/dddddddddzzzz/OpenStories) viewer. See i
 
 ## WIP
 
-Things yet to be supported: 
+Things yet to be supported:
 
 - `feed._open_stories.preview`
 - `feed.items[]._open_stories.preview`
@@ -16,7 +16,11 @@ Things yet to be supported:
 
 ```html
 <!-- Include `OpenStoriesElement` -->
-<script src="https://unpkg.com/open-stories-element@0.0.21" type="module" defer></script>
+<script
+	src="https://unpkg.com/open-stories-element@0.0.21"
+	type="module"
+	defer
+></script>
 
 <!-- Render `<open-stories>` -->
 <open-stories src="./feed.json"></open-stories>
@@ -26,7 +30,7 @@ This requires native [`<dialog>`](https://caniuse.com/dialog) and [Shadow DOM](h
 
 ## Development
 
-### Install dependancies with yarn
+### Setup
 
 ```shell
 yarn install
@@ -81,7 +85,7 @@ Override these CSS custom properties on `open-stories` to tweak the layout:
 
 ## Button text / `<slot>`
 
-Whatever you put inside `<open-stories>HERE</open-stories>` will replace the default button text "View Stories".  ([MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot))
+Whatever you put inside `<open-stories>HERE</open-stories>` will replace the default button text "View Stories". ([MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot))
 
 ## Attributes
 
