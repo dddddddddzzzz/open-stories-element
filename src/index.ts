@@ -21,6 +21,10 @@ function css(duration: number) {
     padding: 0;
     margin: 0;
   }
+
+  dialog:focus:not(:focus-visible) {
+    outline: none;
+  }
   
   #side-controls {
     display: flex;
