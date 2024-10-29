@@ -27,19 +27,34 @@ function css(duration: number) {
     outline: none;
   }
   
-  #side-controls {
+  .side-controls {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.7vh;
   }
 
-  #side-controls #close,
+  #close,
+  #mute-unmute,
   #play,
-  #pause {
+  #pause,
+  .mute,
+  .unmute {
     display: none;
   }
+
+  dialog:has(video.shown) #mute-unmute {
+    display: block;
+  }
   
+  dialog.is-muted .mute {
+    display: block;
+  }
+
+  dialog:not(.is-muted) .unmute {
+    display: block;
+  }
+
   dialog.is-paused #play {
     display: block;
   }
@@ -141,8 +156,8 @@ function css(duration: number) {
     z-index: 2;
   }
 
-  #side-controls button,
-  #side-controls a {
+  .side-controls button,
+  .side-controls a {
     display: inline-flex;
   }
 
@@ -390,7 +405,7 @@ function css(duration: number) {
       background-color: #000;
     }
 
-    #side-controls #close {
+    .side-controls #close {
       display: inline-flex;
     }
   }
@@ -411,6 +426,7 @@ class OpenStoriesElement extends HTMLElement {
   moreMetadata: HTMLButtonElement
   meta: HTMLElement
   openHeart: HTMLButtonElement
+  toggleMute: HTMLButtonElement
   themeColor: HTMLMetaElement | null = null
   link: HTMLAnchorElement
   currentIndex: number = -1
@@ -433,7 +449,7 @@ class OpenStoriesElement extends HTMLElement {
     this.root = this.attachShadow({mode: 'open'})
     this.root.innerHTML = `
       <button type="dialog" id="trigger" part="button"><slot>View stories</slot></button>
-      <dialog class="is-loading" part="dialog">
+      <dialog class="is-loading is-muted" part="dialog">
         <div class="loading-visual" part="loading-visual"></div>
         <div id="bars"></div>
         <span id="time"></span>
@@ -449,19 +465,27 @@ class OpenStoriesElement extends HTMLElement {
             [more]
             </button>
           </div>
-          <div id="side-controls">
+          <div class="side-controls">
             <button id="close" class="action" type="button" aria-label="Close">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="6" y="7.35723" width="1.91942" height="10.1014" rx="0.95971" transform="rotate(-45 6 7.35723)" fill="white"/>
                 <rect x="7.35724" y="14.5" width="1.91942" height="10.1014" rx="0.95971" transform="rotate(-135 7.35724 14.5)" fill="white"/>
               </svg>
             </button>
+            <button id="mute-unmute" class="action" type="button" aria-label="Mute/Unmute" aria-pressed="false">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="mute">
+                <path fill="#fff" fill-rule="evenodd" d="M11.434 7.934a.8.8 0 0 1 1.132 0l.934.935.934-.935a.8.8 0 0 1 1.132 1.132L14.63 10l.935.934a.8.8 0 0 1-1.132 1.132l-.934-.935-.934.935a.8.8 0 0 1-1.132-1.132L12.37 10l-.935-.934a.8.8 0 0 1 0-1.132ZM10 7.002v5.73a1 1 0 0 1-1.64.768l-2.028-1.69a.998.998 0 0 1-.332.057H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h1c.116 0 .228.02.332.056l2.028-1.69a1 1 0 0 1 1.64.769Z" clip-rule="evenodd"/>
+              </svg>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="unmute">
+                <path fill="#fff" fill-rule="evenodd" d="M10 7.002v5.73a1 1 0 0 1-1.64.768l-2.028-1.69a.998.998 0 0 1-.332.057H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h1c.116 0 .228.02.332.056l2.028-1.69a1 1 0 0 1 1.64.769ZM12.35 8.208a.783.783 0 0 1 1.008-.458l-.275.733.275-.733h.001l.002.001.003.001.008.004a1.2 1.2 0 0 1 .077.032 2.53 2.53 0 0 1 .658.444c.365.343.737.905.737 1.718s-.372 1.375-.737 1.717a2.534 2.534 0 0 1-.715.47l-.02.007-.008.004h-.004l-.001.001c-.001 0-.002.001-.276-.732l.274.733a.783.783 0 0 1-.56-1.461l.003-.002a.97.97 0 0 0 .236-.162.74.74 0 0 0 .242-.575.74.74 0 0 0-.241-.575.969.969 0 0 0-.237-.162l-.004-.002a.783.783 0 0 1-.446-1.003Zm.457 2.477Zm0 0Z" clip-rule="evenodd"/>
+              </svg>
+            </button>
             <button type="button" class="action" id="open-heart" part="open-heart" part="open-heart" hidden>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="on">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.60419 6.08132C9.77084 5.51626 10.1042 8.08132 10.1042 8.08132L10.1042 13.5813C8.60419 13.5813 7.10419 12.0813 6.50161 11.0813C5.89903 10.0813 5.43754 6.64637 7.60419 6.08132ZM12.6042 6.08131C10.4375 5.51626 10.1042 8.08132 10.1042 8.08132L10.1042 13.5813C11.6042 13.5813 13.1042 12.0813 13.7068 11.0813C14.3093 10.0813 14.7708 6.64637 12.6042 6.08131Z" fill="white"/>
+                <path fill="#fff" d="M12 6c-1.5 0-2 2-2 2s-.5-2-2-2-2 1.5-2 2.5c0 3 2.5 5 4 5s4-2 4-5C14 7 13.5 6 12 6Z"/>
               </svg>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="off">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M9.51776 6.65626C9.99827 7.26627 10.1042 8.08132 10.1042 8.08132C10.1042 8.08132 10.2101 7.26627 10.6906 6.65626C11.0625 6.1841 11.6589 5.83478 12.6042 6.08131C14.7708 6.64637 14.3093 10.0813 13.7068 11.0813C13.1042 12.0813 11.6042 13.5813 10.1042 13.5813C8.60419 13.5813 7.10419 12.0813 6.50161 11.0813C5.89903 10.0813 5.43754 6.64637 7.60419 6.08132C8.54951 5.83478 9.14584 6.1841 9.51776 6.65626ZM9.11332 8.21616L9.11237 8.20995C9.111 8.20138 9.10825 8.18497 9.10382 8.16202C9.09487 8.11576 9.07949 8.04512 9.05555 7.95993C9.00587 7.78317 8.92824 7.57595 8.81703 7.39676C8.70614 7.2181 8.58996 7.11151 8.47666 7.0572C8.3811 7.0114 8.20033 6.95929 7.85655 7.04895C7.4012 7.1677 7.08018 7.59115 7.01156 8.494C6.97938 8.91746 7.01661 9.36612 7.09563 9.76183C7.17781 10.1734 7.28974 10.4517 7.35813 10.5652C7.5966 10.9609 8.04101 11.4942 8.58331 11.9193C9.13877 12.3547 9.67326 12.5813 10.1042 12.5813C10.5351 12.5813 11.0696 12.3547 11.6251 11.9193C12.1674 11.4942 12.6118 10.9609 12.8503 10.5652C12.9186 10.4517 13.0306 10.1734 13.1127 9.76183C13.1918 9.36612 13.229 8.91746 13.1968 8.49399C13.1282 7.59115 12.8072 7.1677 12.3518 7.04895C12.008 6.95929 11.8273 7.0114 11.7317 7.0572C11.6184 7.11151 11.5022 7.2181 11.3913 7.39676C11.2801 7.57595 11.2025 7.78317 11.1528 7.95993C11.1289 8.04512 11.1135 8.11576 11.1046 8.16202C11.1001 8.18497 11.0974 8.20138 11.096 8.20995L11.0951 8.21615C11.0277 8.71143 10.6047 9.08132 10.1042 9.08132C9.60373 9.08132 9.18068 8.71144 9.11332 8.21616Z" fill="white"/>
+                <path fill="#fff" fill-rule="evenodd" d="M8.011 8.103c-.157.252-.238.612-.238.917 0 1.024.425 1.883.99 2.49.595.642 1.23.89 1.537.89.307 0 .942-.248 1.537-.89.565-.607.99-1.466.99-2.49 0-.572-.1-.882-.208-1.032-.064-.09-.19-.215-.612-.215-.188 0-.38.113-.582.436a2.447 2.447 0 0 0-.266.603.886.886 0 0 1-1.718 0V8.81a2.442 2.442 0 0 0-.265-.6c-.203-.323-.395-.436-.583-.436-.284 0-.448.116-.582.33Zm1.43.71Zm0-.004Zm.859-2.035c.377-.404.934-.774 1.707-.774.859 0 1.586.301 2.055.958.426.597.538 1.354.538 2.062a5.42 5.42 0 0 1-1.464 3.697c-.791.852-1.863 1.456-2.836 1.456-.973 0-2.045-.604-2.836-1.456A5.42 5.42 0 0 1 6 9.02c0-.548.132-1.255.508-1.857C6.908 6.523 7.597 6 8.593 6c.773 0 1.33.37 1.707.774Z" clip-rule="evenodd"/>
               </svg>
             </button>
             <a href id="link" class="action" aria-label="Story (copy link)">
@@ -487,6 +511,7 @@ class OpenStoriesElement extends HTMLElement {
     this.button = this.root.querySelector('button#trigger')!
     this.close = this.root.querySelector('button#close')!
     this.openHeart = this.root.querySelector('button#open-heart')!
+    this.toggleMute = this.root.querySelector('button#mute-unmute')!
     this.metadataDetails = this.root.querySelector('#metadata-details')!
     this.meta = this.root.querySelector('#metadata')!
     this.moreMetadata = this.root.querySelector('#more')!
@@ -650,6 +675,17 @@ class OpenStoriesElement extends HTMLElement {
       this.paused ? this.resume() : this.pause()
     })
 
+    this.toggleMute.addEventListener('click', () => {
+      const currentlyMuted = this.dialog.classList.contains('is-muted')
+      this.dialog.classList.toggle('is-muted', !currentlyMuted)
+      playPause.setAttribute('aria-pressed', (!currentlyMuted).toString())
+
+      for (const video of this.stories.filter(e => e instanceof HTMLVideoElement)) {
+        video.muted = !currentlyMuted
+        video.volume = currentlyMuted ? 1 : 0
+      }
+    })
+
     stories.addEventListener('click', () => {
       playPause.click()
     })
@@ -804,6 +840,7 @@ class OpenStoriesElement extends HTMLElement {
         el.setAttribute('muted', '')
         el.setAttribute('playsinline', '')
         el.setAttribute('crossorigin', '')
+        el.volume = 0
         this.promises.push(new Promise(resolve => el!.addEventListener('canplay', resolve)))
         if (this.promises.length !== 1 && this.lazyLoad) {
           el.preload = 'metadata'

@@ -8,15 +8,14 @@ Things yet to be supported:
 
 - `feed._open_stories.preview`
 - `feed.items[]._open_stories.preview`
-- `feed.items[]._open_stories.duration_in_seconds`
 - `feed.items[]._open_stories.content_warning`
-- `feed.items[]._open_stories.mime_type`: [`video/*`](https://github.com/dddddddddzzzz/OpenStories#video-story)
+- `feed.items[]._open_stories.tracks`: Changing tracks for videos
 
 ## Usage
 
 ```html
 <!-- Include `OpenStoriesElement` -->
-<script src="https://unpkg.com/open-stories-element@0.0.21" type="module" defer></script>
+<script src="https://unpkg.com/open-stories-element@0.0.26" type="module" defer></script>
 
 <!-- Render `<open-stories>` -->
 <open-stories src="./feed.json"></open-stories>
