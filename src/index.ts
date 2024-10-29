@@ -7,6 +7,7 @@ function css(duration: number) {
     font-family: system-ui, sans-serif;
     --magic-h: 88vh;
     --magic-w: 88vw;
+    --duration: ${duration}s;
   }
 
   ::backdrop {
@@ -73,7 +74,7 @@ function css(duration: number) {
     max-width: var(--magic-w);
   }
   
-  #images {
+  #stories {
     overflow: hidden;
     height: 100%;
     width: 100%;
@@ -82,7 +83,7 @@ function css(duration: number) {
     border-radius: 10px;
   }
 
-  #images img {
+  #stories .story {
     position: absolute;
     max-height: 100%;
     max-width: 100%;
@@ -91,9 +92,11 @@ function css(duration: number) {
     object-fit: contain;
     top: 0;
     opacity: 0;
+    pointer-events: none;
   }
 
-  #images img.shown {
+  #stories .story.shown {
+    pointer-events: auto;
     opacity: 1;
   }
 
@@ -297,7 +300,7 @@ function css(duration: number) {
 
   .progressing .progress {
     width: 0;
-    animation: progress ${duration}s linear;
+    animation: progress var(--duration) linear;
     animation-play-state: running;
   }
 
@@ -312,7 +315,7 @@ function css(duration: number) {
     display: none;
   }
 
-  .is-loading #images img {
+  .is-loading #stories img {
     opacity: 0;
   }
 
@@ -414,8 +417,8 @@ class OpenStoriesElement extends HTMLElement {
   count = 0
   timer: number | null = null
   currentBar: HTMLElement | null = null
-  currentImage: HTMLImageElement | null = null
-  images: HTMLImageElement[] = []
+  currentStory: HTMLImageElement | HTMLVideoElement | null = null
+  stories: Array<HTMLImageElement | HTMLVideoElement> = []
   bars: HTMLElement[] = []
   promises: Promise<unknown>[] = []
   paused: boolean = false
@@ -438,7 +441,7 @@ class OpenStoriesElement extends HTMLElement {
           <button id="back">←</button>
           <button id="forward">→</button>
         </div>
-        <div id="images"></div>
+        <div id="stories"></div>
         <div id="bottom-controls">
           <div id="metadata-details">
             <div id="metadata" part="metadata-content"></div>
@@ -602,7 +605,7 @@ class OpenStoriesElement extends HTMLElement {
   }
 
   bindEvents() {
-    const images = this.root.querySelector('#images')!
+    const stories = this.root.querySelector('#stories')!
     const playPause = this.root.querySelector<HTMLElement>('#play-pause')!
     const back = this.root.querySelector<HTMLElement>('button#back')!
     const forward = this.root.querySelector<HTMLElement>('button#forward')!
@@ -646,7 +649,7 @@ class OpenStoriesElement extends HTMLElement {
       this.paused ? this.resume() : this.pause()
     })
 
-    images.addEventListener('click', () => {
+    stories.addEventListener('click', () => {
       playPause.click()
     })
 
@@ -705,14 +708,14 @@ class OpenStoriesElement extends HTMLElement {
 
     const now = new Date()
     this.items = json.items.filter((item) => {
-      return item._open_stories.mime_type.startsWith('image') && (!item._open_stories.date_expired || now <= new Date(item._open_stories.date_expired))
+      return !item._open_stories.date_expired || now <= new Date(item._open_stories.date_expired)
     }).reverse()
 
     this.classList.toggle('is-empty', this.items.length === 0)
     if (this.items.length === 0) {
       this.button.disabled = true
     } else {
-      this.appendImages()
+      this.appendStories()
     }
     
     window.addEventListener('hashchange', this.checkHashId.bind(this))
@@ -746,6 +749,7 @@ class OpenStoriesElement extends HTMLElement {
     this.paused = true
     this.classList.add('is-paused')
     this.dialog.classList.add('is-paused')
+    if (this.currentStory instanceof HTMLVideoElement) this.currentStory.pause()
     if (this.timer) clearTimeout(this.timer)
   }
 
@@ -754,22 +758,23 @@ class OpenStoriesElement extends HTMLElement {
     this.classList.remove('is-paused')
     this.dialog.classList.remove('is-paused')
     this.currentBar?.querySelector('.progress')?.addEventListener('animationend', this.goToBinding, {once: true})
+    if (this.currentStory instanceof HTMLVideoElement) this.currentStory.play()
   }
 
-  appendImages() {
+  appendStories() {
     this.count = this.items.length
-    this.images = []
+    this.stories = []
     this.bars = []
     this.promises = []
 
     const bars = this.root.querySelector('#bars')!
-    const images = this.root.querySelector('#images')!
+    const stories = this.root.querySelector('#stories')!
 
     for (const item of this.items) {
       const bar = document.createElement('button')
       bar.type = 'button'
       bar.classList.add('bar')
-      const idx = this.images.length
+      const idx = this.stories.length
       bar.addEventListener('click', () => {
         const delta = idx - this.currentIndex
         if (delta !== 0) this.goTo(delta)
@@ -781,16 +786,36 @@ class OpenStoriesElement extends HTMLElement {
       bar.append(progress)
       bars.append(bar)
       this.bars.push(bar)
-      const img = document.createElement('img')
-      this.promises.push(new Promise(resolve => img.addEventListener('load', resolve)))
-      if (this.promises.length !== 1 && this.lazyLoad) {
-        img.setAttribute('data-src', item._open_stories.url)
-      } else {
-        img.src = item._open_stories.url
+      let el: HTMLVideoElement | HTMLImageElement | null = null
+      if (item._open_stories.mime_type.startsWith('image/')) {
+        el = document.createElement('img')
+        this.promises.push(new Promise(resolve => el!.addEventListener('load', resolve)))
+        if (this.promises.length !== 1 && this.lazyLoad) {
+          el.setAttribute('data-src', item._open_stories.url)
+        } else {
+          el.src = item._open_stories.url
+        }
+        if ('alt' in item._open_stories) el.alt = item._open_stories.alt
+      } else if (item._open_stories.mime_type.startsWith('video/')) {
+        el = document.createElement('video')
+        el.src = item._open_stories.url
+        el.setAttribute('loop', '')
+        el.setAttribute('muted', '')
+        el.setAttribute('playsinline', '')
+        this.promises.push(new Promise(resolve => el!.addEventListener('canplay', resolve)))
+        if (this.promises.length !== 1 && this.lazyLoad) {
+          el.preload = 'metadata'
+        } else {
+          el.preload = 'auto'
+        }
+        if ('title' in item._open_stories) el.setAttribute('title', item._open_stories.title)
       }
-      if ('alt' in item._open_stories) img.alt = item._open_stories.alt
-      images.append(img)
-      this.images.push(img)
+
+      if (el) {
+        el.classList.add('story')
+        stories.append(el)
+        this.stories.push(el)
+      }
     }
   }
   
@@ -802,9 +827,10 @@ class OpenStoriesElement extends HTMLElement {
     }
 
     if (this.lazyLoad) {
-      for (const image of this.images) {
-        if (image.src || !image.hasAttribute('data-src')) continue
-        image.src = image.getAttribute('data-src') || ''
+      for (const story of this.stories) {
+        if (story.src || story.getAttribute('preload') === 'auto' || !story.hasAttribute('data-src')) continue
+        story.src = story.getAttribute('data-src') || ''
+        if (story instanceof HTMLVideoElement) story.preload = 'auto'
       }
     }
 
@@ -820,9 +846,11 @@ class OpenStoriesElement extends HTMLElement {
       this.currentBar.style.removeProperty('animation')
       this.currentBar.classList.remove('progressing')
       this.meta.textContent = ''
+      this.style.removeProperty('--duration')
     } 
     if (this.timer) clearTimeout(this.timer)
-    if (this.currentImage) this.currentImage.classList.remove('shown')
+    if (this.currentStory) this.currentStory.classList.remove('shown')
+    if (this.currentStory instanceof HTMLVideoElement) this.currentStory.pause()
 
     this.currentIndex += delta
     if (this.currentIndex === this.count) {
@@ -831,25 +859,34 @@ class OpenStoriesElement extends HTMLElement {
     }
 
     this.currentBar = this.bars[this.currentIndex]
-    this.currentImage = this.images[this.currentIndex]
+    this.currentStory = this.stories[this.currentIndex]
     this.currentBar.classList.add('progressing', 'paused')
-    this.currentImage.classList.add('shown')
+    this.currentStory.classList.add('shown')
     this.dialog.classList.add('is-loading')
     await this.promises[this.currentIndex]
     this.dialog.classList.remove('is-loading')
     this.currentBar.classList.remove('paused')
 
     const item = this.items[this.currentIndex]
+    if (this.currentStory instanceof HTMLVideoElement) this.currentStory.play()
     if (!this.isHighlight) this.setViewed(item.id)
 
     // Populate
     this.time.textContent = this.relativeTime(item.date_published)
-    const caption = 'caption' in item._open_stories ? item._open_stories.caption : null
     this.metadataDetails.classList.remove('is-expanded', 'is-collapsed')
+    let caption = null
+    if ('caption' in item._open_stories) caption = item._open_stories.caption || ''
+    if ('title' in item._open_stories) caption = item._open_stories.title || ''
+    if (this.currentStory instanceof HTMLVideoElement) {
+      this.currentStory.currentTime = 0
+      if (!this.paused) this.currentStory.play()
+    }
+
     this.meta.textContent = caption || ''
     if (this.meta.clientWidth > this.metadataDetails.clientWidth) {
       this.metadataDetails.classList.add('is-collapsed')
     }
+
     this.prepareHeart()
 
     if (item.url) {
@@ -862,8 +899,13 @@ class OpenStoriesElement extends HTMLElement {
 
     if (this.currentIndex > this.count - 1) this.currentIndex = 0
 
-    this.timer = window.setTimeout(this.goTo.bind(this), this.duration * 1000)
-    if (this.paused) this.pause()
+    const videoLength = this.currentStory instanceof HTMLVideoElement ? this.currentStory.duration : null
+    const duration = Number(this.getAttribute('duration')) || item._open_stories.duration_in_seconds || videoLength || this.duration
+    this.style.setProperty('--duration', `${duration}s`)
+    this.timer = window.setTimeout(this.goTo.bind(this), duration * 1000)
+    if (this.paused) {
+      this.pause()
+    }
   }
 
   get viewedKey() {
