@@ -22,7 +22,8 @@
       "_open_stories": {
         "mime_type": "image/jpeg",
         "url": "https://element.openstories.fyi/demo/stories/1.JPG",
-        "alt": "Hand holding a monstera leaf."
+        "alt": "Hand holding a monstera leaf.",
+        "reactions": { "open_heart_urls": ["https://api.oh.dddddddddzzzz.org/example.com/open-heart-element-image"] }
       }
     },
     {
@@ -33,7 +34,8 @@
         "mime_type": "video/mp4",
         "url": "https://element.openstories.fyi/demo/stories/doge.MP4",
         "alt": "A dog.",
-        "tracks": [{"url": "./stories/doge.webvtt", "srclang": "en"}]
+        "tracks": [{"url": "https://element.openstories.fyi/demo/stories/doge.webvtt", "srclang": "en"}],
+        "reactions": { "open_heart_urls": ["https://api.oh.dddddddddzzzz.org/example.com/open-heart-element-video"] }
       }
     }
   ]
