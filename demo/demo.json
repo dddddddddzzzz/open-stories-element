@@ -20,18 +20,18 @@
       "content_html": "<img src=https://element.openstories.fyi/demo/stories/1.JPG alt='Hand holding a monstera leaf.'>",
       "date_published": "2022-11-07T00:00:00+08:00",
       "_open_stories": {
-        "mime_type": "video/mp4",
+        "mime_type": "image/jpeg",
         "url": "https://element.openstories.fyi/demo/stories/1.JPG",
         "alt": "Hand holding a monstera leaf."
       }
     },
     {
       "id": "a3",
-      "content_html": "<video src=https://element.openstories.fyi/demo/stories/doge.mp4 autoplay>",
+      "content_html": "<video src=https://element.openstories.fyi/demo/stories/doge.MP4 autoplay>",
       "date_published": "2022-11-07T00:00:00+08:00",
       "_open_stories": {
         "mime_type": "video/mp4",
-        "url": "https://element.openstories.fyi/demo/stories/doge.mp4",
+        "url": "https://element.openstories.fyi/demo/stories/doge.MP4",
         "alt": "A dog.",
         "webvtt": "https://element.openstories.fyi/demo/stories/doge.webvtt"
       }
