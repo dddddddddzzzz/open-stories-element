@@ -14,7 +14,7 @@
   "author": "Mu-An Chiou <pkg@muan.dev>",
   "license": "MIT",
   "devDependencies": {
-    "openstories-types": "0.0.9",
+    "openstories-types": "0.0.10",
     "terser": "^5.14.2",
     "typescript": "^4.7.4"
   },

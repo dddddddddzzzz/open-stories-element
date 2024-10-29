@@ -84,16 +84,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "open-stories-element@workspace:."
   dependencies:
-    openstories-types: 0.0.9
+    openstories-types: 0.0.10
     terser: ^5.14.2
     typescript: ^4.7.4
   languageName: unknown
   linkType: soft
 
-"openstories-types@npm:0.0.9":
-  version: 0.0.9
-  resolution: "openstories-types@npm:0.0.9"
-  checksum: ff0b6d13744f96086e6ef703ae1885e4308b12145f3e0fbbb2c68920181b012e9f7d5010047626515c4991a6ba90e146cd04c03aaaac40753673c3744ecdf4f4
+"openstories-types@npm:0.0.10":
+  version: 0.0.10
+  resolution: "openstories-types@npm:0.0.10"
+  checksum: c7e0fc560d76924a5ccafcc032f0381a19ecc7f64518e40ad6f5f7e5a25c482c9183e824fbf38321dced23167020a6b5a73a3eea47efc804b8371e89a6d8c34b
   languageName: node
   linkType: hard
 
