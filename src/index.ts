@@ -680,9 +680,13 @@ class OpenStoriesElement extends HTMLElement {
       this.dialog.classList.toggle('is-muted', !currentlyMuted)
       playPause.setAttribute('aria-pressed', (!currentlyMuted).toString())
 
-      for (const video of this.stories.filter(e => e instanceof HTMLVideoElement)) {
-        video.muted = !currentlyMuted
-        video.volume = currentlyMuted ? 1 : 0
+      for (const element of this.stories) {
+        if (element instanceof HTMLVideoElement) {
+          element.muted = !currentlyMuted
+          element.volume = currentlyMuted ? 1 : 0
+        } else {
+          continue
+        }
       }
     })
 
