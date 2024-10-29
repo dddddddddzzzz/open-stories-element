@@ -33,7 +33,7 @@
         "mime_type": "video/mp4",
         "url": "https://element.openstories.fyi/demo/stories/doge.MP4",
         "alt": "A dog.",
-        "webvtt": "https://element.openstories.fyi/demo/stories/doge.webvtt"
+        "tracks": [{"url": "./stories/doge.webvtt", "srclang": "en"}]
       }
     }
   ]

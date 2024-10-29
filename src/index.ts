@@ -526,6 +526,7 @@ class OpenStoriesElement extends HTMLElement {
     this.button.addEventListener('click', () => {
       this.dialog.open ? this.dialog.close() : this.dialog.showModal()
       this.open = this.dialog.open
+      if (this.currentStory instanceof HTMLVideoElement) this.currentStory.pause()
       if (!this.dialog.open) return
       this.dialog.tabIndex = -1
       this.dialog.focus()
@@ -802,6 +803,7 @@ class OpenStoriesElement extends HTMLElement {
         el.setAttribute('loop', '')
         el.setAttribute('muted', '')
         el.setAttribute('playsinline', '')
+        el.setAttribute('crossorigin', '')
         this.promises.push(new Promise(resolve => el!.addEventListener('canplay', resolve)))
         if (this.promises.length !== 1 && this.lazyLoad) {
           el.preload = 'metadata'
@@ -809,9 +811,20 @@ class OpenStoriesElement extends HTMLElement {
           el.preload = 'auto'
         }
         if ('title' in item._open_stories) el.setAttribute('title', item._open_stories.title)
+        const tracks = 'tracks' in item._open_stories ? (item._open_stories.tracks || []) : []
+        for (const track of tracks) {
+          const trackEl = document.createElement('track')
+          trackEl.default = track === tracks[0]
+          trackEl.src = track.url
+          trackEl.label = track.label || ''
+          trackEl.srclang = track.srclang || ''
+          trackEl.kind = track.kind || 'captions'
+          el.append(trackEl)
+        }
       }
 
       if (el) {
+        el.setAttribute('part', 'story')
         el.classList.add('story')
         stories.append(el)
         this.stories.push(el)
