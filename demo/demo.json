@@ -3,11 +3,12 @@
   "title": "Demo",
   "feed_url": "https://element.openstories.fyi/demo/demo.json",
   "_open_stories": {
-    "version": "0.0.9"
+    "version": "0.0.10"
   },
   "items": [
     {
       "id": "a2",
+      "url": "https://element.openstories.fyi/#a2",
       "content_html": "<img src=https://element.openstories.fyi/demo/stories/2.JPG alt='A screenshot of the game Stray in a moody apartment with a cat looking out a window.'>",
       "_open_stories": {
         "mime_type": "image/jpeg",
@@ -17,6 +18,7 @@
     },
     {
       "id": "a1",
+      "url": "https://element.openstories.fyi/#a1",
       "content_html": "<img src=https://element.openstories.fyi/demo/stories/1.JPG alt='Hand holding a monstera leaf.'>",
       "date_published": "2022-11-07T00:00:00+08:00",
       "_open_stories": {
@@ -28,6 +30,7 @@
     },
     {
       "id": "a3",
+      "url": "https://element.openstories.fyi/#a3",
       "content_html": "<video src=https://element.openstories.fyi/demo/stories/doge.MP4 autoplay>",
       "date_published": "2022-11-07T00:00:00+08:00",
       "_open_stories": {

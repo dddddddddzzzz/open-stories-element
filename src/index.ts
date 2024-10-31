@@ -35,7 +35,7 @@ function css(duration: number) {
   }
 
   #close,
-  #mute-unmute,
+  #toggleMute,
   #play,
   #pause,
   .mute,
@@ -43,7 +43,7 @@ function css(duration: number) {
     display: none;
   }
 
-  dialog:has(video.shown) #mute-unmute {
+  dialog:has(video.shown) #toggleMute {
     display: block;
   }
   
@@ -427,6 +427,7 @@ class OpenStoriesElement extends HTMLElement {
   meta: HTMLElement
   openHeart: HTMLButtonElement
   toggleMute: HTMLButtonElement
+  share: HTMLButtonElement
   themeColor: HTMLMetaElement | null = null
   link: HTMLAnchorElement
   currentIndex: number = -1
@@ -472,7 +473,7 @@ class OpenStoriesElement extends HTMLElement {
                 <rect x="7.35724" y="14.5" width="1.91942" height="10.1014" rx="0.95971" transform="rotate(-135 7.35724 14.5)" fill="white"/>
               </svg>
             </button>
-            <button id="mute-unmute" class="action" type="button" aria-label="Mute/Unmute" aria-pressed="false">
+            <button id="toggleMute" class="action" type="button" aria-label="Mute/Unmute" aria-pressed="false">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="mute">
                 <path fill="#fff" fill-rule="evenodd" d="M11.434 7.934a.8.8 0 0 1 1.132 0l.934.935.934-.935a.8.8 0 0 1 1.132 1.132L14.63 10l.935.934a.8.8 0 0 1-1.132 1.132l-.934-.935-.934.935a.8.8 0 0 1-1.132-1.132L12.37 10l-.935-.934a.8.8 0 0 1 0-1.132ZM10 7.002v5.73a1 1 0 0 1-1.64.768l-2.028-1.69a.998.998 0 0 1-.332.057H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h1c.116 0 .228.02.332.056l2.028-1.69a1 1 0 0 1 1.64.769Z" clip-rule="evenodd"/>
               </svg>
@@ -480,12 +481,17 @@ class OpenStoriesElement extends HTMLElement {
                 <path fill="#fff" fill-rule="evenodd" d="M10 7.002v5.73a1 1 0 0 1-1.64.768l-2.028-1.69a.998.998 0 0 1-.332.057H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h1c.116 0 .228.02.332.056l2.028-1.69a1 1 0 0 1 1.64.769ZM12.35 8.208a.783.783 0 0 1 1.008-.458l-.275.733.275-.733h.001l.002.001.003.001.008.004a1.2 1.2 0 0 1 .077.032 2.53 2.53 0 0 1 .658.444c.365.343.737.905.737 1.718s-.372 1.375-.737 1.717a2.534 2.534 0 0 1-.715.47l-.02.007-.008.004h-.004l-.001.001c-.001 0-.002.001-.276-.732l.274.733a.783.783 0 0 1-.56-1.461l.003-.002a.97.97 0 0 0 .236-.162.74.74 0 0 0 .242-.575.74.74 0 0 0-.241-.575.969.969 0 0 0-.237-.162l-.004-.002a.783.783 0 0 1-.446-1.003Zm.457 2.477Zm0 0Z" clip-rule="evenodd"/>
               </svg>
             </button>
-            <button type="button" class="action" id="open-heart" part="open-heart" part="open-heart" hidden>
+            <button type="button" class="action" id="open-heart" part="open-heart" hidden>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="on">
                 <path fill="#fff" d="M12 6c-1.5 0-2 2-2 2s-.5-2-2-2-2 1.5-2 2.5c0 3 2.5 5 4 5s4-2 4-5C14 7 13.5 6 12 6Z"/>
               </svg>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="off">
                 <path fill="#fff" fill-rule="evenodd" d="M8.011 8.103c-.157.252-.238.612-.238.917 0 1.024.425 1.883.99 2.49.595.642 1.23.89 1.537.89.307 0 .942-.248 1.537-.89.565-.607.99-1.466.99-2.49 0-.572-.1-.882-.208-1.032-.064-.09-.19-.215-.612-.215-.188 0-.38.113-.582.436a2.447 2.447 0 0 0-.266.603.886.886 0 0 1-1.718 0V8.81a2.442 2.442 0 0 0-.265-.6c-.203-.323-.395-.436-.583-.436-.284 0-.448.116-.582.33Zm1.43.71Zm0-.004Zm.859-2.035c.377-.404.934-.774 1.707-.774.859 0 1.586.301 2.055.958.426.597.538 1.354.538 2.062a5.42 5.42 0 0 1-1.464 3.697c-.791.852-1.863 1.456-2.836 1.456-.973 0-2.045-.604-2.836-1.456A5.42 5.42 0 0 1 6 9.02c0-.548.132-1.255.508-1.857C6.908 6.523 7.597 6 8.593 6c.773 0 1.33.37 1.707.774Z" clip-rule="evenodd"/>
+              </svg>
+            </button>
+            <button type="button" class="action" id="share" part="share" hidden>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.30953 9.32336C6.91003 8.94202 6.89531 8.30902 7.27665 7.90953L9.14028 5.90952C9.32353 5.71755 9.57558 5.60629 9.8409 5.60026C10.1062 5.59423 10.3631 5.69391 10.5549 5.87736L12.6912 7.87736C13.0903 8.25911 13.1044 8.89212 12.7226 9.29122C12.3409 9.69033 11.7079 9.70439 11.3088 9.32264L11 9.03679V11.6H9V8.98942L8.72336 9.29048C8.34202 9.68997 7.70902 9.7047 7.30953 9.32336ZM7.8 11.6C7.8 11.1582 7.44183 10.8 7 10.8C6.55817 10.8 6.2 11.1582 6.2 11.6V13.6C6.2 14.0418 6.55817 14.4 7 14.4H13C13.4418 14.4 13.8 14.0418 13.8 13.6V11.6C13.8 11.1582 13.4418 10.8 13 10.8C12.5582 10.8 12.2 11.1582 12.2 11.6V12.8H7.8V11.6Z" fill="white"/>
               </svg>
             </button>
             <a href id="link" class="action" aria-label="Story (copy link)">
@@ -511,7 +517,8 @@ class OpenStoriesElement extends HTMLElement {
     this.button = this.root.querySelector('button#trigger')!
     this.close = this.root.querySelector('button#close')!
     this.openHeart = this.root.querySelector('button#open-heart')!
-    this.toggleMute = this.root.querySelector('button#mute-unmute')!
+    this.toggleMute = this.root.querySelector('button#toggleMute')!
+    this.share = this.root.querySelector('button#share')!
     this.metadataDetails = this.root.querySelector('#metadata-details')!
     this.meta = this.root.querySelector('#metadata')!
     this.moreMetadata = this.root.querySelector('#more')!
@@ -561,6 +568,13 @@ class OpenStoriesElement extends HTMLElement {
 
     this.close.addEventListener('click', () => {
       this.button.click()
+    })
+
+    this.share.addEventListener('click', async () => {
+      if (!this.paused) this.pause()
+      const promise = navigator.share({url: this.items[this.currentIndex].url})
+      await promise
+      if (this.paused) this.resume()
     })
 
     // Backdrop click to close
@@ -946,8 +960,10 @@ class OpenStoriesElement extends HTMLElement {
     if (item.url) {
       this.link.hidden = false
       this.link.href = item.url
+      if ('share' in navigator) this.share.hidden = false
     } else {
       this.link.hidden = true
+      if ('share' in navigator) this.share.hidden = true
       this.link.removeAttribute('href')
     }
 
