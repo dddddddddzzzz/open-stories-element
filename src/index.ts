@@ -573,8 +573,11 @@ class OpenStoriesElement extends HTMLElement {
     this.share.addEventListener('click', async () => {
       if (!this.paused) this.pause()
       const promise = navigator.share({url: this.items[this.currentIndex].url})
-      await promise
-      if (this.paused) this.resume()
+      try {
+        await promise
+      } catch {
+        if (this.paused) this.resume()
+      }
     })
 
     // Backdrop click to close
