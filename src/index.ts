@@ -891,7 +891,9 @@ class OpenStoriesElement extends HTMLElement {
   }
   
   async startTimer() {
+    if (this.stories[0] instanceof HTMLVideoElement) this.stories[0].play()
     await this.promises[0]
+
     if (this.dialog.classList.contains('is-loading')) {
       this.dialog.classList.remove('is-loading')
       this.bindEvents()
