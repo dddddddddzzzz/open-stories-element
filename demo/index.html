@@ -1,26 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self' unpkg.com/muan.css@latest unpkg.com/open-stories-element@latest openstories.fyi *.openstories.fyi;">
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>&lt;open-stories&gt;</title>
   <link href="https://unpkg.com/muan.css@latest" rel="stylesheet" type="text/css">
+  <link href="./custom.css" rel="stylesheet" type="text/css">
   <!-- <script src="../dist/index.js" type="module" defer></script> -->
-  <script src="https://unpkg.com/open-stories-element@>0.0.0" type="module" defer></script>
-
-<style>
-    open-stories.customized:not(:defined),
-    open-stories.customized::part(button) {
-      padding: 0.8em 1.6em;
-      background: var(--linkColor);
-      color: var(--backgroundColor);
-      border: 0;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 2px;
-    }
-  </style>
+  <script src="https://unpkg.com/open-stories-element@latest" type="module" defer></script>
 </head>
 <body>
   <header><h1><code>&lt;open-stories&gt;</code></h1></header>
