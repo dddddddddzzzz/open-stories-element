@@ -146,6 +146,7 @@ class OpenStoriesElement extends HTMLElement {
       if (!this.dialog.open) return
       this.dialog.tabIndex = -1
       this.dialog.focus()
+      if (this.paused) this.resume()
       this.startTimer()
       this.setThemeColor(true)
     })
@@ -262,7 +263,7 @@ class OpenStoriesElement extends HTMLElement {
     })
 
     this.dialog.addEventListener('close', () => {
-      if (this.paused) this.resume()
+      this.pause()
       if (this.timer) clearTimeout(this.timer)
       if (this.currentIndex >= this.items.length - 1) this.currentIndex = -1
       this.checkIfAllRead()
