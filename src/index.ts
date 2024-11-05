@@ -36,6 +36,7 @@ class OpenStoriesElement extends HTMLElement {
       <button type="dialog" id="trigger" part="button"><slot>View stories</slot></button>
       <dialog class="is-loading is-muted" part="dialog">
         <div class="loading-visual" part="loading-visual"></div>
+        <div class="error-visual" part="error-visual"></div>
         <div id="bars"></div>
         <span id="time"></span>
         <div id="goToBlock">
@@ -401,7 +402,7 @@ class OpenStoriesElement extends HTMLElement {
     this.classList.remove('is-paused')
     this.dialog.classList.remove('is-paused')
     this.currentBar?.querySelector('.progress')?.addEventListener('animationend', this.goToBinding, {once: true})
-    if (this.currentStory instanceof HTMLVideoElement) this.currentStory.play()
+    this.playStory(this.currentStory)
   }
 
   appendStories() {
@@ -447,7 +448,10 @@ class OpenStoriesElement extends HTMLElement {
         el.setAttribute('playsinline', '')
         el.setAttribute('crossorigin', '')
         el.volume = 0
-        this.promises.push(new Promise(resolve => el!.addEventListener('canplay', resolve)))
+        this.promises.push(new Promise((resolve, reject) => {
+          el!.addEventListener('canplay', resolve)
+          el!.addEventListener('error', reject)
+        }))
         if (this.promises.length !== 1 && this.lazyLoad) {
           el.preload = 'metadata'
         } else {
@@ -476,8 +480,8 @@ class OpenStoriesElement extends HTMLElement {
   }
   
   async startTimer() {
-    if (this.stories[0] instanceof HTMLVideoElement) this.stories[0].play()
-    await this.promises[0]
+    this.playStory(this.stories[0])
+    await this.handleRejection(this.promises[0])
 
     if (this.dialog.classList.contains('is-loading')) {
       this.dialog.classList.remove('is-loading')
@@ -521,12 +525,14 @@ class OpenStoriesElement extends HTMLElement {
     this.currentBar.classList.add('progressing', 'paused')
     this.currentStory.classList.add('shown')
     this.dialog.classList.add('is-loading')
-    await this.promises[this.currentIndex]
+    this.dialog.classList.remove('has-error')
+    // Trigger play so video starts to load
+    this.playStory(this.currentStory)
+    await this.handleRejection(this.promises[this.currentIndex])
     this.dialog.classList.remove('is-loading')
     this.currentBar.classList.remove('paused')
 
     const item = this.items[this.currentIndex]
-    if (this.currentStory instanceof HTMLVideoElement) this.currentStory.play()
     if (!this.isHighlight) this.setViewed(item.id)
 
     // Populate
@@ -537,7 +543,7 @@ class OpenStoriesElement extends HTMLElement {
     if ('title' in item._open_stories) caption = item._open_stories.title || ''
     if (this.currentStory instanceof HTMLVideoElement) {
       this.currentStory.currentTime = 0
-      if (!this.paused) this.currentStory.play()
+      if (!this.paused) this.playStory(this.currentStory)
     }
 
     this.meta.textContent = caption || ''
@@ -614,6 +620,24 @@ class OpenStoriesElement extends HTMLElement {
       return `${Math.round(m / 60)}h`
     } else {
       return `${m}m`
+    }
+  }
+  
+  async handleRejection(promise: Promise<any>) {
+    try {
+      await promise
+    } catch (error) {
+      this.dialog.classList.add('has-error')
+      console.error('Encountered error trying to load story', error)
+    }
+  }
+
+  playStory(story: HTMLImageElement | HTMLVideoElement | null) {
+    if (!(story instanceof HTMLVideoElement)) return
+    try {
+      story.play()
+    } catch (error) {
+      console.error('Encountered error trying to play the video story', error)
     }
   }
 }
@@ -958,13 +982,12 @@ function css(duration: number) {
     100% { width: 100%; }
   }
 
-  .is-loading button:not(.bar),
   .is-loading #controls,
   .is-loading #open-heart {
     display: none;
   }
 
-  .is-loading #stories img {
+  .is-loading .story {
     opacity: 0;
   }
 
@@ -983,12 +1006,32 @@ function css(duration: number) {
     font-size: 14px;
   }
 
+  .has-error .error-visual {
+    display: block;
+  }
+  
+  .error-visual:before {
+    content: "Failed to load story"
+  }
+
+  .error-visual {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: #ccc;
+    transform: translateX(-50%) translateY(-50%);
+    text-align: center;
+    z-index: 1;
+    font-size: 1.5vh;
+  }
+
   @keyframes rotate {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
 
-  .loading-visual {
+  .loading-visual,
+  .error-visual {
     display: none;
   }
 
