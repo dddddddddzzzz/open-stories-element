@@ -15,7 +15,7 @@ Things yet to be supported:
 
 ```html
 <!-- Include `OpenStoriesElement` -->
-<script src="https://unpkg.com/open-stories-element@0.0.26" type="module" defer></script>
+<script src="https://unpkg.com/open-stories-element@0.0.30" type="module" defer></script>
 
 <!-- Render `<open-stories>` -->
 <open-stories src="./feed.json"></open-stories>
