@@ -443,10 +443,9 @@ class OpenStoriesElement extends HTMLElement {
       } else if (item._open_stories.mime_type.startsWith('video/')) {
         el = document.createElement('video')
         el.src = item._open_stories.url
-        el.setAttribute('loop', '')
-        el.setAttribute('muted', '')
-        el.setAttribute('playsinline', '')
-        el.setAttribute('crossorigin', '')
+        el.toggleAttribute('loop', true)
+        el.toggleAttribute('muted', true)
+        el.toggleAttribute('playsinline', true)
         el.volume = 0
         this.promises.push(new Promise((resolve, reject) => {
           el!.addEventListener('canplay', resolve)
